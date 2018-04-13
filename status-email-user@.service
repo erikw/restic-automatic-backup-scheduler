@@ -1,0 +1,11 @@
+# Source: https://serverfault.com/questions/876233/how-to-send-an-email-if-a-systemd-service-is-restarted
+# Source: https://wiki.archlinux.org/index.php/Systemd/Timers#MAILTO
+
+[Unit]
+Description=Send status email for %i to user
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/systemd-email abc@gmail.com %i
+User=root
+Group=systemd-journal

@@ -1,0 +1,10 @@
+[Unit]
+Description=Backup with restic to Backblaze B2
+OnFailure=status-email-user@%n.service
+
+[Service]
+Type=simple
+Nice=10
+ExecStart=/usr/local/sbin/restic_backup.sh
+# $HOME or $XDG_CACHE_HOME must be set for restic to find /root/.cache/restic/
+Environment="HOME=/root"

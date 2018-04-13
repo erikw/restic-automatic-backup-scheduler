@@ -1,0 +1,9 @@
+[Unit]
+Description=Check restic backup Backblaze B2 for errors on a schedule
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+
+[Install]
+WantedBy=timers.target

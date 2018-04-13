@@ -1,0 +1,9 @@
+[Unit]
+Description=Check restic backup Backblaze B2 for errors
+OnFailure=status-email-user@%n.service
+Conflicts=restic.service
+
+[Service]
+Type=simple
+Nice=10
+ExecStart=/usr/local/sbin/restic_check.sh
