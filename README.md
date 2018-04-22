@@ -19,13 +19,13 @@ $ restic snapshots    # You don't have to supply all paramters like --repo, as t
 
 Put these files in `/usr/local/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. Edit this file to respect your needs in terms of backup which paths to backup, retention (number of bakcups to save), etc.
-* `systemd-email`: Sends email using sendmail. You must set up your computer so it can send mail, for example using [postfix and Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). This script also  features time-out for not spamming Gmail servers. Edit the email target address in this file.
+* `systemd-email`: Sends email using sendmail. You must set up your computer so it can send mail, for example using [postfix and Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). This script also  features time-out for not spamming Gmail servers.
 
 
 Put these files in `/etc/systemd/system/`:
 * `restic-backup.service`: A service that calls the script above.
 * `restic-backup.timer`: A timer (systemd's cronjobs) that starts the backup every day.
-* `status-email-user@.service`: A service that can notify you via email when a systemd service fails.
+* `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file. 
 
 
 Now simply enable the timer with:
