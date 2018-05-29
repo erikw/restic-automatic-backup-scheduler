@@ -52,7 +52,7 @@ wait $!
 
 # Do the backup!
 # See restic-backup(1) or http://restic.readthedocs.io/en/latest/040_backup.html
-# --one-file-system make sure we only backup exactly those mounted file systems specified in $BACKUP_PATHS, and thus not directories like /dev, /sys etc.
+# --one-file-system makes sure we only backup exactly those mounted file systems specified in $BACKUP_PATHS, and thus not directories like /dev, /sys etc.
 # --tag lets us reference these backups later when doing restic-forget.
 restic backup \
 	--one-file-system \
