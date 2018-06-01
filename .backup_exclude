@@ -1,0 +1,10 @@
+/.snapshots/
+/opt
+/root/.cache/
+/usr/share/**/*.html
+/usr/share/help/
+/usr/share/licenses/
+/usr/share/man/
+/usr/src/
+/var/cache/
+/var/log/
