@@ -4,5 +4,5 @@
 
 export RESTIC_REPOSITORY="b2:<b2-repo-name>"
 export RESTIC_PASSWORD_FILE="/etc/restic/b2_pw.txt"
-export B2_ACCOUNT_ID="<restic-account-id>"
-export B2_ACCOUNT_KEY="<restic-account-key>"
+export B2_ACCOUNT_ID="<b2-account-id>"
+export B2_ACCOUNT_KEY="<b2-account-key>"

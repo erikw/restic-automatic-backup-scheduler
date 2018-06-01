@@ -1,1 +1,1 @@
-<restic-password>
+<b2-password>
