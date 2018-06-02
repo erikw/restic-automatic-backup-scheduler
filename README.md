@@ -31,7 +31,7 @@ $ restic snapshots    # You don't have to supply all paramters like --repo, as t
 ````
 * `b2_pw.txt`: Put your B2 password in this file.
 
-### 3. Initialize your B2 repo
+### 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
 ```bash
 source /etc/restic/b2_env.sh
