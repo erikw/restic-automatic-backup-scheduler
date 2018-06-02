@@ -52,6 +52,7 @@ Now see if the backup itself works, by running
 ```bash
 $ /usr/local/sbin/restic_backup.sh
 $ less /var/local/log/restic/*
+$ restic snapshots
 ````
 
 ### 6. Backup automatically; systemd service + timer
