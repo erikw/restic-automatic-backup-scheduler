@@ -43,7 +43,7 @@ Put this file in `/usr/local/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. Edit this file to respect your needs in terms of backup which paths to backup, retention (number of backups to save), etc.
 
 Put this file in `/`:
-* `.backup_exclude`: A list of file pattern paths to exclude from you backups, that you consumes time, network and money, but is not worth having copies of.
+* `.backup_exclude`: A list of file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money.
 
 
 ### 5. Make first backup & verify
