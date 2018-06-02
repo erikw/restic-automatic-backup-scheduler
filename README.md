@@ -9,7 +9,7 @@ Unfortunately restic does not come per-configured with a way to run automated ba
 Here follows a step-by step tutorial on how to set it up, with my sample script and configurations that you can modify to suit your needs.
 
 
-Note, you can use any of the supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar and you will have to other configuration variables to match that backend in later steps.
+Note, you can use any of the supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar but you will have to use other configuration variables to match your backend of choice.
 
 
 ## Set up
