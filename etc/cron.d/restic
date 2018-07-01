@@ -1,0 +1,8 @@
+SHELL=/bin/sh
+PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/:/usr/local/sbin/
+# Order of crontab fields
+# minute        hour    mday    month   wday    command
+# Reference: https://www.freebsd.org/doc/handbook/configtuning-cron.html
+# Reference: crontab(5).
+@midnight	root	cron_mail restic_backup.sh
+@monthly	root	cron_mail restic_check.sh

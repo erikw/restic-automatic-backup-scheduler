@@ -104,3 +104,10 @@ As you maybe noticed already before, `restic-backup.service` is configured to st
 Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
 There are some `*-check*`-files in this git repo. Install these in the same way you installed the `*-backup*`-files.
+
+
+## Cron?
+If you want to run an all-classic cron job instead, do like this:
+
+* `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
+* `usr/local/sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.

@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+# vi: ft=sh
+#
+# To be called by a cron job as a wrapper that sends stdour and stderr via the mail program.
+# Why? Because of FreeBSD the system cron uses sendmail, and I want to use ssmtp.
+# Make your crontab files like:
+#SHELL=/bin/sh
+#PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin
+#@daily       root    cron_mail freebsd-update cron
+
+mail_target=root
+scriptname=${0##*/}
+
+if [ $# -eq 0 ]; then
+	echo "No program to run given!" >&2
+	exit 1
+fi
+cmd="$@"
+
+body=$(eval "$cmd" 2>&1)
+
+if [ -n "$body" ];then
+	echo "$body" | mail -s "${scriptname}: ${cmd}" $mail_target
+fi
