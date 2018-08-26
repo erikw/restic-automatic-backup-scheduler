@@ -25,5 +25,6 @@ source /etc/restic/b2_env.sh
 #wait $!
 
 # Check repository for errors.
-restic check &
+restic check \
+	--verbose &
 wait $!

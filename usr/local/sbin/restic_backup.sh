@@ -46,6 +46,7 @@ wait $!
 # --one-file-system makes sure we only backup exactly those mounted file systems specified in $BACKUP_PATHS, and thus not directories like /dev, /sys etc.
 # --tag lets us reference these backups later when doing restic-forget.
 restic backup \
+	--verbose \
 	--one-file-system \
 	--tag $BACKUP_TAG \
 	$BACKUP_EXCLUDES \
@@ -56,6 +57,7 @@ wait $!
 # See restic-forget(1) or http://restic.readthedocs.io/en/latest/060_forget.html
 # --group-by only the tag and path, and not by hostname. This is because I create a B2 Bucket per host, and if this hostname accidentially change some time, there would now be multiple backup sets.
 restic forget \
+	--verbose \
 	--tag $BACKUP_TAG \
 	--group-by "paths,tags" \
 	--keep-daily $RETENTION_DAYS \
@@ -66,7 +68,8 @@ wait $!
 
 # Remove old data not linked anymore.
 # See restic-prune(1) or http://restic.readthedocs.io/en/latest/060_forget.html
-restic prune &
+restic prune \
+	--verbose &
 wait $!
 
 # Check repository for errors.
