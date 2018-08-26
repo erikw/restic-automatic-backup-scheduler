@@ -5,15 +5,6 @@
 # Exit on failure, pipe failure
 set -e -o pipefail
 
-# Redirect stdout ( > ) into a named pipe ( >() ) running "tee" to a file, so we can observe the status by simply tailing the log file.
-me=$(basename "$0")
-now=$(date +%F_%R)
-log_dir=/var/local/log/restic
-log_file="${log_dir}/${now}_${me}.$$.log"
-test -d $log_dir || mkdir -p $log_dir
-exec > >(tee -i $log_file)
-exec 2>&1
-
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
 # However if we kill this script ourselves, we need this trap that kills all subprocesses manually.

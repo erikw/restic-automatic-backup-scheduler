@@ -5,14 +5,14 @@
 # Usage: systemd-email <recipinent-email> <failed-systemd-unit-name>
 
 
-# According to 
+# According to
 # http://www.flashissue.com/blog/gmail-sending-limits/
 # Gmail blocks your account if you send more than 500 emails per day, which is one email every
 # (24 * 60 * 60) / 500 = 172.8 second => choose a min wait time which is significantly longer than this to be on the safe time to not exceed 500 emails per day.
 # However this source
 # https://group-mail.com/sending-email/email-send-limits-and-options/
 # says the limit when not using the Gmail webinterface but going directly to the SMTP server is 100-150 per day, which yelds maximum one email every
-# (24 * 60 * 60) / 100 = 864 second 
+# (24 * 60 * 60) / 100 = 864 second
 # One option that I used with my old Axis cameras it to use my gmx.com accunt for sending emails instead, as there are (no?) higher limits there.
 MIN_WAIT_TIME_S=900
 SCRIPT_NAME=$(basename $0)

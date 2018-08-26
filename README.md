@@ -51,7 +51,6 @@ Now see if the backup itself works, by running
 
 ```bash
 $ /usr/local/sbin/restic_backup.sh
-$ less /var/local/log/restic/*
 $ restic snapshots
 ````
 
@@ -85,6 +84,14 @@ or start a backup manually
 ```bash
 $ systemctl start restic-backup
 ```
+
+You can follow the backup stdout output live as backup is running with:
+
+```bash
+$ journalctl -f -u restic-backup.service
+````
+
+(skip `-f` to see all backups that has run)
 
 
 
