@@ -14,6 +14,14 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
 
 ## Set up
 
+Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
+
+```bash
+$ git clone git@github.com:erikw/restic-systemd-automatic-backup.git
+$ cd restic-systemd-automatic-backup
+$ sudo make install
+````
+
 ### 1. Create Backblaze B2 account
 
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/115002880514-How-to-configure-Backblaze-B2-with-Restic-on-Linux) on restic, and follow the instructions ("Create Backblaze account with B2 enabled"")there on how to create a new B2 bucket.
