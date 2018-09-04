@@ -73,6 +73,7 @@ Put these files in `/etc/systemd/system/`:
 
 Now simply enable the timer with:
 ```bash
+$ systemctl start restic-backup.timer
 $ systemctl enable restic-backup.timer
 ````
 
