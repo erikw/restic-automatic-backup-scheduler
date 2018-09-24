@@ -24,7 +24,7 @@ $ sudo make install
 
 ### 1. Create Backblaze B2 account
 
-First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/115002880514-How-to-configure-Backblaze-B2-with-Restic-on-Linux) on restic, and follow the instructions ("Create Backblaze account with B2 enabled")there on how to create a new B2 bucket.
+First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/115002880514-How-to-configure-Backblaze-B2-with-Restic-on-Linux) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket.
 
 Take note of the your account ID, application key and password for the next steps.
 
