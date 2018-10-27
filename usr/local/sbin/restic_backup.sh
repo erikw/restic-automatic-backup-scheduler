@@ -26,6 +26,8 @@ BACKUP_PATHS="/ /boot /home /mnt/media"
 BACKUP_EXCLUDES="--exclude-file /.backup_exclude --exclude-file /mnt/media/.backup_exclude --exclude-file /home/erikw/.backup_exclude"
 BACKUP_TAG=systemd.timer
 
+# The number of concurrent connections to the B2 service. By default, if no options provided, at most five parallel connections are established.
+B2_CONNECTIONS=10
 
 # Set all environment variables like
 # B2_ACCOUNT_ID, B2_ACCOUNT_KEY, RESTIC_REPOSITORY etc.
@@ -47,6 +49,7 @@ wait $!
 # --tag lets us reference these backups later when doing restic-forget.
 restic backup \
 	--verbose \
+	--option b2.connections=$B2_CONNECTIONS \
 	--one-file-system \
 	--tag $BACKUP_TAG \
 	$BACKUP_EXCLUDES \
