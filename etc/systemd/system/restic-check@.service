@@ -7,3 +7,5 @@ Conflicts=restic.service
 Type=simple
 Nice=10
 ExecStart=/usr/local/sbin/restic_check.sh
+EnvironmentFile=-/etc/restic/_global.env
+EnvironmentFile=/etc/restic/%I.env
