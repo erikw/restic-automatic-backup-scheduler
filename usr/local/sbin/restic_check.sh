@@ -22,7 +22,7 @@ source /etc/restic/b2_env.sh
 B2_CONNECTIONS=50
 
 # Remove locks from other stale processes to keep the automated backup running.
-# NOTE nope, dont' unlock liek restic_backup.sh. restic_backup.sh should take preceedance over this script.
+# NOTE nope, don't unlock like restic_backup.sh. restic_backup.sh should take precedence over this script.
 #restic unlock &
 #wait $!
 
