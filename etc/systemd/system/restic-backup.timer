@@ -1,5 +1,7 @@
 [Unit]
 Description=Backup with restic on schedule
+Requires=unmetered-connection.service
+After=unmetered-connection.service
 
 [Timer]
 OnCalendar=daily
