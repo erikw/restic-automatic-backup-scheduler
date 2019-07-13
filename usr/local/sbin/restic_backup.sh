@@ -24,7 +24,7 @@ RETENTION_YEARS=3
 # What to backup, and what to not
 BACKUP_PATHS="/ /boot /home"
 [ -d /mnt/media ] && BACKUP_PATHS+=" /mnt/media"
-BACKUP_EXCLUDES="--exclude-file /.backup_exclude"
+BACKUP_EXCLUDES="--exclude-file /etc/restic/backup_exclude"
 for dir in /home/*
 do
 	if [ -f "$dir/.backup_exclude" ]
