@@ -22,8 +22,17 @@ RETENTION_MONTHS=18
 RETENTION_YEARS=3
 
 # What to backup, and what to not
-BACKUP_PATHS="/ /boot /home /mnt/media"
-BACKUP_EXCLUDES="--exclude-file /etc/restic/backup_exclude --exclude-file /mnt/media/.backup_exclude --exclude-file /home/erikw/.backup_exclude"
+BACKUP_PATHS="/ /boot /home"
+[ -d /mnt/media ] && BACKUP_PATHS+=" /mnt/media"
+BACKUP_EXCLUDES="--exclude-file /etc/restic/backup_exclude"
+for dir in /home/*
+do
+	if [ -f "$dir/.backup_exclude" ]
+	then
+		BACKUP_EXCLUDES+=" --exclude-file $dir/.backup_exclude"
+	fi
+done
+
 BACKUP_TAG=systemd.timer
 
 
