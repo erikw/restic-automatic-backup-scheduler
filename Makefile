@@ -45,4 +45,4 @@ install-conf: | etc/restic/b2_env.sh etc/restic/b2_pw.txt
 # target: install-systemd - Install systemd timer and service files
 install-systemd:
 	install -d $(DEST_SYSTEMD)
-	install $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
+	install -m 0644 $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
