@@ -1,7 +1,6 @@
 [Unit]
 Description=Check restic backup Backblaze B2 for errors on a schedule
-Requires=unmetered-connection.service
-After=unmetered-connection.service
+Requires=nm-unmetered-connection.service
 
 [Timer]
 OnCalendar=monthly
