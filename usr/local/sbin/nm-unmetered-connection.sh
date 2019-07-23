@@ -1,5 +1,8 @@
 #!/bin/bash
 
+systemctl is-active dbus.service >/dev/null 2>&1 || exit 0
+systemctl is-active NetworkManager.service >/dev/null 2>&1 || exit 0
+
 metered_status=$(dbus-send --system --print-reply=literal \
        	--system --dest=org.freedesktop.NetworkManager \
 	      /org/freedesktop/NetworkManager \
