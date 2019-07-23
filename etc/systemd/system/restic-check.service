@@ -2,6 +2,7 @@
 Description=Check restic backup Backblaze B2 for errors
 OnFailure=status-email-user@%n.service
 Conflicts=restic.service
+Requires=nm-unmetered-connection.service
 
 [Service]
 Type=simple
