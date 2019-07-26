@@ -71,18 +71,12 @@ wait $!
 restic forget \
 	--verbose \
 	--tag $BACKUP_TAG \
+        --prune
 	--group-by "paths,tags" \
 	--keep-daily $RETENTION_DAYS \
 	--keep-weekly $RETENTION_WEEKS \
 	--keep-monthly $RETENTION_MONTHS \
 	--keep-yearly $RETENTION_YEARS &
-wait $!
-
-# Remove old data not linked anymore.
-# See restic-prune(1) or http://restic.readthedocs.io/en/latest/060_forget.html
-restic prune \
-	--option b2.connections=$B2_CONNECTIONS \
-	--verbose &
 wait $!
 
 # Check repository for errors.
