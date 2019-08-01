@@ -65,7 +65,7 @@ restic backup \
 	$BACKUP_PATHS &
 wait $!
 
-# Dereference old backups.
+# Dereference and delete/prune old backups.
 # See restic-forget(1) or http://restic.readthedocs.io/en/latest/060_forget.html
 # --group-by only the tag and path, and not by hostname. This is because I create a B2 Bucket per host, and if this hostname accidentially change some time, there would now be multiple backup sets.
 restic forget \
