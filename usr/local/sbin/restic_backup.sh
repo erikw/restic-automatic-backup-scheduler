@@ -71,7 +71,8 @@ wait $!
 restic forget \
 	--verbose \
 	--tag $BACKUP_TAG \
-        --prune
+	--option b2.connections=$B2_CONNECTIONS \
+        --prune \
 	--group-by "paths,tags" \
 	--keep-daily $RETENTION_DAYS \
 	--keep-weekly $RETENTION_WEEKS \
