@@ -2,7 +2,7 @@
 # Send email notification from systemd.
 # Source: https://serverfault.com/questions/876233/how-to-send-an-email-if-a-systemd-service-is-restarted
 # Source: https://wiki.archlinux.org/index.php/Systemd/Timers#MAILTO
-# Usage: systemd-email <recipinent-email> <failed-systemd-unit-name>
+# Usage: systemd-email <recipient-email> <failed-systemd-unit-name>
 
 
 # According to
@@ -47,11 +47,11 @@ if ! waited_long_enough; then
 fi
 
 
-recipinent=$1
+recipient=$1
 system_unit=$2
 
 sendmail -t <<ERRMAIL
-To: $recipinent
+To: $recipient
 From: systemd <root@$HOSTNAME>
 Subject: [systemd-email] ${system_unit}
 Content-Transfer-Encoding: 8bit
