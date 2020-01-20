@@ -37,7 +37,7 @@ Put these files in `/etc/restic/`:
 $ source /etc/restic/b2_env.sh
 $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
 ````
-* `b2_pw.txt`: Put your B2 password in this file.
+* `b2_pw.txt`: This file should contain the restic repository password. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your b2 login password, this should be different.
 
 ### 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
