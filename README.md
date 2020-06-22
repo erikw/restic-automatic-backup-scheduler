@@ -53,6 +53,7 @@ Put this file in `/usr/local/sbin`:
 Copy this file to `/etc/restic/backup_exclude` or `~/.backup_exclude`:
 * `.backup_exclude`: A list of file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money.
 
+Directories that contain a file named `.nobackup` will be excluded from the backup as well.
 
 ### 5. Make first backup & verify
 Now see if the backup itself works, by running

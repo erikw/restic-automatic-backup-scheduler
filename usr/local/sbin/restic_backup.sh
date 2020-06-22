@@ -61,6 +61,7 @@ restic backup \
 	--one-file-system \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
+	--exclude-if-present .nobackup \
 	$BACKUP_EXCLUDES \
 	$BACKUP_PATHS &
 wait $!
