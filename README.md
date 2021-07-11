@@ -16,7 +16,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
 
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
 
-```bash
+```console
 $ git clone https://github.com/erikw/restic-systemd-automatic-backup.git
 $ cd restic-systemd-automatic-backup
 $ sudo make install
@@ -33,7 +33,7 @@ Take note of the your account ID, application key and password for the next step
 ### 2. Configure your B2 account locally
 Put these files in `/etc/restic/`:
 * `b2_env.sh`: Fill this file out with your B2 bucket settings etc. The reason for putting these in a separate file is that it can be used also for you to simply source, when you want to issue some restic commands. For example:
-```bash
+```console
 $ source /etc/restic/b2_env.sh
 $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
 ````
@@ -41,7 +41,7 @@ $ restic snapshots    # You don't have to supply all parameters like --repo, as 
 
 ### 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
-```bash
+```console
 source /etc/restic/b2_env.sh
 restic init
 ```
@@ -57,7 +57,7 @@ Copy this file to `/etc/restic/backup_exclude` or `~/.backup_exclude`:
 ### 5. Make first backup & verify
 Now see if the backup itself works, by running
 
-```bash
+```console
 $ /usr/local/sbin/restic_backup.sh
 $ restic snapshots
 ````
@@ -72,31 +72,31 @@ Put these files in `/etc/systemd/system/`:
 
 
 Now simply enable the timer with:
-```bash
+```console
 $ systemctl start restic-backup.timer
 $ systemctl enable restic-backup.timer
 ````
 
 You can see when your next backup is scheduled to run with
-```bash
+```console
 $ systemctl list-timers | grep restic
 ```
 
 and see the status of a currently running backup with
 
-```bash
+```console
 $ systemctl status restic-backup
 ```
 
 or start a backup manually
 
-```bash
+```console
 $ systemctl start restic-backup
 ```
 
 You can follow the backup stdout output live as backup is running with:
 
-```bash
+```console
 $ journalctl -f -u restic-backup.service
 ````
 
