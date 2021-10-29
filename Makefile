@@ -1,17 +1,20 @@
 # Not file targets.
-.PHONY: help install install-scripts install-conf install-systemd
+.PHONY: help install install-scripts install-conf install-systemd uninstall
 
 ### Macros ###
 SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
-SRCS_CONF	= $(filter-out %template, $(wildcard etc/restic/*))
+SRCS_CONF		= $(filter-out %template, $(wildcard etc/restic/*))
 SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
 # Just set PREFIX in envionment, like
 # $ PREFIX=/tmp/test make
-DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
-DEST_CONF	= $(PREFIX)/etc/restic
+DEST_SCRIPT		= $(PREFIX)/usr/local/sbin
+DEST_CONF		= $(PREFIX)/etc/restic
 DEST_SYSTEMD	= $(PREFIX)/etc/systemd/system
 
+INSTALLED_FILES = $(patsubst %, $(DEST_SCRIPT)/%, $(SRCS_SCRIPTS)) \
+				  $(patsubst %, $(DEST_CONF)/%, $(SRCS_CONF)) $(DEST_CONF)/b2_env.sh $(DEST_CONF)/b2_pw.txt \
+				  $(patsubst %, $(DEST_SYSTEMD)/%, $(SRCS_SYSTEMD))
 
 ### Targets ###
 # target: all - Default target.
@@ -46,3 +49,11 @@ install-conf: | etc/restic/b2_env.sh etc/restic/b2_pw.txt
 install-systemd:
 	install -d $(DEST_SYSTEMD)
 	install -m 0644 $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
+
+			#$(RM) $$file; \
+# target: uninstall - Uninstall files from the install targets
+uninstall:
+	@for file in $(INSTALLED_FILES); do \
+			echo $(RM) $$file; \
+			$(RM) $$file; \
+	done
