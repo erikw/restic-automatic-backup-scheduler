@@ -11,6 +11,8 @@ Here follows a step-by step tutorial on how to set it up, with my sample script 
 
 Note, you can use any of the supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar but you will have to use other configuration variables to match your backend of choice.
 
+# Requirements
+* `restic >=v0.9.6`
 
 ## Set up
 
@@ -27,7 +29,6 @@ $ sudo make install
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/115002880514-How-to-configure-Backblaze-B2-with-Restic-on-Linux) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket.
 
 Take note of the your account ID, application key and password for the next steps.
-
 
 
 ### 2. Configure your B2 account locally
