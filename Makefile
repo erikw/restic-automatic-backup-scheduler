@@ -3,7 +3,7 @@
 
 ### Macros ###
 SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
-SRCS_CONF		= $(filter-out %template, $(wildcard etc/restic/*))
+SRCS_CONF	= $(filter-out %template, $(wildcard etc/restic/*))
 SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
 # Just set PREFIX in envionment, like
