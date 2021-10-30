@@ -50,7 +50,6 @@ install-systemd:
 	install -d $(DEST_SYSTEMD)
 	install -m 0644 $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
 
-			#$(RM) $$file; \
 # target: uninstall - Uninstall files from the install targets
 uninstall:
 	@for file in $(INSTALLED_FILES); do \
