@@ -1,2 +1,2 @@
-b2_env.sh
-b2_pw.txt
+/etc/restic/b2_pw.txt
+/etc/restic/b2_env.sh
