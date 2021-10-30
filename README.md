@@ -128,3 +128,11 @@ If you want to run an all-classic cron job instead, do like this:
 
 * `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
 * `usr/local/sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
+
+## Uninstall
+
+There is a make target to remove all files (scripts and configs) that were installed by `sudo make install`. Just run:
+
+```console
+$ sudo make uninstall
+```
