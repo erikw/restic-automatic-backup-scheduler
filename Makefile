@@ -12,9 +12,9 @@ DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
 DEST_CONF	= $(PREFIX)/etc/restic
 DEST_SYSTEMD	= $(PREFIX)/etc/systemd/system
 
-INSTALLED_FILES = $(patsubst %, $(DEST_SCRIPT)/%, $(SRCS_SCRIPTS)) \
-				  $(patsubst %, $(DEST_CONF)/%, $(SRCS_CONF)) $(DEST_CONF)/b2_env.sh $(DEST_CONF)/b2_pw.txt \
-				  $(patsubst %, $(DEST_SYSTEMD)/%, $(SRCS_SYSTEMD))
+INSTALLED_FILES = $(patsubst %, /%, $(SRCS_SCRIPTS)) \
+		  $(patsubst %, /%, $(SRCS_CONF)) $(DEST_CONF)/b2_env.sh $(DEST_CONF)/b2_pw.txt \
+		  $(patsubst %, /%, $(SRCS_SYSTEMD))
 
 ### Targets ###
 # target: all - Default target.
