@@ -8,8 +8,8 @@ SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
 # Just set PREFIX in envionment, like
 # $ PREFIX=/tmp/test make
-DEST_SCRIPT		= $(PREFIX)/usr/local/sbin
-DEST_CONF		= $(PREFIX)/etc/restic
+DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
+DEST_CONF	= $(PREFIX)/etc/restic
 DEST_SYSTEMD	= $(PREFIX)/etc/systemd/system
 
 INSTALLED_FILES = $(patsubst %, $(DEST_SCRIPT)/%, $(SRCS_SCRIPTS)) \
