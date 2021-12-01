@@ -11,7 +11,7 @@
 [![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 <br>
 
-[![Contributors](https://img.shields.io/github/contributors/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors) including:
+[![Contributors](https://img.shields.io/github/contributors/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors) including these top contributors:
 <a href = "https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors">
 <img src = "https://contrib.rocks/image?repo=erikw/restic-systemd-automatic-backup&max=24"/>
 </a>
