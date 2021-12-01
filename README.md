@@ -1,4 +1,20 @@
 # Automatic restic backups using systemd services and timers
+[![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-systemd-automatic-backup?style=social)](#)
+[![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-systemd-automatic-backup?style=social)](#)
+<br>
+[![SLOC](https://img.shields.io/tokei/lines/github/erikw/restic-systemd-automatic-backup)](#)
+[![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
+[![Closed issues](https://img.shields.io/github/issues-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/issues?q=is%3Aissue+is%3Aclosed)
+[![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/pulls?q=is%3Apr+is%3Aclosed)
+[![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE.txt)
+[![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-systemd-automatic-backup)](https://github.com/Netflix/osstracker)
+[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
+<br>
+
+[![Contributors](https://img.shields.io/github/contributors/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors) including:
+<a href = "https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors">
+<img src = "https://contrib.rocks/image?repo=erikw/restic-systemd-automatic-backup&max=24"/>
+</a>
 
 ## Restic
 
