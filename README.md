@@ -3,6 +3,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-systemd-automatic-backup?style=social)](#)
 <br>
 [![AUR version](https://img.shields.io/aur/version/restic-systemd-automatic-backup)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
+[![AUR maintainer](https://img.shields.io/aur/maintainer/restic-systemd-automatic-backup)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
 [![SLOC](https://img.shields.io/tokei/lines/github/erikw/restic-systemd-automatic-backup)](#)
 [![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
 [![Closed issues](https://img.shields.io/github/issues-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/issues?q=is%3Aissue+is%3Aclosed)
