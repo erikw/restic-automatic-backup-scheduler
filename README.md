@@ -41,6 +41,11 @@ $ cd restic-systemd-automatic-backup
 $ sudo make install
 ````
 
+Arch Linux users can install the aur package [restic-systemd-automatic-backup](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) e.g. :
+```console
+$ yaourt -S restic-systemd-automatic-backup
+````
+
 ## 1. Create Backblaze B2 account
 
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/115002880514-How-to-configure-Backblaze-B2-with-Restic-on-Linux) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket.
