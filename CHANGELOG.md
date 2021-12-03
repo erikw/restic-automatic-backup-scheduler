@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1] - 2021-12-03
 ### Fixed
-- $(make install) now works for the *.template files [#40[https://github.com/erikw/restic-systemd-automatic-backup/issues/40]
+- $(make install) now works for the *.template files [#40](https://github.com/erikw/restic-systemd-automatic-backup/issues/40)
 
 ## [1.0.0] - 2021-12-02
 It's time to call this a proper major version!
