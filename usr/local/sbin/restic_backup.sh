@@ -23,7 +23,10 @@ RETENTION_YEARS=3
 
 # What to backup, and what to not
 BACKUP_PATHS="/ /boot /home"
+# Example below of how dynamically add a path that is mounted e.g. external USB dis.
 [ -d /mnt/media ] && BACKUP_PATHS+=" /mnt/media"
+
+# Set up exclude files: global + path-specific ones.
 BACKUP_EXCLUDES="--exclude-file /etc/restic/backup_exclude"
 for dir in /home/*
 do
