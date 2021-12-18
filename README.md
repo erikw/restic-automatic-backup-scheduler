@@ -36,8 +36,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
 
 ```console
-$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git
-$ cd restic-systemd-automatic-backup
+$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
 $ sudo make install
 ````
 
