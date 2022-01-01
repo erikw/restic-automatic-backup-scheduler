@@ -157,3 +157,7 @@ There is a make target to remove all files (scripts and configs) that were insta
 ```console
 $ sudo make uninstall
 ```
+
+# Variations
+A list of variations of this setup:
+* Using `--files-from` #44
