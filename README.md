@@ -160,4 +160,4 @@ $ sudo make uninstall
 
 # Variations
 A list of variations of this setup:
-* Using `--files-from` #44
+* Using `--files-from` [#44](https://github.com/erikw/restic-systemd-automatic-backup/issues/44)
