@@ -1,6 +1,7 @@
 [Unit]
 Description=Backup with restic to Backblaze B2
 OnFailure=status-email-user@%n.service
+Requires=nm-unmetered-connection.service
 
 [Service]
 Type=simple

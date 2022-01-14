@@ -16,7 +16,7 @@ exit_hook() {
 trap exit_hook INT TERM
 
 # Remove locks from other stale processes to keep the automated backup running.
-# NOTE nope, dont' unlock liek restic_backup.sh. restic_backup.sh should take preceedance over this script.
+# NOTE nope, don't unlock like restic_backup.sh. restic_backup.sh should take precedence over this script.
 #restic unlock &
 #wait $!
 
