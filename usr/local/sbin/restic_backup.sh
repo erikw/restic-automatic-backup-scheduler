@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Make backup my system with restic to Backblaze B2.
 # This script is typically run by: /etc/systemd/system/restic-backup.{service,timer}
 
@@ -15,6 +16,13 @@ exit_hook() {
 }
 trap exit_hook INT TERM
 
+# Set up exclude files: global + path-specific ones.
+exclusion_args="--exclude-file /etc/restic/backup_exclude"
+for homedir in /home/*; do
+	if [ -f "$homedir/.backup_exclude" ]; then
+		exclusion_args+=" --exclude-file $homedir/.backup_exclude"
+	fi
+done
 
 # NOTE start all commands in background and wait for them to finish.
 # Reason: bash ignores any signals while child process is executing and thus my trap exit hook is not triggered.
@@ -34,7 +42,7 @@ restic backup \
 	--one-file-system \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
-	$BACKUP_EXCLUDES \
+	$exclusion_args \
 	$BACKUP_PATHS &
 wait $!
 
@@ -45,7 +53,7 @@ restic forget \
 	--verbose \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
-        --prune \
+	--prune \
 	--group-by "paths,tags" \
 	--keep-daily $RETENTION_DAYS \
 	--keep-weekly $RETENTION_WEEKS \

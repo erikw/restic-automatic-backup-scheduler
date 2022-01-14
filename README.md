@@ -7,7 +7,7 @@
 [![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
 [![Closed issues](https://img.shields.io/github/issues-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/issues?q=is%3Aissue+is%3Aclosed)
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/pulls?q=is%3Apr+is%3Aclosed)
-[![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE.txt)
+[![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE)
 [![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-systemd-automatic-backup)](https://github.com/Netflix/osstracker)
 [![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 <br>
@@ -31,7 +31,66 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
 # Requirements
 * `restic >=v0.9.6`
 
-# Set up
+# TL;DR
+
+There is a `Makefile` to assist in the installation by copying all required files to their proper
+place. You can install everything by doing:
+
+```console
+sudo make install
+```
+
+☝ **Note**: `sudo` is required here, as some files are installed into system directories (`/etc/` 
+and `/usr/sbin`). Have a look to the `Makefile` to know more.
+
+Once files are in place you will need to fill some configs with your own values, mostly B2 
+related ones. Fill in the following files accordingly (you will need to edit them with **sudo**):
+
+- `/etc/restic/pw.txt` - Contains the password used by restic to encrypt the 
+- repository files.
+- `/etc/restic/_global.env` - Global environment variables.
+- `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be
+  defined).
+
+🗄️ Finally, **run the backup** using Systemd:
+
+```console
+sudo systemctl start restic-backup@default
+```
+
+👀 and watch its progress with Systemd journal:
+
+```console
+journalctl -f --lines=50 -u restic-backup@default
+```
+
+ALSO, as you will be probably interested that the backup runs automatically every day, start and 
+persist the systemd timer that will run the backup service unit:
+
+```console
+sudo systemctl start restic-backup@default.timer
+sudo systemctl enable restic-backup@default.timer
+```
+
+**Final note**: You can define different profiles to run backups, just make a copy of `default.env`
+and use the defined profile name in place of `default` to run backups or enable timers. Notice that
+the value after `@` works as a parameter.
+
+### Verify your backup
+
+As the profile is owned by root and managed by systemd, you need to proceed as **root**,
+e.g. `sudo -i`.
+
+- First, you need to load your profile: `source /etc/restic/default.env`, then
+- you can list your snapshots with `restic snapshots`, or
+- mount the remote repo to check your files, e.g. `restic mount /mnt/restic`
+
+You can also run a repository integrity/consistency check from time to time:
+```console
+sudo systemd start restic-check@default
+```
+
+# Step-by-step and manual setup
 
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
 
@@ -54,17 +113,17 @@ Take note of the your account ID, application key and password for the next step
 
 ## 2. Configure your B2 account locally
 Put these files in `/etc/restic/`:
-* `b2_env.sh`: Fill this file out with your B2 bucket settings etc. The reason for putting these in a separate file is that it can be used also for you to simply source, when you want to issue some restic commands. For example:
+* `default.env`: Fill this file out with your B2 bucket settings etc. The reason for putting these in a separate file is that it can be used also for you to simply source, when you want to issue some restic commands. For example:
 ```console
-$ source /etc/restic/b2_env.sh
+$ source /etc/restic/default.env
 $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
 ````
-* `b2_pw.txt`: This file should contain the restic repository password. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your b2 login password, this should be different.
+* `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your b2 login password, this should be different.
 
 ## 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
 ```console
-$ source /etc/restic/b2_env.sh
+$ source /etc/restic/default.env
 $ restic init
 ```
 
@@ -74,13 +133,13 @@ Put this file in `/usr/local/sbin`:
 
 Copy this file to `/etc/restic/backup_exclude` or `~/.backup_exclude`:
 * `.backup_exclude`: A list of file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money.
-
+  Aside from system-wide exclusions, every user can define their own ones at `~/.backup_exclude`.
 
 ## 5. Make first backup & verify
 Now see if the backup itself works, by running
 
 ```console
-$ /usr/local/sbin/restic_backup.sh
+$ sudo /usr/local/sbin/restic_backup.sh
 $ restic snapshots
 ````
 
@@ -89,15 +148,18 @@ Now we can do the modern version of a cron-job, a systemd service + timer, to ru
 
 
 Put these files in `/etc/systemd/system/`:
-* `restic-backup.service`: A service that calls the backup script.
-* `restic-backup.timer`: A timer that starts the backup every day.
 
+* `restic-backup@.service`: A service that calls the backup script with the specified profile. The profile is specified
+  by the value after `@` when running it (see below).
+* `restic-backup@.timer`: A timer that starts the former backup every day (same thing about profile here).
 
 Now simply enable the timer with:
 ```console
-$ systemctl start restic-backup.timer
-$ systemctl enable restic-backup.timer
+$ systemctl start restic-backup@default.timer
+$ systemctl enable restic-backup@default.timer
 ````
+
+ ☝ **Note**: You can run it with different values instead of `default` if you use multiple profiles.
 
 You can see when your next backup is scheduled to run with
 ```console

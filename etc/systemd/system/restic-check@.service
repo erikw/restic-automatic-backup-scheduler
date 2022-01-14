@@ -7,6 +7,5 @@ Requires=nm-unmetered-connection.service
 [Service]
 Type=simple
 Nice=10
-ExecStart=/usr/local/sbin/restic_check.sh
-EnvironmentFile=-/etc/restic/_global.env
-EnvironmentFile=/etc/restic/%I.env
+# `systemd-cat` allows showing the restic output to the systemd journal
+ExecStart=bash -c 'source /etc/restic/%I.env && /usr/local/sbin/restic_check.sh | systemd-cat'
