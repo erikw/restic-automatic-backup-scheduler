@@ -6,7 +6,7 @@ SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
 SRCS_CONF	= $(patsubst %.template, %, $(wildcard etc/restic/*))
 SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
-# Just set PREFIX in envionment, like
+# Just set PREFIX in environment, like
 # $ PREFIX=/tmp/test make
 DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
 DEST_CONF	= $(PREFIX)/etc/restic
@@ -33,13 +33,13 @@ install-scripts:
 	install -m 0744 $(SRCS_SCRIPTS) $(DEST_SCRIPTS)
 
 # Copy templates to new files with restricted permissions.
-# Why? Because the non-template files are git-ignored to preovent that someone who clones or forks this repo checks in their sensitive data like the B2 password!
+# Why? Because the non-template files are git-ignored to prevent that someone who clones or forks this repo checks in their sensitive data like the B2 password!
 etc/restic/b2_env.sh etc/restic/b2_pw.txt:
 	install -m 0600 $@.template $@
 
 # target: install-conf - Install restic configuration files.
 # will create these files locally only if they don't already exist
-# | means that dependencies are order-ony i.e. only created if they don't already exist.
+# | means that dependencies are order-only i.e. only created if they don't already exist.
 install-conf: | $(SRCS_CONF)
 	install -d $(DEST_CONF)
 	install -m 0600 $(SRCS_CONF) $(DEST_CONF)
