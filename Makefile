@@ -3,7 +3,8 @@
 
 ### Macros ###
 SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
-SRCS_CONF	= $(patsubst %.template, %, $(wildcard etc/restic/*))
+# $(sort) remove duplicates that comes from running make install >1 times.
+SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard etc/restic/*)))
 SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
 # Just set PREFIX in environment, like
