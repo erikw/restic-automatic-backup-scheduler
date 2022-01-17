@@ -112,6 +112,9 @@ Take note of the your account ID, application key and password for the next step
 
 
 ## 2. Configure your B2 account locally
+
+> **Attention!** Going the manual way requires that most of the following commands are run as root.
+
 Put these files in `/etc/restic/`:
 * `default.env`: Fill this file out with your B2 bucket settings etc. The reason for putting these in a separate file is that it can be used also for you to simply source, when you want to issue some restic commands. For example:
 ```console
@@ -139,7 +142,7 @@ Copy this file to `/etc/restic/backup_exclude` or `~/.backup_exclude`:
 Now see if the backup itself works, by running
 
 ```console
-$ sudo /usr/local/sbin/restic_backup.sh
+$ /usr/local/sbin/restic_backup.sh
 $ restic snapshots
 ````
 
@@ -175,13 +178,13 @@ $ systemctl status restic-backup
 or start a backup manually
 
 ```console
-$ systemctl start restic-backup
+$ systemctl start restic-backup@default
 ```
 
 You can follow the backup stdout output live as backup is running with:
 
 ```console
-$ journalctl -f -u restic-backup.service
+$ journalctl -f -u restic-backup@default.service
 ````
 
 (skip `-f` to see all backups that has run)
