@@ -7,7 +7,7 @@ SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
 SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard etc/restic/*)))
 SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
-# Just set PREFIX var in your shell environment, like:
+# Just set PREFIX var in your shell's environment, like:
 # $ PREFIX=/tmp/test make
 DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
 DEST_CONF	= $(PREFIX)/etc/restic
