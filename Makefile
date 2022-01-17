@@ -43,7 +43,7 @@ etc/restic/_global.env etc/restic/default.env etc/restic/pw.txt:
 install-conf: | $(SRCS_CONF)
 	install -d $(DEST_CONF)
 	install -b -m 0600 $(SRCS_CONF) $(DEST_CONF)
-	$(RM) etc/restic/b2_env.sh etc/restic/b2_pw.txt
+	$(RM) etc/restic/_global.env etc/restic/default.env etc/restic/pw.txt
 
 # target: install-systemd - Install systemd timer and service files.
 install-systemd:
