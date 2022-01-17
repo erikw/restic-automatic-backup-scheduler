@@ -45,12 +45,12 @@ install-conf: | $(SRCS_CONF)
 	install -d $(DEST_CONF)
 	install -m 0600 $(SRCS_CONF) $(DEST_CONF)
 
-# target: install-systemd - Install systemd timer and service files
+# target: install-systemd - Install systemd timer and service files.
 install-systemd:
 	install -d $(DEST_SYSTEMD)
 	install -m 0644 $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
 
-# target: uninstall - Uninstall files from the install targets
+# target: uninstall - Uninstall ALL files from the install targets.
 uninstall:
 	@for file in $(INSTALLED_FILES); do \
 			echo $(RM) $$file; \
