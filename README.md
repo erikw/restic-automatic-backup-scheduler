@@ -40,6 +40,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    * `/etc/restic/pw.txt` - Contains the password to be used by restic to encrypt the repository files. Should be different than your B2 password!
    * `/etc/restic/_global.env` - Global environment variables.
    * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
+   * `/etc/restic/backup_exclude` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
 1. Run backup using Systemd, and enable it for starting with the system:
    ```console
@@ -110,9 +111,15 @@ $ restic init
 Put this file in `/usr/local/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. Edit this file to respect your needs in terms of backup which paths to backup, retention (number of backups to save), etc.
 
-Copy this file to `/etc/restic/backup_exclude` or `~/.backup_exclude`:
-* `.backup_exclude`: A list of file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money.
-  Aside from system-wide exclusions, every user can define their own ones at `~/.backup_exclude`.
+Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
+* `/etc/restic/backup_exclude` - global exclude list. You can use only this one if your setup is easy.
+* `.backup_exclude` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
+* Home directory exclude files - as a convenience, if either `/home` or `/Users` is added to the `$BACKUP_PATHS`, each user can have their own `.backup_exclude` files located in the home directory or in the default `$XDG_CONFIG_PATH`. For example these files would be automatically picked up respectivly:
+  * `/home/user1/.backup_exclude`
+  * `/home/user1/.config/restic/backup_exclude`
+  * `/Users/user1/.backup_exclude`
+  * `/Users/user1/.config/restic/backup_exclude`
+
 
 ## 5. Make first backup 
 Now see if the backup itself works, by running as root
