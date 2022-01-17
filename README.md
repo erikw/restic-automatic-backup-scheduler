@@ -226,3 +226,9 @@ $ sudo make uninstall
 # Variations
 A list of variations of this setup:
 * Using `--files-from` [#44](https://github.com/erikw/restic-systemd-automatic-backup/issues/44)
+
+# Development
+To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
+```console
+$ PREFIX=/tmp/restic-test make install
+```
