@@ -18,9 +18,9 @@ trap exit_hook INT TERM
 
 # Set up exclude files: global + path-specific ones.
 exclusion_args="--exclude-file /etc/restic/backup_exclude"
-for homedir in /home/*; do
-	if [ -f "$homedir/.backup_exclude" ]; then
-		exclusion_args+=" --exclude-file $homedir/.backup_exclude"
+for backup_path in ${BACKUP_PATHS[@]}; do
+	if [ -f "$backup_path/.backup_exclude" ]; then
+		exclusion_args+=" --exclude-file $backup_path/.backup_exclude"
 	fi
 done
 
