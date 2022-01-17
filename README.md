@@ -118,7 +118,7 @@ Put these files in `/etc/restic/`:
 $ source /etc/restic/default.env
 $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
 ````
-* `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your b2 login password, this should be different.
+* `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different.
 
 ## 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
