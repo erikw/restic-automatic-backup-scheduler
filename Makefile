@@ -7,8 +7,9 @@ SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
 SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard etc/restic/*)))
 SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 
-# Just set PREFIX var in your shell's environment, like:
-# $ PREFIX=/tmp/test make
+# To change the installation root path, set the PREFIX variable in your shell's environment, like:
+# $ PREFIX=/usr/local make install
+# $ PREFIX=/tmp/test make install
 DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
 DEST_CONF	= $(PREFIX)/etc/restic
 DEST_SYSTEMD	= $(PREFIX)/etc/systemd/system
