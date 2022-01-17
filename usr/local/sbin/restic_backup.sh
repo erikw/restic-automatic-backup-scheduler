@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-
-# Make backup my system with restic to Backblaze B2.
-# This script is typically run by: /etc/systemd/system/restic-backup.{service,timer}
+# Make a backup with restic to Backblaze B2.
+# This script is typically run (as root user) either like:
+# - from restic service/timer: $PREFIX/etc/systemd/system/restic-backup.{service,timer}
+# - from a cronjob: $PREFIX/etc/cron.d/restic
+# - manually by a user. For it to work, the environment variables must be set in the shell where this script is executed
+#   $ source $PREFIX/etc/default.env
+#   $ restic_backup.sh
 
 # Exit on failure, pipe failure
 set -e -o pipefail
@@ -25,7 +29,7 @@ for backup_path in ${BACKUP_PATHS[@]}; do
 done
 
 # NOTE start all commands in background and wait for them to finish.
-# Reason: bash ignores any signals while child process is executing and thus my trap exit hook is not triggered.
+# Reason: bash ignores any signals while child process is executing and thus the trap exit hook is not triggered.
 # However if put in subprocesses, wait(1) waits until the process finishes OR signal is received.
 # Reference: https://unix.stackexchange.com/questions/146756/forward-sigterm-to-child-in-bash
 

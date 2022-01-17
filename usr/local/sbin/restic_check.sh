@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Check my backup with  restic to Backblaze B2 for errors.
-# This script is typically run by: /etc/systemd/system/restic-check.{service,timer}
+# Check the backups made with restic to Backblaze B2 for errors.
+# See restic_backup.sh on how this script is run (as it's analogous for this script).
 
 # Exit on failure, pipe failure
 set -e -o pipefail
