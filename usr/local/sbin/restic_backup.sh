@@ -32,7 +32,7 @@ for backup_path in ${BACKUP_PATHS[@]}; do
 	fi
 done
 ## Additonal service: if /home is being backed up, allow user specify backup files in home directory or default $XDG_CONFIG_HOME path
-backup_files_from_homedirs() {
+exclusion_args_from_homedirs() {
 	local homeroot="$1"
 	local args=
 	if [[ $BACKUP_PATHS == *"$homeroot"* ]]; then
@@ -45,9 +45,9 @@ backup_files_from_homedirs() {
 	fi
 	echo $args
 }
-exclusion_args="$exclusion_args $(backup_files_from_homedirs /home)"
+exclusion_args+="$(backup_files_from_homedirs /home)"
 ## And the same service of macOS users, having /Users instead of /home
-exclusion_args="$exclusion_args $(backup_files_from_homedirs /Users)"
+exclusion_args+="$(backup_files_from_homedirs /Users)"
 
 # NOTE start all commands in background and wait for them to finish.
 # Reason: bash ignores any signals while child process is executing and thus the trap exit hook is not triggered.
