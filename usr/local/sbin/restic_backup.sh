@@ -21,16 +21,6 @@ exit_hook() {
 }
 trap exit_hook INT TERM
 
-# Set up exclude files: global + path-specific ones + home directories.
-# NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
-##  Global backup configuration.
-exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE}"
-## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in BACKUP_PATHS, then it can have a /mnt/media/.backup_exclude
-for backup_path in ${BACKUP_PATHS[@]}; do
-	if [ -f "$backup_path/.backup_exclude" ]; then
-		exclusion_args+=" --exclude-file $backup_path/.backup_exclude"
-	fi
-done
 ## Additonal service: if /home is being backed up, allow user specify backup files in home directory or default $XDG_CONFIG_HOME path
 exclusion_args_from_homedirs() {
 	local homeroot="$1"
@@ -45,9 +35,28 @@ exclusion_args_from_homedirs() {
 	fi
 	echo "$args"
 }
+
+# Remove duplicate entries by sorting them
+sort_unique() {
+  local paths="$1"
+  # `sort -u` removes duplicates,  `xargs` trims trailing space
+  echo $(tr ' ' '\n' <<< "$paths" | sort -u | tr '\n' ' ' | xargs)
+}
+
+# Set up exclude files: global + path-specific ones + home directories.
+# NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
+##  Global backup configuration.
+exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE}"
+## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in BACKUP_PATHS, then it can have a /mnt/media/.backup_exclude
+for backup_path in ${BACKUP_PATHS[@]}; do
+	if [ -f "$backup_path/.backup_exclude" ]; then
+		exclusion_args+=" --exclude-file $backup_path/.backup_exclude"
+	fi
+done
 exclusion_args+="$(exclusion_args_from_homedirs /home)"
 ## And the same service of macOS users, having /Users instead of /home
 exclusion_args+="$(exclusion_args_from_homedirs /Users)"
+exclusion_args=$(sort_unique "$exclusion_args")  # remove duplicate entries caused by having /home/user as backup path
 
 # NOTE start all commands in background and wait for them to finish.
 # Reason: bash ignores any signals while child process is executing and thus the trap exit hook is not triggered.
