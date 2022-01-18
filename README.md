@@ -44,10 +44,14 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
    * `/etc/restic/backup_exclude` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
-1. Run backup using Systemd, and enable it for starting with the system:
+1. Enable automated backup for starting with the system:
    ```console
    $ sudo systemctl start restic-backup@default.timer
    $ sudo systemctl enable restic-backup@default.timer
+   ```
+1. And run an immediate backup if you want (if not, it will run on daily basis):
+   ```console
+   $ sudo systemctl start restic-backup@default
    ```
 1. Watch its progress with Systemd journal:
    ```console
@@ -60,7 +64,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    $ restic snapshots
    ```
 1. (optional) Define multiple profiles: just make a copy of the `default.env` and use the defined profile name in place of `default` to run backups or enable timers. Notice that the value after `@` works as a parameter.
-1. (optional) Enable the check job that verifys that the backups for the profile are all intact.
+1. (optional) Enable the check job that verifies that the backups for the profile are all intact.
    ```console
    $ sudo systemctl start restic-check@default.timer
    $ sudo systemctl enable restic-check@default.timer

@@ -34,7 +34,7 @@ done
 ## Additonal service: if /home is being backed up, allow user specify backup files in home directory or default $XDG_CONFIG_HOME path
 exclusion_args_from_homedirs() {
 	local homeroot="$1"
-	local args=
+	local args=""
 	if [[ $BACKUP_PATHS == *"$homeroot"* ]]; then
 		for homedir in $homeroot/*; do
 			excl_home="$homedir/.backup_exclude"
@@ -43,7 +43,7 @@ exclusion_args_from_homedirs() {
 			test -f $excl_xdg && args+=" --exclude-file $excl_xdg"
 		done
 	fi
-	echo $args
+	echo "$args"
 }
 exclusion_args+="$(exclusion_args_from_homedirs /home)"
 ## And the same service of macOS users, having /Users instead of /home
