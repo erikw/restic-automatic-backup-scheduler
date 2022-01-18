@@ -36,7 +36,9 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    ```console
    $ sudo make install
    ```
-1. Fill out configuration values:
+   ☝ **Note**: `sudo` is required here, as some files are installed into system directories (`/etc/`
+   and `/usr/sbin`). Have a look to the `Makefile` to know more.
+1. Fill out configuration values (edit with sudo):
    * `/etc/restic/pw.txt` - Contains the password to be used by restic to encrypt the repository files. Should be different than your B2 password!
    * `/etc/restic/_global.env` - Global environment variables.
    * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
