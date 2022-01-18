@@ -20,7 +20,7 @@ exit_hook() {
 }
 trap exit_hook INT TERM
 
-# Set up exclude files: global + path-specific ones + home directoreis.
+# Set up exclude files: global + path-specific ones + home directories.
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
 ##  Global backup configuration.
 exclusion_args="--exclude-file /etc/restic/backup_exclude"
@@ -30,7 +30,7 @@ for backup_path in ${BACKUP_PATHS[@]}; do
 		exclusion_args+=" --exclude-file $backup_path/.backup_exclude"
 	fi
 done
-## Additonal service: if /home is being backed up, allow user specifci backup files in home directory or default $XDG_CONFIG_HOME path
+## Additonal service: if /home is being backed up, allow user specify backup files in home directory or default $XDG_CONFIG_HOME path
 backup_files_from_homedirs() {
 	local homeroot="$1"
 	local args=
