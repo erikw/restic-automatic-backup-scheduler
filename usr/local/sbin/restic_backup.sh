@@ -31,7 +31,7 @@ for backup_path in ${BACKUP_PATHS[@]}; do
 	fi
 done
 ## Additonal service: if /home is being backed up, allow user specify backup files in home directory or default $XDG_CONFIG_HOME path
-backup_files_from_homedirs() {
+exclusion_args_from_homedirs() {
 	local homeroot="$1"
 	local args=
 	if [[ $BACKUP_PATHS == *"$homeroot"* ]]; then
