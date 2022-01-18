@@ -44,9 +44,9 @@ backup_files_from_homedirs() {
 	fi
 	echo $args
 }
-exclusion_args="$exclusion_args $(backup_files_from_homedirs /home)"
+exclusion_args+="$(backup_files_from_homedirs /home)"
 ## And the same service of macOS users, having /Users instead of /home
-exclusion_args="$exclusion_args $(backup_files_from_homedirs /Users)"
+exclusion_args+="$(backup_files_from_homedirs /Users)"
 
 # NOTE start all commands in background and wait for them to finish.
 # Reason: bash ignores any signals while child process is executing and thus the trap exit hook is not triggered.
