@@ -52,7 +52,7 @@ Nevertheless the project should work out of the box, be minimal but still open t
    * `/etc/restic/backup_exclude.txt` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
 1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
-   * Edit if needed `OnCalendar` in `/etc/systemd/system/restic-check@.timer`.
+   * Edit if needed `OnCalendar` in `/usr/lib/systemd/system/restic-check@.timer`.
 1. Enable automated backup for starting with the system (`enable` creates symlinks):
    ```console
    $ sudo systemctl start restic-backup@default.timer
@@ -91,6 +91,18 @@ $ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $
 $ sudo make install
 ````
 
+If you want to install everything manually, we will install files to `/etc`, `/sbin`, and not use the `$make install` command, then you need to clean up a placeholder `$INSTALL_PREFIX` in the souce files first by running:
+```console
+$ find etc sbin -type f -exec sed -i.bak -e 's|$INSTALL_PREFIX||g' {} \; -exec rm {}.bak \;
+```
+and you should now see that all files have been changed like e.g.
+```diff
+-export RESTIC_PASSWORD_FILE="$INSTALL_PREFIX/etc/restic/pw.txt"
++export RESTIC_PASSWORD_FILE="/etc/restic/pw.txt"
+```
+This prefix is there so that make users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install`. So if we don't use the makefile, we need to remove this prefix with the command above just.
+
+
 Arch Linux users can install the aur package [restic-systemd-automatic-backup](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) e.g.:
 ```console
 $ yaourt -S restic-systemd-automatic-backup
@@ -126,7 +138,7 @@ $ restic init
 ```
 
 ## 4. Script for doing the backup
-Put this file in `/usr/local/sbin`:
+Put this file in `/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env` profiles.
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
@@ -139,7 +151,7 @@ Now see if the backup itself works, by running as root
 ```console
 $ sudo -i
 $ source /etc/restic/default.env
-$ /usr/local/sbin/restic_backup.sh
+$ /sbin/restic_backup.sh
 ````
 
 ## 6. Verify the backup
@@ -159,8 +171,7 @@ $ ls /mnt/restic
 ## 7. Backup automatically; systemd service + timer
 Now we can do the modern version of a cron-job, a systemd service + timer, to run the backup every day!
 
-Put these files in `/etc/systemd/system/`:
-
+Put these files in `/etc/systemd/system` (note that the Makefile installs as package to `/usr/lib/systemd/system`)
 * `restic-backup@.service`: A service that calls the backup script with the specified profile. The profile is specified
   by the value after `@` when running it (see below).
 * `restic-backup@.timer`: A timer that starts the former backup every day (same thing about profile here).
@@ -204,7 +215,7 @@ $ journalctl -f -u restic-backup@default.service
 ## 8. Email notification on failure
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
-Put this file in `/usr/local/sbin`:
+Put this file in `/sbin`:
 * `systemd-email`: Sends email using sendmail(1). This script also features time-out for not spamming Gmail servers and getting my account blocked.
 
 Put this files in `/etc/systemd/system/`:
@@ -216,7 +227,7 @@ As you maybe noticed already before, `restic-backup.service` is configured to st
 ## 9. Optional: automated backup checks
 Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
-There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `etc/systemd/system` and `usr/local/sbin` and copy what you need over to their corresponding locations.
+There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `sbin/` and copy what you need over to their corresponding locations.
 
 ```console
 $ sudo -i
@@ -245,7 +256,7 @@ straightforward (it needs to run with sudo to read environment). Just run:
 If you want to run an all-classic cron job instead, do like this:
 
 * `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
-* `usr/local/sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
+* `sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
 
 # Uninstall
 

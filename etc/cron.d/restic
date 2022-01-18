@@ -1,5 +1,5 @@
 SHELL=/bin/sh
-PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/:/usr/local/sbin/
+PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/:$INSTALL_PREFIX/sbin/
 # Order of crontab fields
 # minute        hour    mday    month   wday    command
 # Reference: https://www.freebsd.org/doc/handbook/configtuning-cron.html

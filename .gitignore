@@ -1,7 +1,5 @@
-# Prevent check-in of these sensitive files. Instead they are generated from the corresponding *.template file.
-etc/restic/pw.txt
-etc/restic/_global.env
-etc/restic/default.env
+# make install
+/build
 
 # IntelliJ
 .idea/
