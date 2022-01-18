@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Make a backup with restic to Backblaze B2.
+#
 # This script is typically run (as root user) either like:
 # - from restic service/timer: $PREFIX/etc/systemd/system/restic-backup.{service,timer}
 # - from a cronjob: $PREFIX/etc/cron.d/restic
@@ -7,8 +8,8 @@
 #   $ source $PREFIX/etc/default.env
 #   $ restic_backup.sh
 
-# Exit on failure, pipe failure
-set -e -o pipefail
+# Exit on error, unset var, pipe failure
+set -euo pipefail
 
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
@@ -23,7 +24,7 @@ trap exit_hook INT TERM
 # Set up exclude files: global + path-specific ones + home directories.
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
 ##  Global backup configuration.
-exclusion_args="--exclude-file /etc/restic/backup_exclude"
+exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE}"
 ## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in BACKUP_PATHS, then it can have a /mnt/media/.backup_exclude
 for backup_path in ${BACKUP_PATHS[@]}; do
 	if [ -f "$backup_path/.backup_exclude" ]; then
