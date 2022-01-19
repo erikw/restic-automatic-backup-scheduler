@@ -30,6 +30,8 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
 
 # Requirements
 * `restic >=v0.9.6`
+* (recommended)  `make` if you want an automated install
+  * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: preinstalled make works)
 
 # Set up
 
