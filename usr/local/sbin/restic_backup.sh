@@ -21,13 +21,6 @@ exit_hook() {
 }
 trap exit_hook INT TERM
 
-# Remove duplicate entries by sorting them
-sort_unique() {
-  local paths="$1"
-  # `sort -u` removes duplicates,  `xargs` trims trailing space
-  echo $(tr ' ' '\n' <<< "$paths" | sort -u | tr '\n' ' ' | xargs)
-}
-
 # Set up exclude files: global + path-specific ones
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
 ##  Global backup configuration.
