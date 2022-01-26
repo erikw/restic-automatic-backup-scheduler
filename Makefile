@@ -2,6 +2,7 @@
 .PHONY: help install install-scripts install-conf install-systemd uninstall
 
 ### Macros ###
+DEFAULT_BRANCH = master
 SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
 # $(sort) remove duplicates that comes from running make install >1 times.
 SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard etc/restic/*)))
@@ -57,3 +58,53 @@ uninstall:
 			echo $(RM) $$file; \
 			$(RM) $$file; \
 	done
+
+# target: upgrade - Upgrade installation.
+# .ONESHELL runs the script in a single shell instead of a shell per line; so no semicolons, nor backslashes required :)
+.ONESHELL:
+upgrade:
+	@if [ $$(git branch --show-current) != $(DEFAULT_BRANCH) ] || ! git diff --quiet; then
+		echo "Error: You can only upgrade from a clean working tree @ $(DEFAULT_BRANCH) branch."
+		exit 1
+	else
+		user=$$(logname)  # as Makefile runs on sudo, get the user behind it
+		echo "[NOTE] In case you cloned the repo via SSH, and your key is encrypted, you will be prompted for your SSH private-key passphrase. If that happens, abort (Ctrl-C) and run again using \`sudo -E\`.";
+		sudo -E -u $$user git fetch --verbose
+
+		# 0. Check for updates
+		if git diff origin/$(DEFAULT_BRANCH) --quiet; then
+			echo ""
+			echo "You are already at the latest version. Nothing to do."
+			exit 0
+		fi
+
+		# 1. Backup configs
+		echo ""
+		echo "Backing up..."
+		echo "Your current config files are being backed up as $(DEST_CONF)/FILE~"
+		for conf in $(filter-out %~, $(wildcard $(DEST_CONF)/*)); do
+			echo "Backing up $$conf"
+			cp -i $$conf $(DEST_CONF)/$$(basename $$conf)~
+		done
+
+		# 2. Uninstall
+		echo ""
+		echo "Uninstalling..."
+		sudo -E make uninstall
+
+		# 3. Update repository
+		echo ""
+		echo "Updating repository..."
+		sudo -E -u $$(logname) git pull;
+
+		# 4. Reinstall
+		echo "Reinstalling..."
+		sudo -E make install
+
+		# 5. Re-populate configs
+		_helper/post-upgrade-config.sh $(DEST_CONF) $(DEST_CONF)/pw.txt $(DEST_CONF)/backup_exclude
+		echo ""
+		echo "FINISHED! Please, carefully that ALL your config values/profiles in $(DEST_CONF) were properly set."
+		echo "  In case you added any line or uncommented optional features, you will need to manually add it."
+		echo "  Additionally you can test restic: restic snapshots".
+	fi

@@ -75,6 +75,20 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    ````
 1. (optional) Setup email on failure as described [here](#8-email-notification-on-failure)
 
+# Upgrade installation
+
+> ⚠ **Keep your credentials safely stored anywhere else! Specially the restic encryption
+> password** ⚠
+
+To upgrade from the latest commit, run:
+
+```console
+sudo make upgrade
+```
+
+This will update the git repo, put a backup of your configs in `/etc/restic`, install the newest
+version and make a best effort to restore your config values.
+
 # Step-by-step and manual setup
 This is a more detailed explanation than the TL;DR section that will give you more understanding in the setup, and maybe inspire you to develop your own setup based on this one even!
 
