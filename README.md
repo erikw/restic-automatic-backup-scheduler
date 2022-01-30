@@ -169,4 +169,3 @@ To not mess up your real installation when changing the `Makefile` simply instal
 ```console
 $ PREFIX=/tmp/restic-test make install
 ```
-
