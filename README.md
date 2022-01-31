@@ -44,7 +44,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
    * `/etc/restic/backup_exclude` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
-1. Configure [how often]https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events() back up should be made.
+1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
    * Edit if needed `OnCalendar` in `/etc/systemd/system/restic-check@.timer`.
 1. Enable automated backup for starting with the system (`enable` creates symlinks):
    ```console
@@ -160,7 +160,7 @@ Put these files in `/etc/systemd/system/`:
 * `restic-backup@.service`: A service that calls the backup script with the specified profile. The profile is specified
   by the value after `@` when running it (see below).
 * `restic-backup@.timer`: A timer that starts the former backup every day (same thing about profile here).
-   * If needed, edit this file to configure [how often]https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events() back up should be made. See the `OnCalendar` key in the file.
+   * If needed, edit this file to configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made. See the `OnCalendar` key in the file.
 
 Now simply enable the timer with:
 ```console
