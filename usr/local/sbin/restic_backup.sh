@@ -24,7 +24,7 @@ trap exit_hook INT TERM
 # Set up exclude files: global + path-specific ones
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
 ##  Global backup configuration.
-exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE}"
+exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE_FILE}"
 ## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in BACKUP_PATHS,
 # a file /mnt/media/.backup_exclude will automatically be detected and used:
 for backup_path in ${BACKUP_PATHS[@]}; do
