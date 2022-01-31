@@ -8,5 +8,6 @@ Type=simple
 Nice=10
 # $HOME or $XDG_CACHE_HOME must be set for restic to find /root/.cache/restic/
 Environment="HOME=/root"
+# The random sleep (in seconds) is in the case of multiple backup profiles. Many restic instances started at the same time could case high load or network bandwith usage.
 # `systemd-cat` allows showing the restic output to the systemd journal
-ExecStart=bash -c 'source /etc/restic/%I.env && /usr/local/sbin/restic_backup.sh | systemd-cat'
+ExecStart=bash -c 'sleep ${RANDOM:0:300} && source /etc/restic/%I.env && /usr/local/sbin/restic_backup.sh | systemd-cat'
