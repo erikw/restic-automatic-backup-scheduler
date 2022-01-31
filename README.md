@@ -90,9 +90,9 @@ $ yaourt -S restic-systemd-automatic-backup
 
 ## 1. Create Backblaze B2 account
 
-First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/115002880514-How-to-configure-Backblaze-B2-with-Restic-on-Linux) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket.
+First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
-Take note of the your account ID, application key and password for the next steps.
+Take note of the your account ID and application key for the next steps. It's a good idea to create a separate application key that has access only to the newly created b2 bucket you created.
 
 
 ## 2. Configure your B2 account locally
@@ -105,7 +105,11 @@ Put these files in `/etc/restic/`:
    $ source /etc/restic/default.env
    $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
    ````
-* `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different.
+* `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
+
+```console
+$ openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
+```
 
 ## 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
