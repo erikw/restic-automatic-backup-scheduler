@@ -52,6 +52,7 @@ restic backup \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
 	$exclusion_args \
+	$RESTIC_BACKUP_EXTRA_ARGS \
 	$BACKUP_PATHS &
 wait $!
 

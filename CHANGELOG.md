@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Allow extra arguments to restic-backup with `$RESTIC_BACKUP_EXTRA_ARGS`.
+
 ### Changed
 - Align terminology used in README with the one used by B2 for credentials (keyId + applicationKey pair).
 
