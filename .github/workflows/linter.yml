@@ -5,10 +5,12 @@ on:
     branches: master
     paths:
       - '**.sh'
+      - '.github/workflows/linter.yml'
   pull_request:
     branches: master
     paths:
       - '**.sh'
+      - '.github/workflows/linter.yml'
 jobs:
   build:
     name: Lint Code Base
