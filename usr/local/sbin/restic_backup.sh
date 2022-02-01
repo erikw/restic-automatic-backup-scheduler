@@ -46,7 +46,7 @@ trap exit_hook INT TERM
 exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE_FILE}"
 ## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in RESTIC_BACKUP_PATHS,
 # a file /mnt/media/.backup_exclude.txt will automatically be detected and used:
-for backup_path in ${RESTIC_BACKUP_PATHS[@]}; do
+for backup_path in "${RESTIC_BACKUP_PATHS[@]}"; do
 	if [ -f "$backup_path/.backup_exclude.txt" ]; then
 		exclusion_args+=" --exclude-file $backup_path/.backup_exclude.txt"
 	fi
