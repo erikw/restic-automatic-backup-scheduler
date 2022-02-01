@@ -47,7 +47,7 @@ wait $!
 # --one-file-system makes sure we only backup exactly those mounted file systems specified in $BACKUP_PATHS, and thus not directories like /dev, /sys etc.
 # --tag lets us reference these backups later when doing restic-forget.
 restic backup \
-	--verbose \
+	--verbose=$RESTIC_VERBOSITY_LEVEL \
 	--one-file-system \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
@@ -60,7 +60,7 @@ wait $!
 # See restic-forget(1) or http://restic.readthedocs.io/en/latest/060_forget.html
 # --group-by only the tag and path, and not by hostname. This is because I create a B2 Bucket per host, and if this hostname accidentially change some time, there would now be multiple backup sets.
 restic forget \
-	--verbose \
+	--verbose=$RESTIC_VERBOSITY_LEVEL \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
 	--prune \

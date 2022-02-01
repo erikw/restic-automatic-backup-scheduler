@@ -23,5 +23,5 @@ trap exit_hook INT TERM
 # Check repository for errors.
 restic check \
 	--option b2.connections=$B2_CONNECTIONS \
-	--verbose &
+	--verbose=$RESTIC_VERBOSITY_LEVEL &
 wait $!
