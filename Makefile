@@ -14,8 +14,9 @@ SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
 DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
 DEST_CONF	= $(PREFIX)/etc/restic
 DEST_SYSTEMD	= $(PREFIX)/etc/systemd/system
+DEST_CURRENT_VERSION_FILE = $(PREFIX)/var/local/restic/current-version
 
-INSTALLED_FILES = $(addprefix $(PREFIX)/, $(SRCS_SCRIPTS) $(SRCS_CONF) $(SRCS_SYSTEMD))
+INSTALLED_FILES = $(addprefix $(PREFIX)/, $(SRCS_SCRIPTS) $(SRCS_CONF) $(SRCS_SYSTEMD) $(DEST_CURRENT_VERSION_FILE))
 
 ### Targets ###
 # target: all - Default target.
@@ -26,7 +27,7 @@ help:
 	@egrep "#\starget:" [Mm]akefile  | sed 's/\s-\s/\t\t\t/' | cut -d " " -f3- | sort -d
 
 # target: install - Install all files
-install: install-scripts install-conf install-systemd
+install: install-scripts install-conf install-systemd install-current-version-file
 
 
 # target: install-scripts - Install executables.
@@ -51,6 +52,10 @@ install-conf: | $(SRCS_CONF)
 install-systemd:
 	install -d $(DEST_SYSTEMD)
 	install -m 0644 $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
+
+install-current-version-file:
+	install -d $$(dirname $(DEST_CURRENT_VERSION_FILE))
+	git rev-parse --short HEAD > $(DEST_CURRENT_VERSION_FILE)
 
 # target: uninstall - Uninstall ALL files from the install targets.
 uninstall:
@@ -87,24 +92,31 @@ upgrade:
 			cp -i $$conf $(DEST_CONF)/$$(basename $$conf)~
 		done
 
-		# 2. Uninstall
+		# 2.1. Checkout the currently installed version to assure files being uninstalled match current installation
+		git checkout --quiet $$(cat $(DEST_CURRENT_VERSION_FILE))
+
+		# 2.2. Uninstall
 		echo ""
 		echo "Uninstalling..."
 		sudo -E make uninstall
 
-		# 3. Update repository
+		# 3.1. Switch back to default branch
+		git checkout --quiet $(DEFAULT_BRANCH)
+
+		# 3.2. Update repository
 		echo ""
 		echo "Updating repository..."
 		sudo -E -u $$(logname) git pull;
 
 		# 4. Reinstall
+		echo ""
 		echo "Reinstalling..."
 		sudo -E make install
 
 		# 5. Re-populate configs
 		_helper/post-upgrade-config.sh $(DEST_CONF) $(DEST_CONF)/pw.txt $(DEST_CONF)/backup_exclude
 		echo ""
-		echo "FINISHED! Please, carefully that ALL your config values/profiles in $(DEST_CONF) were properly set."
+		echo "FINISHED! Please, carefully verify that ALL your config values/profiles in $(DEST_CONF) were properly set."
 		echo "  In case you added any line or uncommented optional features, you will need to manually add it."
 		echo "  Additionally you can test restic: restic snapshots".
 	fi
