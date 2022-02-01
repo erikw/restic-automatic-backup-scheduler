@@ -15,7 +15,7 @@ if [ $# -eq 0 ]; then
 	echo "No program to run given!" >&2
 	exit 1
 fi
-cmd="$@"
+cmd="$*"
 
 body=$(eval "$cmd" 2>&1)
 

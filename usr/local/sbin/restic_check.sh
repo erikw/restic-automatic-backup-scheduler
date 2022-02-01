@@ -7,11 +7,11 @@ set -euo pipefail
 
 # Assert that all needed environment variables are set.
 assert_envvars() {
-	local varnames=($@)
+	local varnames=("$@")
 	for varname in "${varnames[@]}"; do
 		# Check if variable is set, then if it is not empty (need to do both as of `set -u`).
-		if [ -z ${!varname+x} ] || [ -z ${!varname} ] ; then
-			printf "%s must be set with a value for this script to work.\n\nDid you forget to source a /etc/restic/*.env profile in the current shell before executing this script?\n" $varname >&2
+		if [ -z ${!varname+x} ] || [ -z "${!varname}" ] ; then
+			printf "%s must be set with a value for this script to work.\n\nDid you forget to source a /etc/restic/*.env profile in the current shell before executing this script?\n" "$varname" >&2
 			exit 1
 		fi
 	done
@@ -37,6 +37,6 @@ trap exit_hook INT TERM
 
 # Check repository for errors.
 restic check \
-	--option b2.connections=$B2_CONNECTIONS \
-	--verbose=$RESTIC_VERBOSITY_LEVEL &
+	--option b2.connections="$B2_CONNECTIONS" \
+	--verbose="$RESTIC_VERBOSITY_LEVEL" &
 wait $!
