@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2022-02-01
+### Fixed
+- Environment variable assertion should allow empty values e.g. `RESTIC_BACKUP_EXTRA_ARGS`
+
 ## [3.0.0] - 2022-02-01
 ### Added
 - Allow extra arguments to restic-backup with `$RESTIC_BACKUP_EXTRA_ARGS`.
 - Add `$RESTIC_VERBOSITY_LEVEL` for debugging.
-- Assertion on all needed envionment variables in the backup and check scripts.
+- Assertion on all needed environment variables in the backup and check scripts.
 - Added linter (`shellcheck(1)`) that is run on push and PRs.
 
 ### Changed

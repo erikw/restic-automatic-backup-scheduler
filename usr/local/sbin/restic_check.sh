@@ -9,9 +9,8 @@ set -euo pipefail
 assert_envvars() {
 	local varnames=("$@")
 	for varname in "${varnames[@]}"; do
-		# Check if variable is set, then if it is not empty (need to do both as of `set -u`).
-		if [ -z ${!varname+x} ] || [ -z "${!varname}" ] ; then
-			printf "%s must be set with a value for this script to work.\n\nDid you forget to source a /etc/restic/*.env profile in the current shell before executing this script?\n" "$varname" >&2
+		if [ -z ${!varname+x} ]; then
+			printf "%s must be set for this script to work.\n\nDid you forget to source a /etc/restic/*.env profile in the current shell before executing this script?\n" "$varname" >&2
 			exit 1
 		fi
 	done
