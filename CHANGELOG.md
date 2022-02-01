@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.2] - 2022-02-01
+### Fixed
+- Use arrays to build up command lines. When fixing shellcheck errors, quotes would disable expansion on e.g. $RESTIC_BACKUP_PATHS
+
 ## [3.0.1] - 2022-02-01
 ### Fixed
 - Environment variable assertion should allow empty values e.g. `RESTIC_BACKUP_EXTRA_ARGS`

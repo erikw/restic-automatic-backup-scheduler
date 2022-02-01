@@ -11,6 +11,17 @@
 # Exit on error, unset var, pipe failure
 set -euo pipefail
 
+# Clean up lock if we are killed.
+# If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
+# However if we kill this script ourselves, we need this trap that kills all subprocesses manually.
+exit_hook() {
+	echo "In exit_hook(), being killed" >&2
+	jobs -p | xargs kill
+	restic unlock
+}
+trap exit_hook INT TERM
+
+
 # Assert that all needed environment variables are set.
 # TODO in future if this grows, move this to a restic_lib.sh
 assert_envvars() {
@@ -29,25 +40,20 @@ assert_envvars \
 	RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
 
 
-# Clean up lock if we are killed.
-# If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
-# However if we kill this script ourselves, we need this trap that kills all subprocesses manually.
-exit_hook() {
-	echo "In exit_hook(), being killed" >&2
-	jobs -p | xargs kill
-	restic unlock
-}
-trap exit_hook INT TERM
+# Convert to arrays, as arrays should be used to build command lines. See https://github.com/koalaman/shellcheck/wiki/SC2086
+IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
+IFS=' ' read -ra extra_args <<< "$RESTIC_BACKUP_EXTRA_ARGS"
+
 
 # Set up exclude files: global + path-specific ones
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
 ##  Global backup configuration.
-exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE_FILE}"
-## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in RESTIC_BACKUP_PATHS,
-# a file /mnt/media/.backup_exclude.txt will automatically be detected and used:
-for backup_path in "${RESTIC_BACKUP_PATHS[@]}"; do
+exclusion_args=(--exclude-file "$RESTIC_BACKUP_EXCLUDE_FILE")
+## Self-contained backup exclusion files per backup path. E.g. having an USB disk at /mnt/media in RESTIC_BACKUP_PATHS,
+# then a file /mnt/media/.backup_exclude.txt will automatically be detected and used:
+for backup_path in "${backup_paths[@]}"; do
 	if [ -f "$backup_path/.backup_exclude.txt" ]; then
-		exclusion_args+=" --exclude-file $backup_path/.backup_exclude.txt"
+		exclusion_args=("${exclusion_args[@]}" --exclude-file "$backup_path/.backup_exclude.txt")
 	fi
 done
 
@@ -69,9 +75,9 @@ restic backup \
 	--one-file-system \
 	--tag "$RESTIC_BACKUP_TAG" \
 	--option b2.connections="$B2_CONNECTIONS" \
-	"$exclusion_args" \
-	"$RESTIC_BACKUP_EXTRA_ARGS" \
-	"$RESTIC_BACKUP_PATHS" &
+	"${exclusion_args[@]}" \
+	"${extra_args[@]}" \
+	"${backup_paths[@]}" &
 wait $!
 
 # Dereference and delete/prune old backups.
