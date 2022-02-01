@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Check my backup with  restic to Backblaze B2 for errors.
-# This script is typically run by: /etc/systemd/system/restic-check.{service,timer}
+# Check the backups made with restic to Backblaze B2 for errors.
+# See restic_backup.sh on how this script is run (as it's analogous for this script).
 
 # Exit on failure, pipe failure
 set -e -o pipefail
@@ -14,12 +14,6 @@ exit_hook() {
 	restic unlock
 }
 trap exit_hook INT TERM
-
-
-source /etc/restic/b2_env.sh
-
-# How many network connections to set up to B2. Default is 5.
-B2_CONNECTIONS=50
 
 # Remove locks from other stale processes to keep the automated backup running.
 # NOTE nope, don't unlock like restic_backup.sh. restic_backup.sh should take precedence over this script.

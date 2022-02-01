@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# Make backup my system with restic to Backblaze B2.
-# This script is typically run by: /etc/systemd/system/restic-backup.{service,timer}
+# Make a backup with restic to Backblaze B2.
+#
+# This script is typically run (as root user) either like:
+# - from restic service/timer: $PREFIX/etc/systemd/system/restic-backup.{service,timer}
+# - from a cronjob: $PREFIX/etc/cron.d/restic
+# - manually by a user. For it to work, the environment variables must be set in the shell where this script is executed
+#   $ source $PREFIX/etc/default.env
+#   $ restic_backup.sh
 
-# Exit on failure, pipe failure
-set -e -o pipefail
+# Exit on error, unset var, pipe failure
+set -euo pipefail
 
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
@@ -15,39 +21,20 @@ exit_hook() {
 }
 trap exit_hook INT TERM
 
-# How many backups to keep.
-RETENTION_DAYS=14
-RETENTION_WEEKS=16
-RETENTION_MONTHS=18
-RETENTION_YEARS=3
-
-# What to backup, and what to not
-BACKUP_PATHS="/ /boot /home"
-# Example below of how dynamically add a path that is mounted e.g. external USB dis.
-[ -d /mnt/media ] && BACKUP_PATHS+=" /mnt/media"
-
-# Set up exclude files: global + path-specific ones.
-BACKUP_EXCLUDES="--exclude-file /etc/restic/backup_exclude"
-for dir in /home/*
-do
-	if [ -f "$dir/.backup_exclude" ]
-	then
-		BACKUP_EXCLUDES+=" --exclude-file $dir/.backup_exclude"
+# Set up exclude files: global + path-specific ones
+# NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
+##  Global backup configuration.
+exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE_FILE}"
+## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in BACKUP_PATHS,
+# a file /mnt/media/.backup_exclude will automatically be detected and used:
+for backup_path in ${BACKUP_PATHS[@]}; do
+	if [ -f "$backup_path/.backup_exclude" ]; then
+		exclusion_args+=" --exclude-file $backup_path/.backup_exclude"
 	fi
 done
 
-BACKUP_TAG=systemd.timer
-
-
-# Set all environment variables like
-# B2_ACCOUNT_ID, B2_ACCOUNT_KEY, RESTIC_REPOSITORY etc.
-source /etc/restic/b2_env.sh
-
-# How many network connections to set up to B2. Default is 5.
-B2_CONNECTIONS=50
-
 # NOTE start all commands in background and wait for them to finish.
-# Reason: bash ignores any signals while child process is executing and thus my trap exit hook is not triggered.
+# Reason: bash ignores any signals while child process is executing and thus the trap exit hook is not triggered.
 # However if put in subprocesses, wait(1) waits until the process finishes OR signal is received.
 # Reference: https://unix.stackexchange.com/questions/146756/forward-sigterm-to-child-in-bash
 
@@ -64,7 +51,7 @@ restic backup \
 	--one-file-system \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
-	$BACKUP_EXCLUDES \
+	$exclusion_args \
 	$BACKUP_PATHS &
 wait $!
 
@@ -75,7 +62,7 @@ restic forget \
 	--verbose \
 	--tag $BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
-        --prune \
+	--prune \
 	--group-by "paths,tags" \
 	--keep-daily $RETENTION_DAYS \
 	--keep-weekly $RETENTION_WEEKS \

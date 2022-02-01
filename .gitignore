@@ -1,3 +1,10 @@
 # Prevent check-in of these sensitive files. Instead they are generated from the corresponding *.template file.
-/etc/restic/b2_pw.txt
-/etc/restic/b2_env.sh
+etc/restic/pw.txt
+etc/restic/_global.env
+etc/restic/default.env
+
+# IntelliJ
+.idea/
+*.iml
+# VSCode
+.vscode/

@@ -1,0 +1,13 @@
+[Unit]
+Description=Backup with restic to Backblaze B2
+OnFailure=status-email-user@%n.service
+Requires=nm-unmetered-connection.service
+
+[Service]
+Type=simple
+Nice=10
+# $HOME or $XDG_CACHE_HOME must be set for restic to find /root/.cache/restic/
+Environment="HOME=/root"
+# The random sleep (in seconds) is in the case of multiple backup profiles. Many restic instances started at the same time could case high load or network bandwith usage.
+# `systemd-cat` allows showing the restic output to the systemd journal
+ExecStart=bash -c 'sleep $(shuf -i 0-300 -n 1) && source /etc/restic/%I.env && /usr/local/sbin/restic_backup.sh | systemd-cat'
