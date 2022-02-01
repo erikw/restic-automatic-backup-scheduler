@@ -44,7 +44,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    * `/etc/restic/pw.txt` - Contains the password (single line) to be used by restic to encrypt the repository files. Should be different than your B2 password!
    * `/etc/restic/_global.env` - Global environment variables.
    * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
-   * `/etc/restic/backup_exclude` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
+   * `/etc/restic/backup_exclude.txt` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
 1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
    * Edit if needed `OnCalendar` in `/etc/systemd/system/restic-check@.timer`.
@@ -124,8 +124,8 @@ Put this file in `/usr/local/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env` profiles.
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
-* `/etc/restic/backup_exclude` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
-* `.backup_exclude` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
+* `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
+* `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
 
 ## 5. Make first backup
 Now see if the backup itself works, by running as root
