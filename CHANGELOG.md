@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.2] - 2022-02-01
+## [4.0.0] - 2022-02-01
 ### Fixed
-- Use arrays to build up command lines. When fixing shellcheck errors, quotes would disable expansion on e.g. $RESTIC_BACKUP_PATHS
+- Use arrays to build up command lines. When fixing `shellcheck(1)` errors, quotes would disable expansion on e.g. $RESTIC_BACKUP_PATHS
+   - **BREAKING CHANGE** `RESTIC_BACKUP_PATHS` is now a string with `:` separated values
 
 ## [3.0.1] - 2022-02-01
 ### Fixed
