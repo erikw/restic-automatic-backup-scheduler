@@ -243,3 +243,13 @@ To not mess up your real installation when changing the `Makefile` simply instal
 ```console
 $ PREFIX=/tmp/restic-test make install
 ```
+
+# Releasing
+To make a new release:
+1.
+   ```console
+   $ vi CHANGELOG.md && git commit -am "Update CHANGELOG.md"
+   $ git tag vX.Y.Z
+   $ git push && git push --tags
+   ```
+1. Test and update the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) if needed.
