@@ -1,7 +1,7 @@
 restic-systemd-automatic-backup -  My restic backup solution using Backblaze B2 storage, systemd timers (or cron) and email notifications on failure.
 
 
-Copyright (c) 2018, see commit log for auhtors
+Copyright (c) 2022, Erik Westrup + see commit log for auhtors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
