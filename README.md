@@ -3,6 +3,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-systemd-automatic-backup?style=social)](#)
 <br>
 [![Lint Code Base](https://github.com/erikw/restic-systemd-automatic-backup/actions/workflows/linter.yml/badge.svg)](https://github.com/erikw/restic-systemd-automatic-backup/actions/workflows/linter.yml)
+[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 [![AUR version](https://img.shields.io/aur/version/restic-systemd-automatic-backup)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
 [![AUR maintainer](https://img.shields.io/aur/maintainer/restic-systemd-automatic-backup?label=AUR%20maintainer)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
 [![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
@@ -10,7 +11,6 @@
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/pulls?q=is%3Apr+is%3Aclosed)
 [![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE)
 [![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-systemd-automatic-backup)](https://github.com/Netflix/osstracker)
-[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 <br>
 
 [![Contributors](https://img.shields.io/github/contributors/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors) including these top contributors:
