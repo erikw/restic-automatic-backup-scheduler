@@ -27,6 +27,11 @@ Here follows a step-by step tutorial on how to set it up, with my sample script 
 
 Note, you can use any of the supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar but you will have to use other configuration variables to match your backend of choice.
 
+## Project Scope
+The scope for this is not to be a full-fledged super solution that solves all the problems and all possible setups. The aim is to be a hackable code base for you to start sewing up the perfect backup solution that fits your requirements!
+
+Nevertheless the project should work out of the box, be minimal but still open the doors for configuration and extensions by users.
+
 # Requirements
 * `restic >=v0.9.6`
 * (recommended)  `make` if you want an automated install
