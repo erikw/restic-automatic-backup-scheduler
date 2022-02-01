@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Send email notification from systemd.
 # Source: https://serverfault.com/questions/876233/how-to-send-an-email-if-a-systemd-service-is-restarted
 # Source: https://wiki.archlinux.org/index.php/Systemd/Timers#MAILTO
@@ -15,19 +15,19 @@
 # (24 * 60 * 60) / 100 = 864 second
 # One option that I used with my old Axis cameras it to use my gmx.com accunt for sending emails instead, as there are (no?) higher limits there.
 MIN_WAIT_TIME_S=900
-SCRIPT_NAME=$(basename $0)
+SCRIPT_NAME=$(basename "$0")
 LAST_RUN_FILE="/tmp/${SCRIPT_NAME}_last_run.txt"
 
 last_touch() {
-	stat -c %Y $1
+	stat -c %Y "$1"
 }
 
 waited_long_enough() {
 	retval=1
-	if [ -e $LAST_RUN_FILE ]; then
+	if [ -e "$LAST_RUN_FILE" ]; then
 		now=$(date +%s)
-		last=$(last_touch $LAST_RUN_FILE)
-		wait_s=$(expr $now - $last)
+		last=$(last_touch "$LAST_RUN_FILE")
+		wait_s=$((now - last))
 		if [ "$wait_s" -gt "$MIN_WAIT_TIME_S" ]; then
 			retval=0
 		fi
@@ -35,7 +35,7 @@ waited_long_enough() {
 		retval=0
 	fi
 
-	[ $retval -eq 0 ] && touch $LAST_RUN_FILE
+	[ $retval -eq 0 ] && touch "$LAST_RUN_FILE"
 	return $retval
 }
 

@@ -2,6 +2,8 @@
 [![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-systemd-automatic-backup?style=social)](#)
 [![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-systemd-automatic-backup?style=social)](#)
 <br>
+[![Lint Code Base](https://github.com/erikw/restic-systemd-automatic-backup/actions/workflows/linter.yml/badge.svg)](https://github.com/erikw/restic-systemd-automatic-backup/actions/workflows/linter.yml)
+[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 [![AUR version](https://img.shields.io/aur/version/restic-systemd-automatic-backup)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
 [![AUR maintainer](https://img.shields.io/aur/maintainer/restic-systemd-automatic-backup?label=AUR%20maintainer)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
 [![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
@@ -9,7 +11,6 @@
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/pulls?q=is%3Apr+is%3Aclosed)
 [![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE)
 [![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-systemd-automatic-backup)](https://github.com/Netflix/osstracker)
-[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 <br>
 
 [![Contributors](https://img.shields.io/github/contributors/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors) including these top contributors:
@@ -18,7 +19,6 @@
 </a>
 
 # Intro
-
 [restic](https://restic.net/) is a command-line tool for making backups, the right way. Check the official website for a feature explanation. As a storage backend, I recommend [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) as restic works well with it, and it is (at the time of writing) very affordable for the hobbyist hacker! (anecdotal: I pay for my full-systems backups each month typically < 1 USD).
 
 Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However it's possible to set this up yourself using systemd/cron and some wrappers. This example also features email notifications when a backup fails to complete.
@@ -44,7 +44,7 @@ Note, you can use any of the supported [storage backends](https://restic.readthe
    * `/etc/restic/pw.txt` - Contains the password (single line) to be used by restic to encrypt the repository files. Should be different than your B2 password!
    * `/etc/restic/_global.env` - Global environment variables.
    * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
-   * `/etc/restic/backup_exclude` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
+   * `/etc/restic/backup_exclude.txt` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
 1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
    * Edit if needed `OnCalendar` in `/etc/systemd/system/restic-check@.timer`.
@@ -104,17 +104,17 @@ Arch Linux users can install the aur package [restic-systemd-automatic-backup](h
 $ yaourt -S restic-systemd-automatic-backup
 ````
 
-## 1. Create Backblaze B2 account
+## 1. Create Backblaze B2 Account, Bucket and keys
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
-Take note of the your account ID and application key for the next steps. It's a good idea to create a separate application key that has access only to the newly created b2 bucket you created.
+For restic to be able to connect to your bucket, you want to in the B2 settings create a pair of keyID and applicationKey. It's a good idea to create a separate pair of ID and Key with for each bucket that you will use, with limited read&write access to only that bucket.
 
 
-## 2. Configure your B2 account locally
+## 2. Configure your B2 credentials locally
 > **Attention!** Going the manual way requires that most of the following commands are run as root.
 
 Put these files in `/etc/restic/`:
-* `_global.env`: Fill this file out with your global settings including B2 accountID & accountKey. A global exclude list is set here (explained in section below).
+* `_global.env`: Fill this file out with your global settings including B2 keyID & applicationKey. A global exclude list is set here (explained in section below).
 * `default.env`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
    ```console
    $ source /etc/restic/default.env
@@ -138,8 +138,8 @@ Put this file in `/usr/local/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env` profiles.
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
-* `/etc/restic/backup_exclude` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
-* `.backup_exclude` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
+* `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
+* `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$RESTIC_BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
 
 ## 5. Make first backup
 Now see if the backup itself works, by running as root
@@ -257,3 +257,13 @@ To not mess up your real installation when changing the `Makefile` simply instal
 ```console
 $ PREFIX=/tmp/restic-test make install
 ```
+
+# Releasing
+To make a new release:
+1.
+   ```console
+   $ vi CHANGELOG.md && git commit -am "Update CHANGELOG.md"
+   $ git tag vX.Y.Z
+   $ git push && git push --tags
+   ```
+1. Test and update the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) if needed.
