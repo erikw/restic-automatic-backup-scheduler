@@ -11,7 +11,6 @@
 # Exit on error, unset var, pipe failure
 set -euo pipefail
 
-
 # Assert that all needed environment variables are set.
 # TODO in future if this grows, move this to a restic_lib.sh
 assert_envvars() {
@@ -29,7 +28,6 @@ assert_envvars \
 	RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
 	RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_PASSWORD_FILE RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
 	RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
-
 
 
 # Clean up lock if we are killed.
