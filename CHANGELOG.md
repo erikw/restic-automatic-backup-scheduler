@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow extra arguments to restic-backup with `$RESTIC_BACKUP_EXTRA_ARGS`.
 - Add `$RESTIC_VERBOSITY_LEVEL` for debugging.
 - Assertion on all needed envionment variables in the backup and check scripts.
+- Added linter (`shellcheck(1)`) that is run on push and PRs.
 
 ### Changed
 - **BREAKING CHANGE** renamed
