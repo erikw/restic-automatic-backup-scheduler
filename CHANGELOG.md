@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2022-02-01
 ### Changed
-- **BREAKING CHANGE** #45: multiple backup profiles are now supported. Please backup your configuration before upgrading. The setup of configuration files are now laied out differently. See the [README.md](README.md) TL;DR setup section.
+- **BREAKING CHANGE** [#45](https://github.com/erikw/restic-systemd-automatic-backup/pull/45): multiple backup profiles are now supported. Please backup your configuration before upgrading. The setup of configuration files are now laied out differently. See the [README.md](README.md) TL;DR setup section.
   - `restic_backup.sh` has had variables extracted to profiles instead, to allow for configuration of different backups on the same system.
   - `b2_env.sh` is split to two files `_global.env` and `default.env` (the default profile). `_global.env` will have B2 accountID and accountKey and `default.env` has backup paths, and retention.
   - `b2_pw.sh` renamed to pw.txt
