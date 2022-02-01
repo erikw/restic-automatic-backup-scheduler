@@ -89,27 +89,25 @@ $ yaourt -S restic-systemd-automatic-backup
 ````
 
 ## 1. Create Backblaze B2 account
-
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
 Take note of the your account ID and application key for the next steps. It's a good idea to create a separate application key that has access only to the newly created b2 bucket you created.
 
 
 ## 2. Configure your B2 account locally
-
 > **Attention!** Going the manual way requires that most of the following commands are run as root.
 
 Put these files in `/etc/restic/`:
-* `default.env`: Fill this file out with your B2 bucket settings etc. The reason for putting these in a separate file is that it can be used also for you to simply source, when you want to issue some restic commands. For example:
+* `_global.env`: Fill this file out with your global settings including B2 accountID & accountKey. A global exclude list is set here (explained in section below).
+* `default.env`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
    ```console
    $ source /etc/restic/default.env
    $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
    ````
 * `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
-
-```console
-$ openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
-```
+   ```console
+   $ openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
+   ```
 
 ## 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
@@ -121,19 +119,13 @@ $ restic init
 
 ## 4. Script for doing the backup
 Put this file in `/usr/local/sbin`:
-* `restic_backup.sh`: A script that defines how to run the backup. Edit this file to respect your needs in terms of backup which paths to backup, retention (number of backups to save), etc.
+* `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env` profiles.
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
-* `/etc/restic/backup_exclude` - global exclude list. You can use only this one if your setup is easy.
+* `/etc/restic/backup_exclude` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
 * `.backup_exclude` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
-* Home directory exclude files - as a convenience, if either `/home` or `/Users` is added to the `$BACKUP_PATHS`, each user can have their own `.backup_exclude` files located in the home directory or in the default `$XDG_CONFIG_PATH`. For example these files would be automatically picked up respectivly:
-  * `/home/user1/.backup_exclude`
-  * `/home/user1/.config/restic/backup_exclude`
-  * `/Users/user1/.backup_exclude`
-  * `/Users/user1/.config/restic/backup_exclude`
 
-
-## 5. Make first backup 
+## 5. Make first backup
 Now see if the backup itself works, by running as root
 
 ```console
@@ -216,7 +208,7 @@ As you maybe noticed already before, `restic-backup.service` is configured to st
 ## 9. Optional: automated backup checks
 Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
-There are some `*check*`-files in this git repo. Install these in the same way you installed the `*-backup*`-files and enable with sytemd
+There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `etc/systemd/system` and `usr/local/sbin` and copy what you need over to their corresponding locations.
 
 ```console
 $ sudo -i
