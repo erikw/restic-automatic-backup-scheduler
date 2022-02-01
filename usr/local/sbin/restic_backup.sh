@@ -26,9 +26,9 @@ assert_envvars() {
 }
 assert_envvars \
 	B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
-	BACKUP_PATHS BACKUP_TAG \
+	RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
 	RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_PASSWORD_FILE RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
-	RETENTION_DAYS RETENTION_MONTHS RETENTION_WEEKS RETENTION_YEARS
+	RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
 
 
 
@@ -46,9 +46,9 @@ trap exit_hook INT TERM
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
 ##  Global backup configuration.
 exclusion_args="--exclude-file ${RESTIC_BACKUP_EXCLUDE_FILE}"
-## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in BACKUP_PATHS,
+## Self-contained backup files per backup path. E.g. having an USB disk at /mnt/media in RESTIC_BACKUP_PATHS,
 # a file /mnt/media/.backup_exclude.txt will automatically be detected and used:
-for backup_path in ${BACKUP_PATHS[@]}; do
+for backup_path in ${RESTIC_BACKUP_PATHS[@]}; do
 	if [ -f "$backup_path/.backup_exclude.txt" ]; then
 		exclusion_args+=" --exclude-file $backup_path/.backup_exclude.txt"
 	fi
@@ -65,16 +65,16 @@ wait $!
 
 # Do the backup!
 # See restic-backup(1) or http://restic.readthedocs.io/en/latest/040_backup.html
-# --one-file-system makes sure we only backup exactly those mounted file systems specified in $BACKUP_PATHS, and thus not directories like /dev, /sys etc.
+# --one-file-system makes sure we only backup exactly those mounted file systems specified in $RESTIC_BACKUP_PATHS, and thus not directories like /dev, /sys etc.
 # --tag lets us reference these backups later when doing restic-forget.
 restic backup \
 	--verbose=$RESTIC_VERBOSITY_LEVEL \
 	--one-file-system \
-	--tag $BACKUP_TAG \
+	--tag $RESTIC_BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
 	$exclusion_args \
 	$RESTIC_BACKUP_EXTRA_ARGS \
-	$BACKUP_PATHS &
+	$RESTIC_BACKUP_PATHS &
 wait $!
 
 # Dereference and delete/prune old backups.
@@ -82,14 +82,14 @@ wait $!
 # --group-by only the tag and path, and not by hostname. This is because I create a B2 Bucket per host, and if this hostname accidentially change some time, there would now be multiple backup sets.
 restic forget \
 	--verbose=$RESTIC_VERBOSITY_LEVEL \
-	--tag $BACKUP_TAG \
+	--tag $RESTIC_BACKUP_TAG \
 	--option b2.connections=$B2_CONNECTIONS \
 	--prune \
 	--group-by "paths,tags" \
-	--keep-daily $RETENTION_DAYS \
-	--keep-weekly $RETENTION_WEEKS \
-	--keep-monthly $RETENTION_MONTHS \
-	--keep-yearly $RETENTION_YEARS &
+	--keep-daily $RESTIC_RETENTION_DAYS \
+	--keep-weekly $RESTIC_RETENTION_WEEKS \
+	--keep-monthly $RESTIC_RETENTION_MONTHS \
+	--keep-yearly $RESTIC_RETENTION_YEARS &
 wait $!
 
 # Check repository for errors.

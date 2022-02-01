@@ -125,7 +125,7 @@ Put this file in `/usr/local/sbin`:
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
 * `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
-* `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
+* `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$RESTIC_BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
 
 ## 5. Make first backup
 Now see if the backup itself works, by running as root

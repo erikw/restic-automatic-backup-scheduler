@@ -11,7 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assertion on all needed envionment variables in the backup and check scripts.
 
 ### Changed
-- **BREAKING CHANGE** renamed `/etc/restic/backup_exclude` to `/etc/restic/backup_exclude.txt` and ditto for `<backup-dest>/.backup_exclude` to `<backup-dest>/.backup_exclude.txt`.
+- **BREAKING CHANGE** renamed
+   - `/etc/restic/backup_exclude` to `/etc/restic/backup_exclude.txt`
+   - `<backup-dest>/.backup_exclude` to `<backup-dest>/.backup_exclude.txt`.
+- **BREAKING CHANGE** renamed envvars for consistency
+   - `BACKUP_PATHS` -> `RESTIC_BACKUP_PATHS`
+   - `BACKUP_TAG` -> `RESTIC_BACKUP_TAG`
+   - `RETENTION_DAYS` -> `RESTIC_RETENTION_DAYS`
+   - `RETENTION_WEEKS` -> `RESTIC_RETENTION_WEEKS`
+   - `RETENTION_MONTHS` -> `RESTIC_RETENTION_MONTHS`
+   - `RETENTION_YEARS` -> `RESTIC_RETENTION_YEARS`
 - Align terminology used in README with the one used by B2 for credentials (keyId + applicationKey pair).
 
 ## [2.0.0] - 2022-02-01
