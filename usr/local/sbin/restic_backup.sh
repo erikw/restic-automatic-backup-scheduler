@@ -11,6 +11,27 @@
 # Exit on error, unset var, pipe failure
 set -euo pipefail
 
+
+# Assert that all needed environment variables are set.
+# TODO in future if this grows, move this to a restic_lib.sh
+assert_envvars() {
+	local varnames=($@)
+	for varname in "${varnames[@]}"; do
+		# Check if variable is set, then if it is not empty (need to do both as of `set -u`).
+		if [ -z ${!varname+x} ] || [ -z ${!varname} ] ; then
+			printf "%s must be set with a value for this script to work.\n\nDid you forget to source a /etc/restic/*.env profile in the current shell before executing this script?\n" $varname >&2
+			exit 1
+		fi
+	done
+}
+assert_envvars \
+	B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
+	BACKUP_PATHS BACKUP_TAG \
+	RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_PASSWORD_FILE RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
+	RETENTION_DAYS RETENTION_MONTHS RETENTION_WEEKS RETENTION_YEARS
+
+
+
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
 # However if we kill this script ourselves, we need this trap that kills all subprocesses manually.

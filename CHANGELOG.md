@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Allow extra arguments to restic-backup with `$RESTIC_BACKUP_EXTRA_ARGS`.
 - Add `$RESTIC_VERBOSITY_LEVEL` for debugging.
+- Assertion on all needed envionment variables in the backup and check scripts.
 
 ### Changed
 - Align terminology used in README with the one used by B2 for credentials (keyId + applicationKey pair).
