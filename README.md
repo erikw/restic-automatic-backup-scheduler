@@ -262,10 +262,15 @@ A list of variations of this setup:
 * Using `--files-from` [#44](https://github.com/erikw/restic-systemd-automatic-backup/issues/44)
 
 # Development
-To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
-```console
-$ PREFIX=/tmp/restic-test make install
-```
+* To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
+   ```console
+   $ PREFIX=/tmp/restic-test make install
+   ```
+* **Updating the `resticw` parser:** If you ever update the usage `DOC`, you will need to refresh the auto-generated parser:
+  ```console
+  $ pip install doctopt.sh
+  $ doctopt.sh usr/local/sbin/resticw
+  ```
 
 # Releasing
 To make a new release:
