@@ -8,9 +8,9 @@ DOC="A little wrapper over restic just to handle profiles and environment loadin
 It loads the backup profile/environment in a subshell to avoid any credential leak (Note: Run it with sudo so it can load the environment).
 
 Usage:
-  resticw [options] <restic_arguments>
+  resticw [options] <restic_arguments_line>...
 
-  The restic_arguments is just the regular unwrapped restic arguments, e.g. stats latest
+  The <restic_arguments_line> is just the regular unwrapped restic command arguments, e.g. stats latest
 
 Options:
   -p --profile=<name>        Specify the profile to load or use default [default: default].
@@ -24,7 +24,7 @@ Examples:
 # See https://github.com/andsens/docopt.sh. If the DOC is updated or new options are added, refresh the parser!
 
 # docopt parser below, refresh this parser with `docopt.sh resticw`
-# shellcheck disable=2016,1075
+# shellcheck disable=2016,1075,2154
 docopt() { parse() { if ${DOCOPT_DOC_CHECK:-true}; then local doc_hash
 if doc_hash=$(printf "%s" "$DOC" | (sha256sum 2>/dev/null || shasum -a 256)); then
 if [[ ${doc_hash:0:5} != "$digest" ]]; then
@@ -91,7 +91,10 @@ if ! "node_$node_idx"; then left=("${initial_left[@]}"); ((testdepth--)) || true
 return 1; fi; done; if [[ $((--testdepth)) -eq 0 ]]; then
 left=("${initial_left[@]}"); for node_idx in "$@"; do "node_$node_idx"; done; fi
 return 0; }; optional() { local node_idx; for node_idx in "$@"; do
-"node_$node_idx"; done; return 0; }; value() { local i
+"node_$node_idx"; done; return 0; }; oneormore() { local i=0
+local prev=${#left[@]}; while "node_$1"; do ((i++)) || true
+[[ $prev -eq ${#left[@]} ]] && break; prev=${#left[@]}; done
+if [[ $i -ge 1 ]]; then return 0; fi; return 1; }; value() { local i
 for i in "${!left[@]}"; do local l=${left[$i]}
 if [[ ${parsed_params[$l]} = "$2" ]]; then
 left=("${left[@]:0:$i}" "${left[@]:((i+1))}")
@@ -101,20 +104,21 @@ eval "var_$1+=($value)"; else eval "var_$1=$value"; fi; return 0; fi; done
 return 1; }; stdout() { printf -- "cat <<'EOM'\n%s\nEOM\n" "$1"; }; stderr() {
 printf -- "cat <<'EOM' >&2\n%s\nEOM\n" "$1"; }; error() {
 [[ -n $1 ]] && stderr "$1"; stderr "$usage"; _return 1; }; _return() {
-printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:578}
-usage=${DOC:220:45}; digest=d20df; shorts=(-p); longs=(--profile); argcounts=(1)
-node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_ a; }
-node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ required 3 1; }
-node_5(){ required 4; }; cat <<<' docopt_exit() {
-[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:220:45}" >&2; exit 1
-}'; unset var___profile var__restic_arguments_; parse 5 "$@"
+printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:601}
+usage=${DOC:220:53}; digest=efe39; shorts=(-p); longs=(--profile); argcounts=(1)
+node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_line_ a true
+}; node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ oneormore 1; }
+node_5(){ required 3 4; }; node_6(){ required 5; }; cat <<<' docopt_exit() {
+[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:220:53}" >&2; exit 1
+}'; unset var___profile var__restic_arguments_line_; parse 6 "$@"
 local prefix=${DOCOPT_PREFIX:-''}; unset "${prefix}__profile" \
-"${prefix}_restic_arguments_"
+"${prefix}_restic_arguments_line_"
 eval "${prefix}"'__profile=${var___profile:-default}'
-eval "${prefix}"'_restic_arguments_=${var__restic_arguments_:-}'
-local docopt_i=1; [[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2
-for ((;docopt_i>0;docopt_i--)); do declare -p "${prefix}__profile" \
-"${prefix}_restic_arguments_"; done; }
+if declare -p var__restic_arguments_line_ >/dev/null 2>&1; then
+eval "${prefix}"'_restic_arguments_line_=("${var__restic_arguments_line_[@]}")'
+else eval "${prefix}"'_restic_arguments_line_=()'; fi; local docopt_i=1
+[[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2; for ((;docopt_i>0;docopt_i--)); do
+declare -p "${prefix}__profile" "${prefix}_restic_arguments_line_"; done; }
 # docopt parser above, complete command for generating this parser is `docopt.sh resticw`
 
 # Parse arguments
@@ -138,4 +142,4 @@ fi
 echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
 
 # Source it in a subshell (avoid any credential leak), then run restic
-( source "$profile_file" && restic "$_restic_arguments_" )
+( source "$profile_file" && restic "$_restic_arguments_line_" )
