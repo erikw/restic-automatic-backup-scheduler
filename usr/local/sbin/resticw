@@ -14,8 +14,8 @@ Options:
   -p --profile=<name>        Specify the profile to load or use default [default: default].
 
 Examples:
-  sudo resticw --profile profileA snapshots
-  sudo resticw stats latest  # this will use the profile: default
+  resticw --profile profileA snapshots
+  resticw stats latest  # this will use the profile: default
 "
 
 # The following argument parser is generated with docopt.sh from the above docstring.
@@ -102,8 +102,8 @@ eval "var_$1+=($value)"; else eval "var_$1=$value"; fi; return 0; fi; done
 return 1; }; stdout() { printf -- "cat <<'EOM'\n%s\nEOM\n" "$1"; }; stderr() {
 printf -- "cat <<'EOM' >&2\n%s\nEOM\n" "$1"; }; error() {
 [[ -n $1 ]] && stderr "$1"; stderr "$usage"; _return 1; }; _return() {
-printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:460}
-usage=${DOC:79:53}; digest=f19cf; shorts=(-p); longs=(--profile); argcounts=(1)
+printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:450}
+usage=${DOC:79:53}; digest=dc31d; shorts=(-p); longs=(--profile); argcounts=(1)
 node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_line_ a true
 }; node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ oneormore 1; }
 node_5(){ required 3 4; }; node_6(){ required 5; }; cat <<<' docopt_exit() {
