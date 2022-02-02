@@ -5,19 +5,19 @@ set -euo pipefail
 
 DOC="A little wrapper over restic just to handle profiles and environment loading.
 
-  It loads the backup profile/environment in a subshell to avoid any credential leak (Note: Run it with sudo so it can load the environment).
+It loads the backup profile/environment in a subshell to avoid any credential leak (Note: Run it with sudo so it can load the environment).
 
-  Usage:
-    resticw [options] <restic_arguments>
+Usage:
+  resticw [options] <restic_arguments>
 
-    The restic_arguments is just the regular unwrapped restic arguments, e.g. stats latest
+  The restic_arguments is just the regular unwrapped restic arguments, e.g. stats latest
 
-  Options:
-    -p --profile=<name>        Specify the profile to load or use default [default: default].
+Options:
+  -p --profile=<name>        Specify the profile to load or use default [default: default].
 
-  Examples:
-    sudo resticw --profile profileA snapshots
-    sudo resticw stats latest  # this will use the profile: default
+Examples:
+  sudo resticw --profile profileA snapshots
+  sudo resticw stats latest  # this will use the profile: default
 "
 
 # The following argument parser is generated with docopt.sh from the above docstring.
@@ -101,12 +101,12 @@ eval "var_$1+=($value)"; else eval "var_$1=$value"; fi; return 0; fi; done
 return 1; }; stdout() { printf -- "cat <<'EOM'\n%s\nEOM\n" "$1"; }; stderr() {
 printf -- "cat <<'EOM' >&2\n%s\nEOM\n" "$1"; }; error() {
 [[ -n $1 ]] && stderr "$1"; stderr "$usage"; _return 1; }; _return() {
-printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:596}
-usage=${DOC:222:47}; digest=5f4ba; shorts=(-p); longs=(--profile); argcounts=(1)
+printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:578}
+usage=${DOC:220:45}; digest=d20df; shorts=(-p); longs=(--profile); argcounts=(1)
 node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_ a; }
 node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ required 3 1; }
 node_5(){ required 4; }; cat <<<' docopt_exit() {
-[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:222:47}" >&2; exit 1
+[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:220:45}" >&2; exit 1
 }'; unset var___profile var__restic_arguments_; parse 5 "$@"
 local prefix=${DOCOPT_PREFIX:-''}; unset "${prefix}__profile" \
 "${prefix}_restic_arguments_"
