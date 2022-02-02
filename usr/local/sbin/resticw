@@ -5,8 +5,6 @@ set -euo pipefail
 
 DOC="A little wrapper over restic just to handle profiles and environment loading.
 
-It loads the backup profile/environment in a subshell to avoid any credential leak (Note: Run it with sudo so it can load the environment).
-
 Usage:
   resticw [options] <restic_arguments_line>...
 
@@ -104,12 +102,12 @@ eval "var_$1+=($value)"; else eval "var_$1=$value"; fi; return 0; fi; done
 return 1; }; stdout() { printf -- "cat <<'EOM'\n%s\nEOM\n" "$1"; }; stderr() {
 printf -- "cat <<'EOM' >&2\n%s\nEOM\n" "$1"; }; error() {
 [[ -n $1 ]] && stderr "$1"; stderr "$usage"; _return 1; }; _return() {
-printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:601}
-usage=${DOC:220:53}; digest=efe39; shorts=(-p); longs=(--profile); argcounts=(1)
+printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:460}
+usage=${DOC:79:53}; digest=f19cf; shorts=(-p); longs=(--profile); argcounts=(1)
 node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_line_ a true
 }; node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ oneormore 1; }
 node_5(){ required 3 4; }; node_6(){ required 5; }; cat <<<' docopt_exit() {
-[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:220:53}" >&2; exit 1
+[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:79:53}" >&2; exit 1
 }'; unset var___profile var__restic_arguments_line_; parse 6 "$@"
 local prefix=${DOCOPT_PREFIX:-''}; unset "${prefix}__profile" \
 "${prefix}_restic_arguments_line_"
@@ -144,5 +142,4 @@ fi
 
 echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
 
-# Source it in a subshell (avoid any credential leak), then run restic
-( source "$profile_file" && restic "$_restic_arguments_line_" )
+source "$profile_file" && restic "$_restic_arguments_line_"
