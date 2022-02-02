@@ -130,13 +130,16 @@ eval "$(set +u; docopt "$@")" # See https://github.com/andsens/docopt.sh for the
 
 ENV_DIR=/etc/restic
 
+ERR_NO_SUCH_PROFILE=2
+ERR_PROFILE_NO_READ_PERM=3
+
 profile_file="${ENV_DIR}/${__profile}.env"
 
-[[ ! -f "$profile_file" ]] && echo "Invalid profile: No such environment file ${profile_file}" && exit 2
+[[ ! -f "$profile_file" ]] && echo "Invalid profile: No such environment file ${profile_file}" && exit "$ERR_NO_SUCH_PROFILE"
 
-if [ $(id -u) -ne 0 ]; then
+if [[ ! -r "$profile_file" ]]; then
   echo "Error: Run it as root or use sudo, as the script needs to load the environment from protected file ${profile_file}"
-  exit 3
+  exit "$ERR_PROFILE_NO_READ_PERM"
 fi
 
 echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
