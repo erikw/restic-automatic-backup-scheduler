@@ -143,5 +143,5 @@ fi
 
 echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
 
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154,SC1090
 source "$profile_file" && restic "$_restic_arguments_line_"
