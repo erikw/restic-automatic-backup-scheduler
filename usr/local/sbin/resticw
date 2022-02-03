@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# Exit on error, unbound variable, pipe error
-set -euo pipefail
 
 DOC="A little wrapper over restic just to handle profiles and environment loading.
 
@@ -120,12 +118,14 @@ declare -p "${prefix}__profile" "${prefix}_restic_arguments_line_"; done; }
 # docopt parser above, complete command for generating this parser is `docopt.sh resticw`
 
 # Parse arguments
-eval "$(set +u; docopt "$@")" # See https://github.com/andsens/docopt.sh for the magic :)
+eval "$(docopt "$@")" # See https://github.com/andsens/docopt.sh for the magic :)
 
 # --^^^-- END OF GENERATED COMMAND LINE PARSING STUFF --^^^--
 #
 # --vvv--             ACTUAL SCRIPT BELOW             --vvv--
 
+# Exit on error, unbound variable, pipe error
+set -euo pipefail
 ENV_DIR=/etc/restic
 
 ERR_NO_SUCH_PROFILE=2
@@ -137,7 +137,7 @@ profile_file="${ENV_DIR}/${__profile}.env"
 [[ ! -f "$profile_file" ]] && echo "Invalid profile: No such environment file ${profile_file}" && exit "$ERR_NO_SUCH_PROFILE"
 
 if [[ ! -r "$profile_file" ]]; then
-  echo "Error: Run it as root or use sudo, as the script needs to load the environment from protected file ${profile_file}"
+  echo "Error: could not read the environment file ${profile_file}. Are you running this script as the correct user? Maybe try sudo with the right user.
   exit "$ERR_PROFILE_NO_READ_PERM"
 fi
 
