@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+
+DOC="A little wrapper over restic just to handle profiles and environment loading.
+
+Usage:
+  resticw [options] <restic_arguments_line>...
+
+  The <restic_arguments_line> is just the regular unwrapped restic command arguments, e.g. stats latest
+
+Options:
+  -p --profile=<name>        Specify the profile to load or use default [default: default].
+
+Examples:
+  resticw --profile profileA snapshots
+  resticw stats latest  # this will use the profile: default
+"
+
+# The following argument parser is generated with docopt.sh from the above docstring.
+# See https://github.com/andsens/docopt.sh. If the DOC is updated or new options are added, refresh the parser!
+
+# docopt parser below, refresh this parser with `docopt.sh resticw`
+# shellcheck disable=2016,1075,2154
+docopt() { parse() { if ${DOCOPT_DOC_CHECK:-true}; then local doc_hash
+if doc_hash=$(printf "%s" "$DOC" | (sha256sum 2>/dev/null || shasum -a 256)); then
+if [[ ${doc_hash:0:5} != "$digest" ]]; then
+stderr "The current usage doc (${doc_hash:0:5}) does not match \
+what the parser was generated with (${digest})
+Run \`docopt.sh\` to refresh the parser."; _return 70; fi; fi; fi
+local root_idx=$1; shift; argv=("$@"); parsed_params=(); parsed_values=()
+left=(); testdepth=0; local arg; while [[ ${#argv[@]} -gt 0 ]]; do
+if [[ ${argv[0]} = "--" ]]; then for arg in "${argv[@]}"; do
+parsed_params+=('a'); parsed_values+=("$arg"); done; break
+elif [[ ${argv[0]} = --* ]]; then parse_long
+elif [[ ${argv[0]} = -* && ${argv[0]} != "-" ]]; then parse_shorts
+elif ${DOCOPT_OPTIONS_FIRST:-false}; then for arg in "${argv[@]}"; do
+parsed_params+=('a'); parsed_values+=("$arg"); done; break; else
+parsed_params+=('a'); parsed_values+=("${argv[0]}"); argv=("${argv[@]:1}"); fi
+done; local idx; if ${DOCOPT_ADD_HELP:-true}; then
+for idx in "${parsed_params[@]}"; do [[ $idx = 'a' ]] && continue
+if [[ ${shorts[$idx]} = "-h" || ${longs[$idx]} = "--help" ]]; then
+stdout "$trimmed_doc"; _return 0; fi; done; fi
+if [[ ${DOCOPT_PROGRAM_VERSION:-false} != 'false' ]]; then
+for idx in "${parsed_params[@]}"; do [[ $idx = 'a' ]] && continue
+if [[ ${longs[$idx]} = "--version" ]]; then stdout "$DOCOPT_PROGRAM_VERSION"
+_return 0; fi; done; fi; local i=0; while [[ $i -lt ${#parsed_params[@]} ]]; do
+left+=("$i"); ((i++)) || true; done
+if ! required "$root_idx" || [ ${#left[@]} -gt 0 ]; then error; fi; return 0; }
+parse_shorts() { local token=${argv[0]}; local value; argv=("${argv[@]:1}")
+[[ $token = -* && $token != --* ]] || _return 88; local remaining=${token#-}
+while [[ -n $remaining ]]; do local short="-${remaining:0:1}"
+remaining="${remaining:1}"; local i=0; local similar=(); local match=false
+for o in "${shorts[@]}"; do if [[ $o = "$short" ]]; then similar+=("$short")
+[[ $match = false ]] && match=$i; fi; ((i++)) || true; done
+if [[ ${#similar[@]} -gt 1 ]]; then
+error "${short} is specified ambiguously ${#similar[@]} times"
+elif [[ ${#similar[@]} -lt 1 ]]; then match=${#shorts[@]}; value=true
+shorts+=("$short"); longs+=(''); argcounts+=(0); else value=false
+if [[ ${argcounts[$match]} -ne 0 ]]; then if [[ $remaining = '' ]]; then
+if [[ ${#argv[@]} -eq 0 || ${argv[0]} = '--' ]]; then
+error "${short} requires argument"; fi; value=${argv[0]}; argv=("${argv[@]:1}")
+else value=$remaining; remaining=''; fi; fi; if [[ $value = false ]]; then
+value=true; fi; fi; parsed_params+=("$match"); parsed_values+=("$value"); done
+}; parse_long() { local token=${argv[0]}; local long=${token%%=*}
+local value=${token#*=}; local argcount; argv=("${argv[@]:1}")
+[[ $token = --* ]] || _return 88; if [[ $token = *=* ]]; then eq='='; else eq=''
+value=false; fi; local i=0; local similar=(); local match=false
+for o in "${longs[@]}"; do if [[ $o = "$long" ]]; then similar+=("$long")
+[[ $match = false ]] && match=$i; fi; ((i++)) || true; done
+if [[ $match = false ]]; then i=0; for o in "${longs[@]}"; do
+if [[ $o = $long* ]]; then similar+=("$long"); [[ $match = false ]] && match=$i
+fi; ((i++)) || true; done; fi; if [[ ${#similar[@]} -gt 1 ]]; then
+error "${long} is not a unique prefix: ${similar[*]}?"
+elif [[ ${#similar[@]} -lt 1 ]]; then
+[[ $eq = '=' ]] && argcount=1 || argcount=0; match=${#shorts[@]}
+[[ $argcount -eq 0 ]] && value=true; shorts+=(''); longs+=("$long")
+argcounts+=("$argcount"); else if [[ ${argcounts[$match]} -eq 0 ]]; then
+if [[ $value != false ]]; then
+error "${longs[$match]} must not have an argument"; fi
+elif [[ $value = false ]]; then
+if [[ ${#argv[@]} -eq 0 || ${argv[0]} = '--' ]]; then
+error "${long} requires argument"; fi; value=${argv[0]}; argv=("${argv[@]:1}")
+fi; if [[ $value = false ]]; then value=true; fi; fi; parsed_params+=("$match")
+parsed_values+=("$value"); }; required() { local initial_left=("${left[@]}")
+local node_idx; ((testdepth++)) || true; for node_idx in "$@"; do
+if ! "node_$node_idx"; then left=("${initial_left[@]}"); ((testdepth--)) || true
+return 1; fi; done; if [[ $((--testdepth)) -eq 0 ]]; then
+left=("${initial_left[@]}"); for node_idx in "$@"; do "node_$node_idx"; done; fi
+return 0; }; optional() { local node_idx; for node_idx in "$@"; do
+"node_$node_idx"; done; return 0; }; oneormore() { local i=0
+local prev=${#left[@]}; while "node_$1"; do ((i++)) || true
+[[ $prev -eq ${#left[@]} ]] && break; prev=${#left[@]}; done
+if [[ $i -ge 1 ]]; then return 0; fi; return 1; }; value() { local i
+for i in "${!left[@]}"; do local l=${left[$i]}
+if [[ ${parsed_params[$l]} = "$2" ]]; then
+left=("${left[@]:0:$i}" "${left[@]:((i+1))}")
+[[ $testdepth -gt 0 ]] && return 0; local value
+value=$(printf -- "%q" "${parsed_values[$l]}"); if [[ $3 = true ]]; then
+eval "var_$1+=($value)"; else eval "var_$1=$value"; fi; return 0; fi; done
+return 1; }; stdout() { printf -- "cat <<'EOM'\n%s\nEOM\n" "$1"; }; stderr() {
+printf -- "cat <<'EOM' >&2\n%s\nEOM\n" "$1"; }; error() {
+[[ -n $1 ]] && stderr "$1"; stderr "$usage"; _return 1; }; _return() {
+printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:450}
+usage=${DOC:79:53}; digest=dc31d; shorts=(-p); longs=(--profile); argcounts=(1)
+node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_line_ a true
+}; node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ oneormore 1; }
+node_5(){ required 3 4; }; node_6(){ required 5; }; cat <<<' docopt_exit() {
+[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:79:53}" >&2; exit 1
+}'; unset var___profile var__restic_arguments_line_; parse 6 "$@"
+local prefix=${DOCOPT_PREFIX:-''}; unset "${prefix}__profile" \
+"${prefix}_restic_arguments_line_"
+eval "${prefix}"'__profile=${var___profile:-default}'
+if declare -p var__restic_arguments_line_ >/dev/null 2>&1; then
+eval "${prefix}"'_restic_arguments_line_=("${var__restic_arguments_line_[@]}")'
+else eval "${prefix}"'_restic_arguments_line_=()'; fi; local docopt_i=1
+[[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2; for ((;docopt_i>0;docopt_i--)); do
+declare -p "${prefix}__profile" "${prefix}_restic_arguments_line_"; done; }
+# docopt parser above, complete command for generating this parser is `docopt.sh resticw`
+
+# Parse arguments
+eval "$(docopt "$@")" # See https://github.com/andsens/docopt.sh for the magic :)
+
+# --^^^-- END OF GENERATED COMMAND LINE PARSING STUFF --^^^--
+#
+# --vvv--             ACTUAL SCRIPT BELOW             --vvv--
+
+# Exit on error, unbound variable, pipe error
+set -euo pipefail
+ENV_DIR=/etc/restic
+
+ERR_NO_SUCH_PROFILE=2
+ERR_PROFILE_NO_READ_PERM=3
+
+# shellcheck disable=SC2154
+profile_file="${ENV_DIR}/${__profile}.env"
+
+[[ ! -f "$profile_file" ]] && echo "Invalid profile: No such environment file ${profile_file}" && exit "$ERR_NO_SUCH_PROFILE"
+
+if [[ ! -r "$profile_file" ]]; then
+	echo "Error: could not read the environment file ${profile_file}. Are you running this script as the correct user? Maybe try sudo with the right user."
+	exit "$ERR_PROFILE_NO_READ_PERM"
+fi
+
+echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
+
+# shellcheck disable=SC2154,SC1090
+source "$profile_file" && restic "$_restic_arguments_line_"

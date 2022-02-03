@@ -80,6 +80,7 @@ Nevertheless the project should work out of the box, be minimal but still open t
    ````
 1. (optional) Setup email on failure as described [here](#8-email-notification-on-failure)
 
+
 # Step-by-step and manual setup
 This is a more detailed explanation than the TL;DR section that will give you more understanding in the setup, and maybe inspire you to develop your own setup based on this one even!
 
@@ -223,6 +224,21 @@ $ systemctl start restic-check@default.timer
 $ systemctl enable restic-check@default.timer
 ````
 
+## 10. Optional: 🏃 Restic wrapper
+For convenience there's a `restic` wrapper script that makes loading profiles and **running restic**
+straightforward (it needs to run with sudo to read environment). Just run:
+
+- `sudo resticw WHATEVER` (e.g. `sudo resticw snapshots`) to use the default profile.
+- You can run the wrapper by passing a specific profile: `resticw -p anotherprofile snapshots`.
+
+### Useful commands
+
+| Command                                           | Description                                                       |
+|---------------------------------------------------|-------------------------------------------------------------------|
+| `resticw snapshots`                               | List backup snapshots                                             |
+| `resticw diff <snapshot-id> latest`               | Show the changes from the latest backup                           |
+| `resticw stats` / `resticw stats snapshot-id ...` | Show the statistics for the whole repo or the specified snapshots |
+| `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
 
 # Cron?
@@ -244,10 +260,15 @@ A list of variations of this setup:
 * Using `--files-from` [#44](https://github.com/erikw/restic-systemd-automatic-backup/issues/44)
 
 # Development
-To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
-```console
-$ PREFIX=/tmp/restic-test make install
-```
+* To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
+   ```console
+   $ PREFIX=/tmp/restic-test make install
+   ```
+* **Updating the `resticw` parser:** If you ever update the usage `DOC`, you will need to refresh the auto-generated parser:
+  ```console
+  $ pip install doctopt.sh
+  $ doctopt.sh usr/local/sbin/resticw
+  ```
 
 # Releasing
 To make a new release:

@@ -31,7 +31,8 @@ install: install-scripts install-conf install-systemd
 # target: install-scripts - Install executables.
 install-scripts:
 	install -d $(DEST_SCRIPTS)
-	install -m 0744 $(SRCS_SCRIPTS) $(DEST_SCRIPTS)
+	install -m 0744 $(filter-out %/resticw, $(SRCS_SCRIPTS)) $(DEST_SCRIPTS)
+	install -m 0755 usr/local/sbin/resticw $(DEST_SCRIPTS)
 
 # Copy templates to new files with restricted permissions.
 # Why? Because the non-template files are git-ignored to prevent that someone who clones or forks this repo checks in their sensitive data like the B2 password!
