@@ -115,7 +115,7 @@ install-systemd: $(DEST_SYSTEMD)  $(BUILD_SRCS_CONF)
 $(BUILD_DIR)/% : %
 	${MKDIR_PARENTS} $@
 	cp $< $@
-	sed -i.bak -e "s|\$$INSTALL_PREFIX|$$PREFIX|g" $@; rm $@.bak
+	sed -i.bak -e 's|$$INSTALL_PREFIX|$(PREFIX)|g' $@; rm $@.bak
 
 # Install destination script files.
 $(DEST_DIR_SCRIPTS)/%: $(BUILD_DIR_SCRIPTS)/%
