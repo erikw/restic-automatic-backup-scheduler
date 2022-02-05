@@ -1,8 +1,8 @@
 #### Notes ####################################################################
-# This build process is done in three stages:
+# This build process is done in three stages (out-of-source build):
 # 1. copy source files to the local build directory.
-# 2. replace the string "$INSTALL_PREFIX" with the value of $PREFIX
-# 3. copy files from the build directory to the target directory.
+# 2. build dir: replace the string "$INSTALL_PREFIX" with the value of $PREFIX
+# 3. install files from the build directory to the target directory.
 #
 # Why this dance?
 # * To fully support that a user can install this project to a custom path e.g.
@@ -20,7 +20,7 @@
 #### Macros ###################################################################
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
 
-# GNU install and macOS install have incompatible command line arguments.
+# GNU and macOS install have incompatible command line arguments.
 GNU_INSTALL := $(shell install --version 2>/dev/null | \
 			   grep -q GNU && echo true || echo false)
 ifeq ($(GNU_INSTALL),true)
@@ -36,7 +36,6 @@ MKDIR_PARENTS=sh -c '\
 	     test -d $$dir || mkdir -p $$dir \
 	     ' MKDIR_PARENTS
 
-
 # Source directories.
 DIR_SCRIPT	= sbin
 DIR_CONF	= etc/restic
@@ -46,7 +45,6 @@ DIR_SYSTEMD	= usr/lib/systemd/system
 SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
 SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
-
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
@@ -109,7 +107,7 @@ install-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
 # target: install-systemd - Install systemd timer and service files.
 install-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
 
-# Copies sources to build directory & replace "$INSTALL_PREFIX"
+# Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %
 	${MKDIR_PARENTS} $@
 	cp $< $@
