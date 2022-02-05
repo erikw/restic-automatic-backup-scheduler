@@ -102,7 +102,6 @@ install-systemd: $(DEST_SYSTEMD)
 
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX"
-# dir= line needs to be in the same subshell to use shared envvars. Reference: https://stackoverflow.com/a/36419671/265508
 $(BUILD_DIR)/% : %
 	${MKDIR_PARENTS} $@
 	cp $< $@
