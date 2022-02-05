@@ -1,23 +1,28 @@
-### Notes ###
+#### Notes ####################################################################
 # This build process is done in three stages:
 # 1. copy source files to the local build directory.
 # 2. replace the string "$INSTALL_PREFIX" with the value of $PREFIX
 # 3. copy files from the build directory to the target directory.
 #
 # Why this dance?
-# * To fully support that a user can install this project to a custom path e.g. $(PREFIX=/usr/local make install),
-#   we need to modify the files that refer to other files on disk. We do this by having a placeholder "$INSTALL_PREFIX"
-#   that is substituted with the value of $PREFIX when installed
-# * We don't want to modify the files that are controlled by git, thus let's copy them to a build directory and then modify.
+# * To fully support that a user can install this project to a custom path e.g.
+#   $(PREFIX=/usr/local make install), we need to modify the files that refer
+#   to other files on disk. We do this by having a placeholder
+#   "$INSTALL_PREFIX"  that is substituted with the value of $PREFIX when
+#   installed.
+# * We don't want to modify the files that are controlled by git, thus let's
+#   copy them to a build directory and then modify.
 
-### Non-file targets ###
-.PHONY: help install install-scripts install-conf install-systemd clean uninstall
+#### Non-file targets #########################################################
+.PHONY: all help clean uninstall \
+	install install-scripts install-conf install-systemd
 
-### Macros ###
+#### Macros ###################################################################
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
 
 # GNU install and macOS install have incompatible command line arguments.
-GNU_INSTALL := $(shell install --version 2>/dev/null | grep -q GNU && echo true || echo false)
+GNU_INSTALL := $(shell install --version 2>/dev/null | \
+			   grep -q GNU && echo true || echo false)
 ifeq ($(GNU_INSTALL),true)
     BAK_SUFFIX = --suffix=.$(NOW).bak
 else
@@ -44,7 +49,8 @@ SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard $(DIR_CONF)/*)))
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 
 
-# Local build directory. Sources will be copied here, modified and then installed from this directory.
+# Local build directory. Sources will be copied here,
+# modified and then installed from this directory.
 BUILD_DIR := build
 BUILD_DIR_SCRIPTS	= $(BUILD_DIR)/$(DIR_SCRIPTS)
 BUILD_DIR_CONF		= $(BUILD_DIR)/$(DIR_CONF)
@@ -67,13 +73,15 @@ DEST_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
 
 INSTALLED_FILES = $(DEST_SCRIPTS) $(DEST_CONF) $(DEST_SYSTEMD)
 
-### Targets ###
+
+#### Targets ##################################################################
 # target: all - Default target.
 all: install
 
 # target: help - Display all targets.
 help:
-	@egrep "#\starget:" [Mm]akefile  | sed 's/\s-\s/\t\t\t/' | cut -d " " -f3- | sort -d
+	@egrep "#\starget:" [Mm]akefile  | \
+		sed 's/\s-\s/\t\t\t/' | cut -d " " -f3- | sort -d
 
 # target: clean - Remove build files.
 clean:
@@ -86,20 +94,22 @@ uninstall:
 			$(RM) $$file; \
 	done
 
-# To change the installation root path, set the PREFIX variable in your shell's environment, like:
+# To change the installation root path,
+# set the PREFIX variable in your shell's environment, like:
 # $ PREFIX=/usr/local make install
 # $ PREFIX=/tmp/test make install
 # target: install - Install all files
 install: install-scripts install-conf install-systemd
 
-# Install targets - add build sources to prereq as well, so that build dir is re-created if deleted (expected behaviour).
+# Install targets - add build sources to prereq as well,
+# so that build dir is re-created if deleted (expected behaviour).
+#
 # target: install-scripts - Install executables.
 install-scripts: $(DEST_SCRIPTS)
 # target: install-conf - Install restic configuration files.
 install-conf: $(DEST_CONF)
 # target: install-systemd - Install systemd timer and service files.
 install-systemd: $(DEST_SYSTEMD)
-
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX"
 $(BUILD_DIR)/% : %
