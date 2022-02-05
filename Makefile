@@ -126,7 +126,7 @@ $(DEST_DIR_CONF)/%: $(BUILD_DIR_CONF)/%
 	${MKDIR_PARENTS} $@
 	install -m 0600 -b $(BAK_SUFFIX) $< $@
 
-# Install destination system files.
+# Install destination systemd files.
 $(DEST_DIR_SYSTEMD)/%: $(BUILD_DIR_SYSTEMD)/%
 	${MKDIR_PARENTS} $@
 	install -m 0644 $< $@
