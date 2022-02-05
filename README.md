@@ -100,7 +100,7 @@ and you should now see that all files have been changed like e.g.
 -export RESTIC_PASSWORD_FILE="$INSTALL_PREFIX/etc/restic/pw.txt"
 +export RESTIC_PASSWORD_FILE="/etc/restic/pw.txt"
 ```
-This prefix is there so that make users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install`. So if we don't use the makefile, we need to remove this prefix with the command above just.
+This prefix is there so that `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install`. So if we don't use the makefile, we need to remove this prefix with the command above just.
 
 
 Arch Linux users can install the aur package [restic-systemd-automatic-backup](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) e.g.:
