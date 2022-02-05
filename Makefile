@@ -38,40 +38,40 @@ MKDIR_PARENTS=sh -c '\
 
 
 # Source directories.
-DIR_SCRIPTS	= sbin
+DIR_SCRIPT	= sbin
 DIR_CONF	= etc/restic
 DIR_SYSTEMD	= usr/lib/systemd/system
 
 # Source files.
-SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPTS)/*))
+SRCS_SCRIPT	= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
 # $(sort) remove duplicates that comes from running make install >1 times.
-SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard $(DIR_CONF)/*)))
+SRCS_CONF		= $(sort $(patsubst %.template, %, $(wildcard $(DIR_CONF)/*)))
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
-BUILD_DIR := build
-BUILD_DIR_SCRIPTS	= $(BUILD_DIR)/$(DIR_SCRIPTS)
+BUILD_DIR			:= build
+BUILD_DIR_SCRIPT	= $(BUILD_DIR)/$(DIR_SCRIPT)
 BUILD_DIR_CONF		= $(BUILD_DIR)/$(DIR_CONF)
 BUILD_DIR_SYSTEMD	= $(BUILD_DIR)/$(DIR_SYSTEMD)
 
 # Sources copied to build directory.
-BUILD_SRCS_SCRIPTS	= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPTS))
+BUILD_SRCS_SCRIPT	= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPT))
 BUILD_SRCS_CONF		= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
 BUILD_SRCS_SYSTEMD	= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
 
 # Destination directories
-DEST_DIR_SCRIPTS	= $(PREFIX)/$(DIR_SCRIPTS)
+DEST_DIR_SCRIPT	= $(PREFIX)/$(DIR_SCRIPT)
 DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
 DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
 
 # Destination files.
-DEST_SCRIPTS	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPTS))
-DEST_CONF	= $(addprefix $(PREFIX)/, $(SRCS_CONF))
+DEST_SCRIPT	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
+DEST_CONF		= $(addprefix $(PREFIX)/, $(SRCS_CONF))
 DEST_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
 
-INSTALLED_FILES = $(DEST_SCRIPTS) $(DEST_CONF) $(DEST_SYSTEMD)
+INSTALLED_FILES = $(DEST_SCRIPT) $(DEST_CONF) $(DEST_SYSTEMD)
 
 
 #### Targets ##################################################################
@@ -105,7 +105,7 @@ install: install-scripts install-conf install-systemd
 # so that build dir is re-created if deleted (expected behaviour).
 #
 # target: install-scripts - Install executables.
-install-scripts: $(DEST_SCRIPTS) $(BUILD_SRCS_CONF)
+install-scripts: $(DEST_SCRIPT) $(BUILD_SRCS_CONF)
 # target: install-conf - Install restic configuration files.
 install-conf: $(DEST_CONF) $(BUILD_SRCS_CONF)
 # target: install-systemd - Install systemd timer and service files.
@@ -118,7 +118,7 @@ $(BUILD_DIR)/% : %
 	sed -i.bak -e 's|$$INSTALL_PREFIX|$(PREFIX)|g' $@; rm $@.bak
 
 # Install destination script files.
-$(DEST_DIR_SCRIPTS)/%: $(BUILD_DIR_SCRIPTS)/%
+$(DEST_DIR_SCRIPT)/%: $(BUILD_DIR_SCRIPT)/%
 	${MKDIR_PARENTS} $@
 	install -m 0744 $< $@
 
