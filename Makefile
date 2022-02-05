@@ -105,11 +105,11 @@ install: install-scripts install-conf install-systemd
 # so that build dir is re-created if deleted (expected behaviour).
 #
 # target: install-scripts - Install executables.
-install-scripts: $(DEST_SCRIPTS)
+install-scripts: $(DEST_SCRIPTS) $(BUILD_SRCS_CONF)
 # target: install-conf - Install restic configuration files.
-install-conf: $(DEST_CONF)
+install-conf: $(DEST_CONF) $(BUILD_SRCS_CONF)
 # target: install-systemd - Install systemd timer and service files.
-install-systemd: $(DEST_SYSTEMD)
+install-systemd: $(DEST_SYSTEMD)  $(BUILD_SRCS_CONF)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX"
 $(BUILD_DIR)/% : %
