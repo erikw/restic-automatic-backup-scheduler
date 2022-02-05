@@ -43,9 +43,8 @@ DIR_CONF	= etc/restic
 DIR_SYSTEMD	= usr/lib/systemd/system
 
 # Source files.
-SRCS_SCRIPT	= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
-# $(sort) remove duplicates that comes from running make install >1 times.
-SRCS_CONF		= $(sort $(patsubst %.template, %, $(wildcard $(DIR_CONF)/*)))
+SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
+SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 
 
