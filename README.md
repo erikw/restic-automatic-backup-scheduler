@@ -34,8 +34,8 @@ Nevertheless the project should work out of the box, be minimal but still open t
 
 # Requirements
 * `restic >=v0.9.6`
-* (recommended)  `make` if you want an automated install
-  * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: preinstalled make works)
+* (recommended)  GNU `make` if you want an automated install
+  * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the preinstalled or a more recent with Homebrew)
 
 # TL;DR Setup
 1. Create B2 credentials as instructed [below](#1-create-backblaze-b2-account)
