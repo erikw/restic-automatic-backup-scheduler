@@ -100,15 +100,14 @@ uninstall:
 # target: install - Install all files
 install: install-scripts install-conf install-systemd
 
-# Install targets - add build sources to prereq as well,
-# so that build dir is re-created if deleted (expected behaviour).
-#
+# Install targets. Prereq build sources as well,
+# so that build dir is re-created if deleted.
 # target: install-scripts - Install executables.
-install-scripts: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_CONF)
+install-scripts: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
 # target: install-conf - Install restic configuration files.
 install-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
 # target: install-systemd - Install systemd timer and service files.
-install-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_CONF)
+install-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX"
 $(BUILD_DIR)/% : %
