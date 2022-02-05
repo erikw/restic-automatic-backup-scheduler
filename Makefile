@@ -96,7 +96,7 @@ install: install-scripts install-conf install-systemd
 # target: install-scripts - Install executables.
 install-scripts: $(DEST_SCRIPTS)
 # target: install-conf - Install restic configuration files.
-install-conf: $(DEST_CONF) $(BUILD_SRCS_CONF)
+install-conf: $(DEST_CONF)
 # target: install-systemd - Install systemd timer and service files.
 install-systemd: $(DEST_SYSTEMD)
 
