@@ -16,18 +16,12 @@
 ### Macros ###
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
 
-# Source: https://stackoverflow.com/a/14777895/265508
-ifeq ($(OS),Windows_NT)
-    CUR_OS := Windows
-else
-    CUR_OS := $(shell uname)
-endif
-
 # GNU install and macOS install have incompatible command line arguments.
-ifeq ($(CUR_OS),Darwin)
-    BAK_SUFFIX = -B .$(NOW).bak
-else
+GNU_INSTALL := $(shell install --version 2>/dev/null | grep -q GNU && echo true || echo false)
+ifeq ($(GNU_INSTALL),true)
     BAK_SUFFIX = --suffix=.$(NOW).bak
+else
+    BAK_SUFFIX = -B .$(NOW).bak
 endif
 
 # Create parent directories of a file, if not existing.
