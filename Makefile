@@ -62,16 +62,16 @@ BUILD_SRCS_CONF		= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
 BUILD_SRCS_SYSTEMD	= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
 
 # Destination directories
-DEST_DIR_SCRIPT	= $(PREFIX)/$(DIR_SCRIPT)
+DEST_DIR_SCRIPT		= $(PREFIX)/$(DIR_SCRIPT)
 DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
 DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
 
-# Destination files.
-DEST_SCRIPT	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
-DEST_CONF		= $(addprefix $(PREFIX)/, $(SRCS_CONF))
-DEST_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
+# Destination file targets.
+DEST_TARGS_SCRIPT	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
+DEST_TARGS_CONF		= $(addprefix $(PREFIX)/, $(SRCS_CONF))
+DEST_TARGS_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
 
-INSTALLED_FILES = $(DEST_SCRIPT) $(DEST_CONF) $(DEST_SYSTEMD)
+INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) $(DEST_TARGS_SYSTEMD)
 
 
 #### Targets ##################################################################
@@ -105,11 +105,11 @@ install: install-scripts install-conf install-systemd
 # so that build dir is re-created if deleted (expected behaviour).
 #
 # target: install-scripts - Install executables.
-install-scripts: $(DEST_SCRIPT) $(BUILD_SRCS_CONF)
+install-scripts: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_CONF)
 # target: install-conf - Install restic configuration files.
-install-conf: $(DEST_CONF) $(BUILD_SRCS_CONF)
+install-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
 # target: install-systemd - Install systemd timer and service files.
-install-systemd: $(DEST_SYSTEMD)  $(BUILD_SRCS_CONF)
+install-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_CONF)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX"
 $(BUILD_DIR)/% : %
