@@ -107,12 +107,6 @@ $(BUILD_DIR)/% : %
 	cp $< $@
 	sed -i.bak -e "s|\$$INSTALL_PREFIX|$$PREFIX|g" $@; rm $@.bak
 
-
-# For the destination files to be built, build-files must exist.
-#$(DEST_SCRIPTS): $(BUILD_SRCS_SCRIPTS)
-#$(DEST_CONF): $(BUILD_SRCS_CONF)
-#$(DEST_SYSTEMD): $(BUILD_SRCS_SYSTEMD)
-
 # Install destination script files.
 $(DEST_DIR_SCRIPTS)/%: $(BUILD_DIR_SCRIPTS)/%
 	${MKDIR_PARENTS} $@
