@@ -92,7 +92,7 @@ uninstall:
 # target: install - Install all files
 install: install-scripts install-conf install-systemd
 
-# Install targets - add build sources to prereqa as well, so that build dir is re-created if deleted (expected behaviour).
+# Install targets - add build sources to prereq as well, so that build dir is re-created if deleted (expected behaviour).
 # target: install-scripts - Install executables.
 install-scripts: $(DEST_SCRIPTS)
 # target: install-conf - Install restic configuration files.
