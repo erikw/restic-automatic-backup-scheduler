@@ -81,11 +81,9 @@ INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) \
 
 
 #### Targets ##################################################################
-# target: help - Default target - displayes all targets.
-# TODO sed is broken
+# target: help - Default target; displays all targets.
 help:
-	@egrep "#\starget:" [Mm]akefile  | \
-		sed 's/\s-\s/\t\t\t/' | cut -d " " -f3- | sort -d
+	@egrep "#\starget:" [Mm]akefile | cut -d " " -f3- | sort -d
 
 # target: clean - Remove build files.
 clean:
@@ -104,18 +102,15 @@ uninstall:
 # $ PREFIX=/tmp/test make install-systemd
 # target: install-systemd - Install systemd setup.
 install-systemd: install-targets-script install-targets-conf install-targets-systemd
+
 # target: install-cron - Install cron setup.
 install-cron: install-targets-cron
 
 # Install targets. Prereq build sources as well,
 # so that build dir is re-created if deleted.
-# target: install-targets-script - Install executables.
 install-targets-script: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
-# target: install-targets-conf - Install restic configuration files.
 install-targets-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
-# target: install-targets-systemd - Install systemd timer and service files.
 install-targets-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
-# target: install-targets-cron - Install cronjob.
 install-targets-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
