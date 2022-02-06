@@ -34,7 +34,9 @@ Nevertheless the project should work out of the box, be minimal but still open t
 
 ## Navigate this README
 Tip: use the Section icon in the top left of this document to navigate the sections.
+
 ![README Sections](img/readme_sections.png)
+
 
 # Requirements
 * `restic >=v0.9.6`
