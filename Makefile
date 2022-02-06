@@ -104,7 +104,7 @@ uninstall:
 install-systemd: install-targets-script install-targets-conf install-targets-systemd
 
 # target: install-cron - Install cron setup.
-install-cron: install-targets-cron
+install-cron: install-targets-script install-targets-conf install-targets-cron
 
 # Install targets. Prereq build sources as well,
 # so that build dir is re-created if deleted.
