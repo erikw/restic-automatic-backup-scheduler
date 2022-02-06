@@ -15,7 +15,7 @@
 
 #### Non-file targets #########################################################
 .PHONY: all help clean uninstall \
-	install install-scripts install-conf install-systemd
+	install install-scripts install-conf install-systemd install-cron
 
 #### Macros ###################################################################
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
@@ -40,11 +40,13 @@ MKDIR_PARENTS=sh -c '\
 DIR_SCRIPT	= sbin
 DIR_CONF	= etc/restic
 DIR_SYSTEMD	= usr/lib/systemd/system
+DIR_CRON	= etc/cron.d
 
 # Source files.
 SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
 SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
+SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
@@ -52,23 +54,28 @@ BUILD_DIR			:= build
 BUILD_DIR_SCRIPT	= $(BUILD_DIR)/$(DIR_SCRIPT)
 BUILD_DIR_CONF		= $(BUILD_DIR)/$(DIR_CONF)
 BUILD_DIR_SYSTEMD	= $(BUILD_DIR)/$(DIR_SYSTEMD)
+BUILD_DIR_CRON		= $(BUILD_DIR)/$(DIR_CRON)
 
 # Sources copied to build directory.
 BUILD_SRCS_SCRIPT	= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPT))
 BUILD_SRCS_CONF		= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
 BUILD_SRCS_SYSTEMD	= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
+BUILD_SRCS_CRON		= $(addprefix $(BUILD_DIR)/, $(SRCS_CRON))
 
 # Destination directories
 DEST_DIR_SCRIPT		= $(PREFIX)/$(DIR_SCRIPT)
 DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
 DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
+DEST_DIR_CRON		= $(PREFIX)/$(DIR_CRON)
 
 # Destination file targets.
 DEST_TARGS_SCRIPT	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
 DEST_TARGS_CONF		= $(addprefix $(PREFIX)/, $(SRCS_CONF))
 DEST_TARGS_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
+DEST_TARGS_CRON		= $(addprefix $(PREFIX)/, $(SRCS_CRON))
 
-INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) $(DEST_TARGS_SYSTEMD)
+INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) \
+				  $(DEST_TARGS_SYSTEMD) $(DEST_TARGS_CRON)
 
 
 #### Targets ##################################################################
@@ -106,6 +113,8 @@ install-scripts: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
 install-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
 # target: install-systemd - Install systemd timer and service files.
 install-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
+# target: install-cron - Install cronjob.
+install-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %
@@ -125,5 +134,10 @@ $(DEST_DIR_CONF)/%: $(BUILD_DIR_CONF)/%
 
 # Install destination systemd files.
 $(DEST_DIR_SYSTEMD)/%: $(BUILD_DIR_SYSTEMD)/%
+	${MKDIR_PARENTS} $@
+	install -m 0644 $< $@
+
+# Install destination cron files.
+$(DEST_DIR_CRON)/%: $(BUILD_DIR_CRON)/%
 	${MKDIR_PARENTS} $@
 	install -m 0644 $< $@
