@@ -39,9 +39,13 @@ Nevertheless the project should work out of the box, be minimal but still open t
 
 
 
+# Setup
+Depending on your system, the setup will look different. Choose one of
+* [Linux + Systemd](#setup-linux-systemd)
+* [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
-
-# TL;DR Setup
+## Setup Linux Systemd
+### TL;DR Setup
 1. Create B2 credentials as instructed [below](#1-create-backblaze-b2-account)
 1. Install config and scripts:
    ```console
@@ -85,7 +89,7 @@ Nevertheless the project should work out of the box, be minimal but still open t
 1. (optional) Setup email on failure as described [here](#8-email-notification-on-failure)
 
 
-# Step-by-step and manual setup
+### Step-by-step and manual setup
 This is a more detailed explanation than the TL;DR section that will give you more understanding in the setup, and maybe inspire you to develop your own setup based on this one even!
 
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
@@ -112,13 +116,13 @@ Arch Linux users can install the aur package [restic-systemd-automatic-backup](h
 $ yaourt -S restic-systemd-automatic-backup
 ````
 
-## 1. Create Backblaze B2 Account, Bucket and keys
+#### 1. Create Backblaze B2 Account, Bucket and keys
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
 For restic to be able to connect to your bucket, you want to in the B2 settings create a pair of keyID and applicationKey. It's a good idea to create a separate pair of ID and Key with for each bucket that you will use, with limited read&write access to only that bucket.
 
 
-## 2. Configure your B2 credentials locally
+#### 2. Configure your B2 credentials locally
 > **Attention!** Going the manual way requires that most of the following commands are run as root.
 
 Put these files in `/etc/restic/`:
@@ -133,7 +137,7 @@ Put these files in `/etc/restic/`:
    $ openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
    ```
 
-## 3. Initialize remote repo
+#### 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
 ```console
 $ sudo -i
@@ -141,7 +145,7 @@ $ source /etc/restic/default.env
 $ restic init
 ```
 
-## 4. Script for doing the backup
+#### 4. Script for doing the backup
 Put this file in `/sbin`:
 * `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env` profiles.
 
@@ -149,7 +153,7 @@ Restic support exclude files. They list file pattern paths to exclude from you b
 * `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
 * `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$RESTIC_BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
 
-## 5. Make first backup
+#### 5. Make first backup
 Now see if the backup itself works, by running as root
 
 ```console
@@ -158,7 +162,7 @@ $ source /etc/restic/default.env
 $ /sbin/restic_backup.sh
 ````
 
-## 6. Verify the backup
+#### 6. Verify the backup
 As the `default.env` is already sourced in your root shell, you can now just list the snapshos
 ```console
 $ sudo -i
@@ -172,7 +176,7 @@ $ restic mount /mnt/restic
 $ ls /mnt/restic
 ```
 
-## 7. Backup automatically; systemd service + timer
+#### 7. Backup automatically; systemd service + timer
 Now we can do the modern version of a cron-job, a systemd service + timer, to run the backup every day!
 
 Put these files in `/etc/systemd/system` (note that the Makefile installs as package to `/usr/lib/systemd/system`)
@@ -216,7 +220,7 @@ $ journalctl -f -u restic-backup@default.service
 
 
 
-## 8. Email notification on failure
+#### 8. Email notification on failure
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
 Put this file in `/sbin`:
@@ -228,7 +232,7 @@ Put this files in `/etc/systemd/system/`:
 As you maybe noticed already before, `restic-backup.service` is configured to start `status-email-user.service` on failure.
 
 
-## 9. Optional: automated backup checks
+#### 9. Optional: automated backup checks
 Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
 There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `sbin/` and copy what you need over to their corresponding locations.
@@ -239,14 +243,14 @@ $ systemctl start restic-check@default.timer
 $ systemctl enable restic-check@default.timer
 ````
 
-## 10. Optional: 🏃 Restic wrapper
+#### 10. Optional: 🏃 Restic wrapper
 For convenience there's a `restic` wrapper script that makes loading profiles and **running restic**
 straightforward (it needs to run with sudo to read environment). Just run:
 
 - `sudo resticw WHATEVER` (e.g. `sudo resticw snapshots`) to use the default profile.
 - You can run the wrapper by passing a specific profile: `resticw -p anotherprofile snapshots`.
 
-### Useful commands
+##### Useful commands
 
 | Command                                           | Description                                                       |
 |---------------------------------------------------|-------------------------------------------------------------------|
@@ -256,12 +260,14 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
 
-# Cron?
+## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
 
-* `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
+1. Follow the main setup from [Step-by-step and manual setup](#step-by-step-and-manual-setup) but skip the systemd parts.
+1. `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
   * You can use `$ make install-cron` to copy it over to `/etc/cron.d`.
-* `sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
+1. (Optional) `sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
+
 
 # Uninstall
 There is a make target to remove all files (scripts and configs) that were installed by `sudo make install-*`. Just run:
