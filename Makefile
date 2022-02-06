@@ -14,8 +14,10 @@
 #   copy them to a build directory and then modify.
 
 #### Non-file targets #########################################################
-.PHONY: all help clean uninstall \
-	install install-scripts install-conf install-systemd install-cron
+.PHONY: help clean uninstall \
+	install-systemd install-cron \
+	install-targets-script install-targets-conf install-targets-systemd \
+	install-targets-cron
 
 #### Macros ###################################################################
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
@@ -79,10 +81,8 @@ INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) \
 
 
 #### Targets ##################################################################
-# target: all - Default target.
-all: install
-
-# target: help - Display all targets.
+# target: help - Default target - displayes all targets.
+# TODO sed is broken
 help:
 	@egrep "#\starget:" [Mm]akefile  | \
 		sed 's/\s-\s/\t\t\t/' | cut -d " " -f3- | sort -d
@@ -91,7 +91,7 @@ help:
 clean:
 	$(RM) -r $(BUILD_DIR)
 
-# target: uninstall - Uninstall ALL files from the install targets.
+# target: uninstall - Uninstall ALL files from all install targets.
 uninstall:
 	@for file in $(INSTALLED_FILES); do \
 			echo $(RM) $$file; \
@@ -100,21 +100,23 @@ uninstall:
 
 # To change the installation root path,
 # set the PREFIX variable in your shell's environment, like:
-# $ PREFIX=/usr/local make install
-# $ PREFIX=/tmp/test make install
-# target: install - Install all files
-install: install-scripts install-conf install-systemd
+# $ PREFIX=/usr/local make install-systemd
+# $ PREFIX=/tmp/test make install-systemd
+# target: install-systemd - Install systemd setup.
+install-systemd: install-targets-script install-targets-conf install-targets-systemd
+# target: install-cron - Install cron setup.
+install-cron: install-targets-cron
 
 # Install targets. Prereq build sources as well,
 # so that build dir is re-created if deleted.
-# target: install-scripts - Install executables.
-install-scripts: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
-# target: install-conf - Install restic configuration files.
-install-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
-# target: install-systemd - Install systemd timer and service files.
-install-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
-# target: install-cron - Install cronjob.
-install-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
+# target: install-targets-script - Install executables.
+install-targets-script: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
+# target: install-targets-conf - Install restic configuration files.
+install-targets-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
+# target: install-targets-systemd - Install systemd timer and service files.
+install-targets-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
+# target: install-targets-cron - Install cronjob.
+install-targets-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %

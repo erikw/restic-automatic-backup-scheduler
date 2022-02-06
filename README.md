@@ -37,11 +37,15 @@ Nevertheless the project should work out of the box, be minimal but still open t
 * (recommended)  GNU `make` if you want an automated install
   * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the preinstalled or a more recent with Homebrew)
 
+
+
+
+
 # TL;DR Setup
 1. Create B2 credentials as instructed [below](#1-create-backblaze-b2-account)
 1. Install config and scripts:
    ```console
-   $ sudo make install
+   $ sudo make install-systemd
    ```
    ☝ **Note**: `sudo` is required here, as some files are installed into system directories (`/etc/`
    and `/usr/sbin`). Have a look to the `Makefile` to know more.
@@ -88,10 +92,10 @@ Tip: The steps in this section will instruct you to copy files from this repo to
 
 ```console
 $ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
-$ sudo make install
+$ sudo make install-systemd
 ````
 
-If you want to install everything manually, we will install files to `/etc`, `/sbin`, and not use the `$make install` command, then you need to clean up a placeholder `$INSTALL_PREFIX` in the souce files first by running:
+If you want to install everything manually, we will install files to `/etc`, `/sbin`, and not use the `$make install-systemd` command, then you need to clean up a placeholder `$INSTALL_PREFIX` in the souce files first by running:
 ```console
 $ find etc sbin -type f -exec sed -i.bak -e 's|$INSTALL_PREFIX||g' {} \; -exec rm {}.bak \;
 ```
@@ -100,7 +104,7 @@ and you should now see that all files have been changed like e.g.
 -export RESTIC_PASSWORD_FILE="$INSTALL_PREFIX/etc/restic/pw.txt"
 +export RESTIC_PASSWORD_FILE="/etc/restic/pw.txt"
 ```
-This prefix is there so that `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install`. So if we don't use the makefile, we need to remove this prefix with the command above just.
+This prefix is there so that `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`. So if we don't use the makefile, we need to remove this prefix with the command above just.
 
 
 Arch Linux users can install the aur package [restic-systemd-automatic-backup](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) e.g.:
@@ -256,11 +260,11 @@ straightforward (it needs to run with sudo to read environment). Just run:
 If you want to run an all-classic cron job instead, do like this:
 
 * `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
+  * You can use `$ make install-cron` to copy it over to `/etc/cron.d`.
 * `sbin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
 
 # Uninstall
-
-There is a make target to remove all files (scripts and configs) that were installed by `sudo make install`. Just run:
+There is a make target to remove all files (scripts and configs) that were installed by `sudo make install-*`. Just run:
 
 ```console
 $ sudo make uninstall
@@ -273,7 +277,7 @@ A list of variations of this setup:
 # Development
 * To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
    ```console
-   $ PREFIX=/tmp/restic-test make install
+   $ PREFIX=/tmp/restic-test make install-systemd
    ```
 * **Updating the `resticw` parser:** If you ever update the usage `DOC`, you will need to refresh the auto-generated parser:
   ```console
