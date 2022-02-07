@@ -39,7 +39,7 @@ MKDIR_PARENTS=sh -c '\
 	     ' MKDIR_PARENTS
 
 # Source directories.
-DIR_SCRIPT	= sbin
+DIR_SCRIPT	= bin
 DIR_CONF	= etc/restic
 DIR_SYSTEMD	= usr/lib/systemd/system
 DIR_CRON	= etc/cron.d

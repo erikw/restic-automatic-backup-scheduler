@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    # systemctl disable restic-backup@<profile>.timer
    # systemctl enable restic-backup@<profile>.timer
    ```
-- **BREAKING CHANGE** moved script installation with makefile from `/usr/local/sbin` to `/sbin` to have a simpler interface to work with `$PREFIX`.
+- **BREAKING CHANGE** moved script installation with makefile from `/usr/local/sbin` to `/bin` to have a simpler interface to work with `$PREFIX`.
 - Renamed top level make install targets. The old `$ make install` is now `$ make install-systemd`
 
 ### Fixed
