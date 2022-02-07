@@ -39,45 +39,52 @@ MKDIR_PARENTS=sh -c '\
 	     ' MKDIR_PARENTS
 
 # Source directories.
-DIR_SCRIPT	= bin
-DIR_CONF	= etc/restic
-DIR_SYSTEMD	= usr/lib/systemd/system
-DIR_CRON	= etc/cron.d
+DIR_SCRIPT		= bin
+DIR_CONF		= etc/restic
+DIR_SYSTEMD		= usr/lib/systemd/system
+DIR_CRON		= etc/cron.d
+DIR_LAUNCHAGENT	= Library/LaunchAgents
 
 # Source files.
 SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
 SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
+SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
 BUILD_DIR			:= build
-BUILD_DIR_SCRIPT	= $(BUILD_DIR)/$(DIR_SCRIPT)
-BUILD_DIR_CONF		= $(BUILD_DIR)/$(DIR_CONF)
-BUILD_DIR_SYSTEMD	= $(BUILD_DIR)/$(DIR_SYSTEMD)
-BUILD_DIR_CRON		= $(BUILD_DIR)/$(DIR_CRON)
+BUILD_DIR_SCRIPT		= $(BUILD_DIR)/$(DIR_SCRIPT)
+BUILD_DIR_CONF			= $(BUILD_DIR)/$(DIR_CONF)
+BUILD_DIR_SYSTEMD		= $(BUILD_DIR)/$(DIR_SYSTEMD)
+BUILD_DIR_CRON			= $(BUILD_DIR)/$(DIR_CRON)
+BUILD_DIR_LAUNCHAGENT	= $(BUILD_DIR)/$(DIR_LAUNCHAGENT)
 
 # Sources copied to build directory.
-BUILD_SRCS_SCRIPT	= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPT))
-BUILD_SRCS_CONF		= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
-BUILD_SRCS_SYSTEMD	= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
-BUILD_SRCS_CRON		= $(addprefix $(BUILD_DIR)/, $(SRCS_CRON))
+BUILD_SRCS_SCRIPT		= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPT))
+BUILD_SRCS_CONF			= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
+BUILD_SRCS_SYSTEMD		= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
+BUILD_SRCS_CRON			= $(addprefix $(BUILD_DIR)/, $(SRCS_CRON))
+BUILD_SRCS_LAUNCHAGENT	= $(addprefix $(BUILD_DIR)/, $(SRCS_LAUNCHAGENT))
 
 # Destination directories
 DEST_DIR_SCRIPT		= $(PREFIX)/$(DIR_SCRIPT)
 DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
 DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
 DEST_DIR_CRON		= $(PREFIX)/$(DIR_CRON)
+DEST_DIR_LAUNCHAGENT= /$(DIR_LAUNCHAGENT)
 
 # Destination file targets.
-DEST_TARGS_SCRIPT	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
-DEST_TARGS_CONF		= $(addprefix $(PREFIX)/, $(SRCS_CONF))
-DEST_TARGS_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
-DEST_TARGS_CRON		= $(addprefix $(PREFIX)/, $(SRCS_CRON))
+DEST_TARGS_SCRIPT		= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
+DEST_TARGS_CONF			= $(addprefix $(PREFIX)/, $(SRCS_CONF))
+DEST_TARGS_SYSTEMD		= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
+DEST_TARGS_CRON			= $(addprefix $(PREFIX)/, $(SRCS_CRON))
+DEST_TARGS_LAUNCHAGENT	= $(addprefix /, $(SRCS_LAUNCHAGENT))
 
 INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) \
-				  $(DEST_TARGS_SYSTEMD) $(DEST_TARGS_CRON)
+				  $(DEST_TARGS_SYSTEMD) $(DEST_TARGS_CRON) \
+				  $(DEST_TARGS_LAUNCHAGENT)
 
 
 #### Targets ##################################################################
@@ -101,17 +108,23 @@ uninstall:
 # $ PREFIX=/usr/local make install-systemd
 # $ PREFIX=/tmp/test make install-systemd
 # target: install-systemd - Install systemd setup.
-install-systemd: install-targets-script install-targets-conf install-targets-systemd
+install-systemd: install-targets-script install-targets-conf \
+					install-targets-systemd
 
 # target: install-cron - Install cron setup.
 install-cron: install-targets-script install-targets-conf install-targets-cron
+
+# target: install-launchagent - Install LaunchAgent setup.
+install-launchagent: install-targets-script install-targets-conf \
+						install-targets-launchagent
 
 # Install targets. Prereq build sources as well,
 # so that build dir is re-created if deleted.
 install-targets-script: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
 install-targets-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
-install-targets-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
-install-targets-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
+install-targets-systemd: $(DEST_TARGS_SYSTEMD) $(BUILD_SRCS_SYSTEMD)
+install-targets-cron: $(DEST_TARGS_CRON) $(BUILD_SRCS_CRON)
+install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) $(BUILD_SRCS_LAUNCHAGENT)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %
@@ -138,3 +151,8 @@ $(DEST_DIR_SYSTEMD)/%: $(BUILD_DIR_SYSTEMD)/%
 $(DEST_DIR_CRON)/%: $(BUILD_DIR_CRON)/%
 	@${MKDIR_PARENTS} $@
 	install -m 0644 $< $@
+
+# Install destination launchagent files.
+$(DEST_DIR_LAUNCHAGENT)/%: $(BUILD_DIR_LAUNCHAGENT)/%
+	${MKDIR_PARENTS} $@
+	install -m 0444 $< $@
