@@ -54,7 +54,7 @@ SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
-BUILD_DIR			:= build
+BUILD_DIR				:= build
 BUILD_DIR_SCRIPT		= $(BUILD_DIR)/$(DIR_SCRIPT)
 BUILD_DIR_CONF			= $(BUILD_DIR)/$(DIR_CONF)
 BUILD_DIR_SYSTEMD		= $(BUILD_DIR)/$(DIR_SYSTEMD)
