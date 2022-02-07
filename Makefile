@@ -96,7 +96,7 @@ help:
 clean:
 	$(RM) -r $(BUILD_DIR)
 
-# target: uninstall - Uninstall ALL files from all install targets.
+# target: uninstall - Uninstall ALL installed (including config) files.
 uninstall:
 	@for file in $(INSTALLED_FILES); do \
 			echo $(RM) $$file; \
