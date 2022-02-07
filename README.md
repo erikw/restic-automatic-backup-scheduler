@@ -48,6 +48,7 @@ Tip: use the Section icon in the top left of this document to navigate the secti
 # Setup
 Depending on your system, the setup will look different. Choose one of
 * [Linux + Systemd](#setup-linux-systemd)
+* [macOS + LaunchAgent](#setup-macos-launchagent)
 * [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
 ## Setup Linux Systemd
@@ -260,6 +261,12 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw stats` / `resticw stats snapshot-id ...` | Show the statistics for the whole repo or the specified snapshots |
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
+## Setup macOS LaunchAgent
+
+```console
+$ sudo PREFIX=/usr/local make install-launchagent
+$ launchctl load -w /Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
+```
 
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
