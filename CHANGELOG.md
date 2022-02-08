@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    # systemctl enable restic-backup@<profile>.timer
    ```
 - **BREAKING CHANGE** moved script installation with makefile from `/usr/local/sbin` to `/bin` to have a simpler interface to work with `$PREFIX`.
-- **BREAKING CHANGE** renamed `etc/restic/*.env` files to `etc/restic/*.env.sh` to clearly communicate that it's a shell script that will be executed (source), and also hint at code editors what file this is to set corect syntax highligting etc.
+- **BREAKING CHANGE** renamed `etc/restic/*.env` files to `etc/restic/*.env.sh` to clearly communicate that it's a shell script that will be executed (source), and also hint at code editors what file this is to set corect syntax highligting etc. This also enables the shellcheck linter to work more easily on these files as well.
 - Renamed top level make install targets. The old `$ make install` is now `$ make install-systemd`
 
 ### Fixed

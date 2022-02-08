@@ -1,3 +1,5 @@
+# shellcheck shell=sh
+
 # This is the default profile. Fill it with your desired configuration.
 # Additionally, you can create and use more profiles by copying this file.
 
@@ -9,7 +11,8 @@
 #  Thus you don't have to provide all the arguments like
 #  $ restic --repo ... --password-file ...
 
-source $INSTALL_PREFIX/etc/restic/_global.env.sh
+# shellcheck source=etc/restic/_global.env.sh
+. "$INSTALL_PREFIX/etc/restic/_global.env.sh"
 
 # Below envvar will override those in _global.env.sh
 
