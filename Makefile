@@ -115,26 +115,26 @@ install-targets-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %
-	${MKDIR_PARENTS} $@
+	@${MKDIR_PARENTS} $@
 	cp $< $@
 	sed -i.bak -e 's|$$INSTALL_PREFIX|$(PREFIX)|g' $@; rm $@.bak
 
 # Install destination script files.
 $(DEST_DIR_SCRIPT)/%: $(BUILD_DIR_SCRIPT)/%
-	${MKDIR_PARENTS} $@
+	@${MKDIR_PARENTS} $@
 	install -m 0744 $< $@
 
 # Install destination conf files. Additionally backup existing files.
 $(DEST_DIR_CONF)/%: $(BUILD_DIR_CONF)/%
-	${MKDIR_PARENTS} $@
+	@${MKDIR_PARENTS} $@
 	install -m 0600 -b $(BAK_SUFFIX) $< $@
 
 # Install destination systemd files.
 $(DEST_DIR_SYSTEMD)/%: $(BUILD_DIR_SYSTEMD)/%
-	${MKDIR_PARENTS} $@
+	@${MKDIR_PARENTS} $@
 	install -m 0644 $< $@
 
 # Install destination cron files.
 $(DEST_DIR_CRON)/%: $(BUILD_DIR_CRON)/%
-	${MKDIR_PARENTS} $@
+	@${MKDIR_PARENTS} $@
 	install -m 0644 $< $@
