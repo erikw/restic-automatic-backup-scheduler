@@ -136,11 +136,12 @@ profile_file="${ENV_DIR}/${__profile}.env.sh"
 [[ ! -f "$profile_file" ]] && echo "Invalid profile: No such environment file ${profile_file}" && exit "$ERR_NO_SUCH_PROFILE"
 
 if [[ ! -r "$profile_file" ]]; then
-	echo "Error: could not read the environment file ${profile_file}. Are you running this script as the correct user? Maybe try sudo with the right user."
+	echo "Error: Could not read the environment file ${profile_file}. Are you running this script as the correct user? Maybe try sudo with the right user."
 	exit "$ERR_PROFILE_NO_READ_PERM"
 fi
 
 echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
 
 # shellcheck disable=SC2154,SC1090
-source "$profile_file" && restic "$_restic_arguments_line_"
+source "$profile_file" && restic "${_restic_arguments_line_[@]}"
+
