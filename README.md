@@ -76,6 +76,7 @@ Depending on your system, the setup will look different. Choose one of
    ```console
    $ sudo systemctl start restic-backup@default
    ```
+   ☝️ Please, **note that** this will not run as immediate as you would expect, as the service has a 5 minutes random delay to minimise the chance that multiple backup profiles run at the same time and hog resources.
 1. Watch its progress with Systemd journal:
    ```console
    $ journalctl -f --lines=50 -u restic-backup@default
