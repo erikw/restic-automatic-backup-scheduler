@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.0.0] - 2022-02-08
 ### Added
 - `resticw` wrapper for working with different profiles without the need to source the profiles first.
 - `$ make install-systemd` will now make a timestamped backup of any existing `/etc/restic/*` files before installing a newer version.
