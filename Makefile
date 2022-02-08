@@ -154,5 +154,5 @@ $(DEST_DIR_CRON)/%: $(BUILD_DIR_CRON)/%
 
 # Install destination launchagent files.
 $(DEST_DIR_LAUNCHAGENT)/%: $(BUILD_DIR_LAUNCHAGENT)/%
-	${MKDIR_PARENTS} $@
+	@${MKDIR_PARENTS} $@
 	install -m 0444 $< $@
