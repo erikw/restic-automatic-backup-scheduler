@@ -61,8 +61,8 @@ Depending on your system, the setup will look different. Choose one of
    and `/usr/bin`). Have a look to the `Makefile` to know more.
 1. Fill out configuration values (edit with sudo):
    * `/etc/restic/pw.txt` - Contains the password (single line) to be used by restic to encrypt the repository files. Should be different than your B2 password!
-   * `/etc/restic/_global.env` - Global environment variables.
-   * `/etc/restic/default.env` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env`).
+   * `/etc/restic/_global.env.sh` - Global environment variables.
+   * `/etc/restic/default.env.sh` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env.sh`).
    * `/etc/restic/backup_exclude.txt` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
 1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
@@ -82,10 +82,10 @@ Depending on your system, the setup will look different. Choose one of
 1. Verify the backup
    ```console
    $ sudo -i
-   $ source /etc/restic/default.env
+   $ source /etc/restic/default.env.sh
    $ restic snapshots
    ```
-1. (optional) Define multiple profiles: just make a copy of the `default.env` and use the defined profile name in place of `default` to run backups or enable timers. Notice that the value after `@` works as a parameter.
+1. (optional) Define multiple profiles: just make a copy of the `default.env.sh` and use the defined profile name in place of `default` to run backups or enable timers. Notice that the value after `@` works as a parameter.
 1. (optional) Enable the check job that verifies that the backups for the profile are all intact.
    ```console
    $ sudo systemctl enable --now restic-check@default.timer
@@ -130,10 +130,10 @@ For restic to be able to connect to your bucket, you want to in the B2 settings 
 > **Attention!** Going the manual way requires that most of the following commands are run as root.
 
 Put these files in `/etc/restic/`:
-* `_global.env`: Fill this file out with your global settings including B2 keyID & applicationKey. A global exclude list is set here (explained in section below).
-* `default.env`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
+* `_global.env.sh`: Fill this file out with your global settings including B2 keyID & applicationKey. A global exclude list is set here (explained in section below).
+* `default.env.sh`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env.sh` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
    ```console
-   $ source /etc/restic/default.env
+   $ source /etc/restic/default.env.sh
    $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
    ````
 * `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
@@ -145,16 +145,16 @@ Put these files in `/etc/restic/`:
 Now we must initialize the repository on the remote end:
 ```console
 $ sudo -i
-$ source /etc/restic/default.env
+$ source /etc/restic/default.env.sh
 $ restic init
 ```
 
 #### 4. Script for doing the backup
 Put this file in `/bin`:
-* `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env` profiles.
+* `restic_backup.sh`: A script that defines how to run the backup. The intention is that you should not need to edit this script yourself, but be able to control everything from the `*.env.sh` profiles.
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
-* `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
+* `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env.sh`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
 * `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$RESTIC_BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
 
 #### 5. Make first backup
@@ -162,15 +162,15 @@ Now see if the backup itself works, by running as root
 
 ```console
 $ sudo -i
-$ source /etc/restic/default.env
+$ source /etc/restic/default.env.sh
 $ /bin/restic_backup.sh
 ````
 
 #### 6. Verify the backup
-As the `default.env` is already sourced in your root shell, you can now just list the snapshos
+As the `default.env.sh` is already sourced in your root shell, you can now just list the snapshos
 ```console
 $ sudo -i
-$ source /etc/restic/default.env
+$ source /etc/restic/default.env.sh
 $ restic snapshots
 ```
 

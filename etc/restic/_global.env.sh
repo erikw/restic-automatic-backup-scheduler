@@ -1,5 +1,5 @@
 # Global envionment variables
-# These variables are sourced FIRST, and any values inside of *.env files for
+# These variables are sourced FIRST, and any values inside of *.env.sh files for
 # specific configurations will override if also defined there.
 
 

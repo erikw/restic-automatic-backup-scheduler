@@ -1,17 +1,17 @@
 # This is the default profile. Fill it with your desired configuration.
 # Additionally, you can create and use more profiles by copying this file.
 
-# This file (and other .env files) has two purposes:
+# This file (and other .env.sh files) has two purposes:
 # - being sourced by systemd timers to setup the backup before running restic_backup.sh
 # - being sourced in a user's shell to work directly with restic commands e.g.
-#  $ source /etc/restic/default.env
+#  $ source /etc/restic/default.env.sh
 #  $ restic snapshots
 #  Thus you don't have to provide all the arguments like
 #  $ restic --repo ... --password-file ...
 
-source $INSTALL_PREFIX/etc/restic/_global.env
+source $INSTALL_PREFIX/etc/restic/_global.env.sh
 
-# Below envvar will override those in _global.env
+# Below envvar will override those in _global.env.sh
 
 export RESTIC_REPOSITORY="b2:<b2-repo-name>"   # *EDIT* fill with your repo name
 

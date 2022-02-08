@@ -5,7 +5,7 @@
 # - from restic service/timer: $PREFIX/etc/systemd/system/restic-backup.{service,timer}
 # - from a cronjob: $PREFIX/etc/cron.d/restic
 # - manually by a user. For it to work, the environment variables must be set in the shell where this script is executed
-#   $ source $PREFIX/etc/default.env
+#   $ source $PREFIX/etc/default.env.sh
 #   $ restic_backup.sh
 
 # Exit on error, unset var, pipe failure
@@ -28,7 +28,7 @@ assert_envvars() {
 	local varnames=("$@")
 	for varname in "${varnames[@]}"; do
 		if [ -z ${!varname+x} ]; then
-			printf "%s must be set for this script to work.\n\nDid you forget to source a /etc/restic/*.env profile in the current shell before executing this script?\n" "$varname" >&2
+			printf "%s must be set for this script to work.\n\nDid you forget to source a /etc/restic/*.env.sh profile in the current shell before executing this script?\n" "$varname" >&2
 			exit 1
 		fi
 	done

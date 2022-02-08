@@ -131,7 +131,7 @@ ERR_NO_SUCH_PROFILE=2
 ERR_PROFILE_NO_READ_PERM=3
 
 # shellcheck disable=SC2154
-profile_file="${ENV_DIR}/${__profile}.env"
+profile_file="${ENV_DIR}/${__profile}.env.sh"
 
 [[ ! -f "$profile_file" ]] && echo "Invalid profile: No such environment file ${profile_file}" && exit "$ERR_NO_SUCH_PROFILE"
 
