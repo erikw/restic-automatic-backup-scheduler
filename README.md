@@ -66,7 +66,7 @@ Depending on your system, the setup will look different. Choose one of
    * `/etc/restic/backup_exclude.txt` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 1. Initialize remote repo as described [below](#3-initialize-remote-repo)
 1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
-   * Edit if needed `OnCalendar` in `/usr/lib/systemd/system/restic-check@.timer`.
+   * Edit if needed `OnCalendar` in `/usr/lib/systemd/system/restic-backup@.timer`.
 1. Enable automated backup for starting with the system (`enable` creates symlinks):
    ```console
    $ sudo systemctl start restic-backup@default.timer
