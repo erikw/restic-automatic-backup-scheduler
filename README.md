@@ -69,8 +69,7 @@ Depending on your system, the setup will look different. Choose one of
    * Edit if needed `OnCalendar` in `/usr/lib/systemd/system/restic-backup@.timer`.
 1. Enable automated backup for starting with the system (`enable` creates symlinks):
    ```console
-   $ sudo systemctl start restic-backup@default.timer
-   $ sudo systemctl enable restic-backup@default.timer
+   $ sudo systemctl enable --now restic-backup@default.timer
    ```
 1. And run an immediate backup if you want (if not, it will run on daily basis):
    ```console
@@ -89,8 +88,7 @@ Depending on your system, the setup will look different. Choose one of
 1. (optional) Define multiple profiles: just make a copy of the `default.env` and use the defined profile name in place of `default` to run backups or enable timers. Notice that the value after `@` works as a parameter.
 1. (optional) Enable the check job that verifies that the backups for the profile are all intact.
    ```console
-   $ sudo systemctl start restic-check@default.timer
-   $ sudo systemctl enable restic-check@default.timer
+   $ sudo systemctl enable --now restic-check@default.timer
    ````
 1. (optional) Setup email on failure as described [here](#8-email-notification-on-failure)
 
@@ -193,8 +191,7 @@ Put these files in `/etc/systemd/system` (note that the Makefile installs as pac
 
 Now simply enable the timer with:
 ```console
-$ systemctl start restic-backup@default.timer
-$ systemctl enable restic-backup@default.timer
+$ sudo systemctl enable --now restic-backup@default.timer
 ````
 
  ☝ **Note**: You can run it with different values instead of `default` if you use multiple profiles.
@@ -244,9 +241,7 @@ Once in a while it can be good to do a health check of the remote repository, to
 There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `bin/` and copy what you need over to their corresponding locations.
 
 ```console
-$ sudo -i
-$ systemctl start restic-check@default.timer
-$ systemctl enable restic-check@default.timer
+$ sudo systemctl enable --now restic-check@default.timer
 ````
 
 #### 10. Optional: 🏃 Restic wrapper
