@@ -3,5 +3,4 @@ Description=Check if the current NetworkManager connection is metered
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/sbin/nm-unmetered-connection.sh
-
+ExecStart=$INSTALL_PREFIX/bin/nm-unmetered-connection.sh

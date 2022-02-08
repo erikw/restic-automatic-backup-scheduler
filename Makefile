@@ -1,60 +1,140 @@
-# Not file targets.
-.PHONY: help install install-scripts install-conf install-systemd uninstall
+#### Notes ####################################################################
+# This build process is done in three stages (out-of-source build):
+# 1. copy source files to the local build directory.
+# 2. build dir: replace the string "$INSTALL_PREFIX" with the value of $PREFIX
+# 3. install files from the build directory to the target directory.
+#
+# Why this dance?
+# * To fully support that a user can install this project to a custom path e.g.
+#   $(PREFIX=/usr/local make install), we need to modify the files that refer
+#   to other files on disk. We do this by having a placeholder
+#   "$INSTALL_PREFIX"  that is substituted with the value of $PREFIX when
+#   installed.
+# * We don't want to modify the files that are controlled by git, thus let's
+#   copy them to a build directory and then modify.
 
-### Macros ###
-SRCS_SCRIPTS	= $(filter-out %cron_mail, $(wildcard usr/local/sbin/*))
-# $(sort) remove duplicates that comes from running make install >1 times.
-SRCS_CONF	= $(sort $(patsubst %.template, %, $(wildcard etc/restic/*)))
-SRCS_SYSTEMD	= $(wildcard etc/systemd/system/*)
+#### Non-file targets #########################################################
+.PHONY: help clean uninstall \
+	install-systemd install-cron \
+	install-targets-script install-targets-conf install-targets-systemd \
+	install-targets-cron
 
-# To change the installation root path, set the PREFIX variable in your shell's environment, like:
-# $ PREFIX=/usr/local make install
-# $ PREFIX=/tmp/test make install
-DEST_SCRIPTS	= $(PREFIX)/usr/local/sbin
-DEST_CONF	= $(PREFIX)/etc/restic
-DEST_SYSTEMD	= $(PREFIX)/etc/systemd/system
+#### Macros ###################################################################
+NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
 
-INSTALLED_FILES = $(addprefix $(PREFIX)/, $(SRCS_SCRIPTS) $(SRCS_CONF) $(SRCS_SYSTEMD))
+# GNU and macOS install have incompatible command line arguments.
+GNU_INSTALL := $(shell install --version 2>/dev/null | \
+			   grep -q GNU && echo true || echo false)
+ifeq ($(GNU_INSTALL),true)
+    BAK_SUFFIX = --suffix=.$(NOW).bak
+else
+    BAK_SUFFIX = -B .$(NOW).bak
+endif
 
-### Targets ###
-# target: all - Default target.
-all: install
+# Create parent directories of a file, if not existing.
+# Reference: https://stackoverflow.com/a/25574592/265508
+MKDIR_PARENTS=sh -c '\
+	     dir=$$(dirname $$1); \
+	     test -d $$dir || mkdir -p $$dir \
+	     ' MKDIR_PARENTS
 
-# target: help - Display all targets.
+# Source directories.
+DIR_SCRIPT	= bin
+DIR_CONF	= etc/restic
+DIR_SYSTEMD	= usr/lib/systemd/system
+DIR_CRON	= etc/cron.d
+
+# Source files.
+SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
+SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
+SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
+SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
+
+# Local build directory. Sources will be copied here,
+# modified and then installed from this directory.
+BUILD_DIR			:= build
+BUILD_DIR_SCRIPT	= $(BUILD_DIR)/$(DIR_SCRIPT)
+BUILD_DIR_CONF		= $(BUILD_DIR)/$(DIR_CONF)
+BUILD_DIR_SYSTEMD	= $(BUILD_DIR)/$(DIR_SYSTEMD)
+BUILD_DIR_CRON		= $(BUILD_DIR)/$(DIR_CRON)
+
+# Sources copied to build directory.
+BUILD_SRCS_SCRIPT	= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPT))
+BUILD_SRCS_CONF		= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
+BUILD_SRCS_SYSTEMD	= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
+BUILD_SRCS_CRON		= $(addprefix $(BUILD_DIR)/, $(SRCS_CRON))
+
+# Destination directories
+DEST_DIR_SCRIPT		= $(PREFIX)/$(DIR_SCRIPT)
+DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
+DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
+DEST_DIR_CRON		= $(PREFIX)/$(DIR_CRON)
+
+# Destination file targets.
+DEST_TARGS_SCRIPT	= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
+DEST_TARGS_CONF		= $(addprefix $(PREFIX)/, $(SRCS_CONF))
+DEST_TARGS_SYSTEMD	= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
+DEST_TARGS_CRON		= $(addprefix $(PREFIX)/, $(SRCS_CRON))
+
+INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) \
+				  $(DEST_TARGS_SYSTEMD) $(DEST_TARGS_CRON)
+
+
+#### Targets ##################################################################
+# target: help - Default target; displays all targets.
 help:
-	@egrep "#\starget:" [Mm]akefile  | sed 's/\s-\s/\t\t\t/' | cut -d " " -f3- | sort -d
+	@egrep "#\starget:" [Mm]akefile | cut -d " " -f3- | sort -d
 
-# target: install - Install all files
-install: install-scripts install-conf install-systemd
+# target: clean - Remove build files.
+clean:
+	$(RM) -r $(BUILD_DIR)
 
-
-# target: install-scripts - Install executables.
-install-scripts:
-	install -d $(DEST_SCRIPTS)
-	install -m 0744 $(filter-out %/resticw, $(SRCS_SCRIPTS)) $(DEST_SCRIPTS)
-	install -m 0755 usr/local/sbin/resticw $(DEST_SCRIPTS)
-
-# Copy templates to new files with restricted permissions.
-# Why? Because the non-template files are git-ignored to prevent that someone who clones or forks this repo checks in their sensitive data like the B2 password!
-etc/restic/_global.env etc/restic/default.env etc/restic/pw.txt:
-	install -m 0600 $@.template $@
-
-# target: install-conf - Install restic configuration files.
-# will create these files locally only if they don't already exist
-# `|` means that dependencies are order-only, i.e. only created if they don't already exist.
-install-conf: | $(SRCS_CONF)
-	install -d $(DEST_CONF)
-	install -b -m 0600 $(SRCS_CONF) $(DEST_CONF)
-	$(RM) etc/restic/_global.env etc/restic/default.env etc/restic/pw.txt
-
-# target: install-systemd - Install systemd timer and service files.
-install-systemd:
-	install -d $(DEST_SYSTEMD)
-	install -m 0644 $(SRCS_SYSTEMD) $(DEST_SYSTEMD)
-
-# target: uninstall - Uninstall ALL files from the install targets.
+# target: uninstall - Uninstall ALL files from all install targets.
 uninstall:
 	@for file in $(INSTALLED_FILES); do \
 			echo $(RM) $$file; \
 			$(RM) $$file; \
 	done
+
+# To change the installation root path,
+# set the PREFIX variable in your shell's environment, like:
+# $ PREFIX=/usr/local make install-systemd
+# $ PREFIX=/tmp/test make install-systemd
+# target: install-systemd - Install systemd setup.
+install-systemd: install-targets-script install-targets-conf install-targets-systemd
+
+# target: install-cron - Install cron setup.
+install-cron: install-targets-script install-targets-conf install-targets-cron
+
+# Install targets. Prereq build sources as well,
+# so that build dir is re-created if deleted.
+install-targets-script: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
+install-targets-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
+install-targets-systemd: $(DEST_TARGS_SYSTEMD)  $(BUILD_SRCS_SYSTEMD)
+install-targets-cron: $(DEST_TARGS_CRON)  $(BUILD_SRCS_CRON)
+
+# Copies sources to build directory & replace "$INSTALL_PREFIX".
+$(BUILD_DIR)/% : %
+	@${MKDIR_PARENTS} $@
+	cp $< $@
+	sed -i.bak -e 's|$$INSTALL_PREFIX|$(PREFIX)|g' $@; rm $@.bak
+
+# Install destination script files.
+$(DEST_DIR_SCRIPT)/%: $(BUILD_DIR_SCRIPT)/%
+	@${MKDIR_PARENTS} $@
+	install -m 0744 $< $@
+
+# Install destination conf files. Additionally backup existing files.
+$(DEST_DIR_CONF)/%: $(BUILD_DIR_CONF)/%
+	@${MKDIR_PARENTS} $@
+	install -m 0600 -b $(BAK_SUFFIX) $< $@
+
+# Install destination systemd files.
+$(DEST_DIR_SYSTEMD)/%: $(BUILD_DIR_SYSTEMD)/%
+	@${MKDIR_PARENTS} $@
+	install -m 0644 $< $@
+
+# Install destination cron files.
+$(DEST_DIR_CRON)/%: $(BUILD_DIR_CRON)/%
+	@${MKDIR_PARENTS} $@
+	install -m 0644 $< $@

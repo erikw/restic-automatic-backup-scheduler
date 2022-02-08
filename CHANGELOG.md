@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `resticw` wrapper for working with different profiles without the need to source the profiles first.
+- `$ make install-systemd` will now make a timestamped backup of any existing `/etc/restic/*` files before installing a newer version.
+- `$ make install-cron` for installing the cron-job.
+
+### Changed
+- **BREAKING CHANGE** moved systemd installation with makefile from `/etc/systemd/system` to `/usr/lib/systemd/system` as this is what packages should do. This is to be able to simplify the arch [PKGBUILD](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=restic-systemd-automatic-backup) so that it does not need to do anything else than `make install`.
+   - If you upgrade form an existing install, you should disable and then re-enable the timer, so that the symlink is pointing to the new location of the timer.
+   ```console
+   # systemctl disable restic-backup@<profile>.timer
+   # systemctl enable restic-backup@<profile>.timer
+   ```
+- **BREAKING CHANGE** moved script installation with makefile from `/usr/local/sbin` to `/bin` to have a simpler interface to work with `$PREFIX`.
+- Renamed top level make install targets. The old `$ make install` is now `$ make install-systemd`
+
+### Fixed
+- Installation with custom `PREFIX` now works properly with Make: `$ PREFIX=/usr/local make install` whill now install everything at the expected location. With this, it's easy to use this script as non-root user on e.g. an macOS system.
 
 ## [4.0.0] - 2022-02-01
 ### Fixed
@@ -46,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `restic_backup.sh` now finds `.backup_exclude` files on each backup path as intended.
+- Install executeables to `$PREFIX/sbin` instead of `$PREFIX/user/local/sbin`, so that `$ PREFIX=/usr/local make install` does what is expected.
 
 ## [1.0.1] - 2021-12-03
 ### Fixed

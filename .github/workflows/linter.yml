@@ -7,13 +7,13 @@ on:
     paths:
       - '**.sh'
       - '.github/workflows/linter.yml'
-      - 'usr/local/sbin/**'
+      - 'bin/**'
   pull_request:
     branches: master
     paths:
       - '**.sh'
       - '.github/workflows/linter.yml'
-      - 'usr/local/sbin/**'
+      - 'bin/**'
 jobs:
   build:
     name: Lint Code Base
