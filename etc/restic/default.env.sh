@@ -14,7 +14,7 @@
 # shellcheck source=etc/restic/_global.env.sh
 . "$INSTALL_PREFIX/etc/restic/_global.env.sh"
 
-# Below envvar will override those in _global.env.sh
+# Envvars below those those in _global.env.sh if present.
 
 export RESTIC_REPOSITORY="b2:<b2-repo-name>"   # *EDIT* fill with your repo name
 
