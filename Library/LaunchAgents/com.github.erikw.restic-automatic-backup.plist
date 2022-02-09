@@ -15,7 +15,7 @@
 		<array>
 			<string>/bin/bash</string>
 			<string>-c</string>
-			<string>export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin &amp;&amp; source /usr/local/etc/restic/erikw.env.sh &amp;&amp; PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin /usr/local/bin/restic_backup.sh</string>
+			<string>source /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh</string>
 		</array>
 		<!-- how use $HOME? -->
 		<key>StandardOutPath</key>
