@@ -44,11 +44,11 @@ Tip: use the Section icon in the top left of this document to navigate the secti
   * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the preinstalled or a more recent with Homebrew)
 
 
-
 # Setup
 Depending on your system, the setup will look different. Choose one of
-* [Linux + Systemd](#setup-linux-systemd)
-* [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" /> [Linux + Systemd](#setup-linux-systemd)
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" /> [macOS + LaunchAgent](#setup-macos-launchagent)
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
 ## Setup Linux Systemd
 ### TL;DR Setup
@@ -260,6 +260,36 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw stats` / `resticw stats snapshot-id ...` | Show the statistics for the whole repo or the specified snapshots |
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
+## Setup macOS LaunchAgent
+LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](https://www.launchd.info/).
+[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we we set up an LauchAgent to be run as your normal user for starting regular backups.
+
+1. In general, follow the same setup as in (#setup-linux-systemd) except for:
+  * use `make install-launchagent` instead of `make install-systemd`
+  * install everything to `/usr/local` and run restic as your own use, not root
+  * Thus, install with
+	```console
+	$ PREFIX=/usr/local make install-launchagent
+	```
+1. After installation with `make` , edit the installed LaunchAgent if you want to change the default schedule or profile used:
+	```console
+	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist 
+	```
+1. Now install, enable and start the first run!
+	```console
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
+	```
+	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
+
+Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
+```
+$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup
+$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup
+```
+
+If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
 
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:

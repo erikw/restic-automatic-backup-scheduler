@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- See launchd.plist(5)for documentation on this file. -->
+<!-- See https://www.launchd.info/ for a tutorial. -->
+<!-- Debug with: $ tail -f /var/log/com.apple.xpc.launchd/launchd.log | grep erikw.restic -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Label</key>
+		<string>com.github.erikw.restic-automatic-backup</string>
+		<key>ProgramArguments</key>
+		<!-- exec in subshell to 1) source *.env.sh 2) expand $HOME to logpath (ref. https://apple.stackexchange.com/a/365880/197493) -->
+		<array>
+			<string>/bin/bash</string>
+			<string>-c</string>
+			<string>source /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh >>$HOME/$LOG_OUT 2>>$HOME/$LOG_ERR</string>
+		</array>
+		<key>EnvironmentVariables</key>
+		<dict>
+			<key>PATH</key>
+			<string>/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+			<key>LOG_OUT</key>
+			<string>/Library/Logs/restic/restic_stdout.log</string>
+			<key>LOG_ERR</key>
+			<string>/Library/Logs/restic/restic_stderr.log</string>
+		</dict>
+		<key>RunAtLoad</key>
+		<true/>
+		<!-- Will schedule backup every day at 19:00 -->
+		<key>StartCalendarInterval</key>
+		<array>
+			<dict>
+				<key>Hour</key>
+				<integer>19</integer>
+				<key>Minute</key>
+				<integer>0</integer>
+			</dict>
+		</array>
+	</dict>
+</plist>
