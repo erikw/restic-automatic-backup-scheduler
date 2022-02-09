@@ -262,23 +262,28 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
 ## Setup macOS LaunchAgent
-LaunchAgent is the modern service schedulerin in macOS that uses [Launchd](https://www.launchd.info/).
-[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we we set up an Lauch Agent to be run as your normal user for starting regular backups.
+LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](https://www.launchd.info/).
+[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we we set up an LauchAgent to be run as your normal user for starting regular backups.
 
-```console
-$ PREFIX=/usr/local make install-launchagent
-$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist  # Edit schedule if needed.
-$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
-$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
-$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
-```
+1. In general, follow the same setup as in (#setup-linux-systemd) except taht
+  * use `make install-launchagent` instead of `make install-systemd`
+  * Install everything to `/usr/local` and run restic as your own use, not root
+  * Thus, install with
+	```console
+	$ PREFIX=/usr/local make install-launchagent
+	```
+1. After installation with `make` , edit the installed launchagent if you want to change the default schedule or profile used
+	```console
+	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist 
+	```
+1. Now install, enable and kickstart the first run!
+	```console
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
+	```
 
-Debug with
-```console
-$ sudo launchctl debug gui/$UID/com.github.erikw.restic-automatic-backup --stdout --stderr
-```
-
-TODO how disable?
+Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
 ```
 $ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup
 $ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup

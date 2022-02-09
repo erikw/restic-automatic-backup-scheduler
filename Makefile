@@ -1,3 +1,4 @@
+# TODO add install for launchagent completely, and unisntall target using bootstrap?
 #### Notes ####################################################################
 # This build process is done in three stages (out-of-source build):
 # 1. copy source files to the local build directory.
