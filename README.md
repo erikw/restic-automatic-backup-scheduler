@@ -289,6 +289,8 @@ $ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup
 $ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup
 ```
 
+If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
+
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
 
