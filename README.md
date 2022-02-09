@@ -44,12 +44,11 @@ Tip: use the Section icon in the top left of this document to navigate the secti
   * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the preinstalled or a more recent with Homebrew)
 
 
-
 # Setup
 Depending on your system, the setup will look different. Choose one of
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" /> [Linux + Systemd](#setup-linux-systemd)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" /> [macOS + LaunchAgent](#setup-macos-launchagent)
-* [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
 ## Setup Linux Systemd
 ### TL;DR Setup
@@ -282,6 +281,7 @@ LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](http
 	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
 	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
 	```
+	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
 
 Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
 ```

@@ -18,7 +18,8 @@
 .PHONY: help clean uninstall \
 	install-systemd install-cron \
 	install-targets-script install-targets-conf install-targets-systemd \
-	install-targets-cron
+	install-targets-cron \
+	activate-launchagent deactivate-launchagent
 
 #### Macros ###################################################################
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
@@ -38,6 +39,11 @@ MKDIR_PARENTS=sh -c '\
 	     dir=$$(dirname $$1); \
 	     test -d $$dir || mkdir -p $$dir \
 	     ' MKDIR_PARENTS
+
+# LaunchAgent names.
+UID					:= $(shell id -u)
+LAUNCHAGENT			= com.github.erikw.restic-automatic-backup
+LAUNCHAGENT_TARGET	= gui/$(UID)/$(LAUNCHAGENT)
 
 # Source directories.
 DIR_SCRIPT		= bin
@@ -163,3 +169,13 @@ $(DEST_DIR_LAUNCHAGENT)/%: $(BUILD_DIR_LAUNCHAGENT)/%
 # Install destination mac log dir.
 $(DEST_DIR_MAC_LOG):
 	mkdir -p $@
+
+# target: activate-launchagent - Activate the LaunchAgent.
+activate-launchagent:
+	launchctl bootstrap gui/$(UID) $(DEST_TARGS_LAUNCHAGENT)
+	launchctl enable $(LAUNCHAGENT_TARGET)
+	launchctl kickstart -p $(LAUNCHAGENT_TARGET)
+
+# target: deactivate-launchagent - Deactivate and remove the LaunchAgent.
+deactivate-launchagent:
+	launchctl bootout $(LAUNCHAGENT_TARGET)
