@@ -10,11 +10,19 @@
 		<array>
 			<string>/bin/sh</string>
 			<string>-c</string>
-			<string>. /Users/erikw/tmp/env.sh &amp;&amp; /Users/erikw/tmp/exe.sh</string>
+			<string>. /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh</string>
 		</array>
 		<key>RunAtLoad</key>
 		<true/>
-		<key>StartInterval</key>
-		<integer>10</integer>
+		<!-- Will schedule backup every day at 19:00 -->
+		<key>StartCalendarInterval</key>
+		<array>
+			<dict>
+				<key>Hour</key>
+				<integer>19</integer>
+				<key>Minute</key>
+				<integer>0</integer>
+			</dict>
+		</array>
 	</dict>
 </plist>
