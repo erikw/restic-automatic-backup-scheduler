@@ -262,11 +262,11 @@ straightforward (it needs to run with sudo to read environment). Just run:
 
 ## Setup macOS LaunchAgent
 LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](https://www.launchd.info/).
-[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we we set up an LauchAgent to be run as your normal user for starting regular backups.
+[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
 
 1. In general, follow the same setup as in (#setup-linux-systemd) except for:
   * use `make install-launchagent` instead of `make install-systemd`
-  * install everything to `/usr/local` and run restic as your own use, not root
+  * install everything to `/usr/local` and run restic as your own user, not root
   * Thus, install with
 	```console
 	$ PREFIX=/usr/local make install-launchagent
