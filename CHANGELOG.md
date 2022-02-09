@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- macos LaunchAgent support. Install with `make install-launchagent`.
+- macos LaunchAgent support. Install with `make install-launchagent` and activate with `make activate-launchagent`. See [README.md](README.md) for details.
 
 ## [5.0.0] - 2022-02-08
 ### Added
