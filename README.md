@@ -265,18 +265,18 @@ straightforward (it needs to run with sudo to read environment). Just run:
 LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](https://www.launchd.info/).
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we we set up an LauchAgent to be run as your normal user for starting regular backups.
 
-1. In general, follow the same setup as in (#setup-linux-systemd) except taht
+1. In general, follow the same setup as in (#setup-linux-systemd) except for:
   * use `make install-launchagent` instead of `make install-systemd`
-  * Install everything to `/usr/local` and run restic as your own use, not root
+  * install everything to `/usr/local` and run restic as your own use, not root
   * Thus, install with
 	```console
 	$ PREFIX=/usr/local make install-launchagent
 	```
-1. After installation with `make` , edit the installed launchagent if you want to change the default schedule or profile used
+1. After installation with `make` , edit the installed LaunchAgent if you want to change the default schedule or profile used:
 	```console
 	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist 
 	```
-1. Now install, enable and kickstart the first run!
+1. Now install, enable and start the first run!
 	```console
 	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
 	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
