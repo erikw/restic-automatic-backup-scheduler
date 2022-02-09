@@ -74,6 +74,7 @@ DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
 DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
 DEST_DIR_CRON		= $(PREFIX)/$(DIR_CRON)
 DEST_DIR_LAUNCHAGENT= $(HOME)/$(DIR_LAUNCHAGENT)
+DEST_DIR_MAC_LOG	= $(HOME)/Library/Logs/restic
 
 # Destination file targets.
 DEST_TARGS_SCRIPT		= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
@@ -124,7 +125,8 @@ install-targets-script: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
 install-targets-conf: $(DEST_TARGS_CONF) $(BUILD_SRCS_CONF)
 install-targets-systemd: $(DEST_TARGS_SYSTEMD) $(BUILD_SRCS_SYSTEMD)
 install-targets-cron: $(DEST_TARGS_CRON) $(BUILD_SRCS_CRON)
-install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) $(BUILD_SRCS_LAUNCHAGENT)
+install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) \
+	$(BUILD_SRCS_LAUNCHAGENT) $(DEST_DIR_MAC_LOG)
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %
@@ -156,3 +158,7 @@ $(DEST_DIR_CRON)/%: $(BUILD_DIR_CRON)/%
 $(DEST_DIR_LAUNCHAGENT)/%: $(BUILD_DIR_LAUNCHAGENT)/%
 	@${MKDIR_PARENTS} $@
 	install -m 0444 $< $@
+
+# Install destination mac log dir.
+$(DEST_DIR_MAC_LOG):
+	mkdir -p $@

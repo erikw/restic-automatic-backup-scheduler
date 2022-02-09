@@ -8,9 +8,9 @@
 		<string>com.github.erikw.restic-automatic-backup</string>
 		<key>ProgramArguments</key>
 		<array>
-			<string>/bin/sh</string>
+			<string>/bin/bash</string>
 			<string>-c</string>
-			<string>. /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh</string>
+			<string>source /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh</string>
 		</array>
 		<key>RunAtLoad</key>
 		<true/>
@@ -24,5 +24,15 @@
 				<integer>0</integer>
 			</dict>
 		</array>
+        <key>EnvironmentVariables</key>
+		<dict>
+			<key>PATH</key>
+			<string>/usr/local/bin:/usr/bin:/bin</string>
+		</dict>
+		<!-- how use $HOME? -->
+		<key>StandardOutPath</key>
+		<string>/Users/erikw/Library/Logs/restic/restic_stdout.txt</string>
+		<key>StandardErrorPath</key>
+		<string>/Users/erikw/Library/Logs/restic/restic_stderr.txt</string>
 	</dict>
 </plist>

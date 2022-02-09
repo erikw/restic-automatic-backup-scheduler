@@ -268,8 +268,8 @@ LaunchAgent is the modern service schedulerin in macOS that uses [Launchd](https
 ```console
 $ PREFIX=/usr/local make install-launchagent
 $ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist  # Edit schedule if needed.
-$ launchctl load -w ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
-$ launchctl kickstart gui/501/com.github.erikw.restic-automatic-backup
+$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
+$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
 ```
 
 
