@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- See launchd.plist(5)for documentation on this file. -->
 <!-- See https://www.launchd.info/ for a tutorial. -->
+<!-- Debug with: $ tail -f /var/log/com.apple.xpc.launchd/launchd.log | grep erikw.restic -->
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
