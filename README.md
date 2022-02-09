@@ -47,8 +47,8 @@ Tip: use the Section icon in the top left of this document to navigate the secti
 
 # Setup
 Depending on your system, the setup will look different. Choose one of
-* [Linux + Systemd](#setup-linux-systemd)
-* [macOS + LaunchAgent](#setup-macos-launchagent)
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" /> [Linux + Systemd](#setup-linux-systemd)
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" /> [macOS + LaunchAgent](#setup-macos-launchagent)
 * [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
 ## Setup Linux Systemd
