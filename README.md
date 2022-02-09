@@ -262,11 +262,16 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
 ## Setup macOS LaunchAgent
+LaunchAgent is the modern service schedulerin in macOS that uses [Launchd](https://www.launchd.info/).
+[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we we set up an Lauch Agent to be run as your normal user for starting regular backups.
 
 ```console
-$ sudo PREFIX=/usr/local make install-launchagent
-$ launchctl load -w /Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
+$ PREFIX=/usr/local make install-launchagent
+$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist  # Edit schedule if needed.
+$ launchctl load -w ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
+$ launchctl kickstart gui/501/com.github.erikw.restic-automatic-backup
 ```
+
 
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
