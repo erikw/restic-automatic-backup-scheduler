@@ -6,12 +6,22 @@
 	<dict>
 		<key>Label</key>
 		<string>com.github.erikw.restic-automatic-backup</string>
+		<key>EnvironmentVariables</key>
+		<dict>
+			<key>PATH</key>
+			<string>/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+		</dict>
 		<key>ProgramArguments</key>
 		<array>
 			<string>/bin/bash</string>
 			<string>-c</string>
-			<string>source /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh</string>
+			<string>export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin &amp;&amp; source /usr/local/etc/restic/erikw.env.sh &amp;&amp; PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin /usr/local/bin/restic_backup.sh</string>
 		</array>
+		<!-- how use $HOME? -->
+		<key>StandardOutPath</key>
+		<string>/Users/erikw/Library/Logs/restic/restic_stdout.log</string>
+		<key>StandardErrorPath</key>
+		<string>/Users/erikw/Library/Logs/restic/restic_stderr.log</string>
 		<key>RunAtLoad</key>
 		<true/>
 		<!-- Will schedule backup every day at 19:00 -->
@@ -24,15 +34,5 @@
 				<integer>0</integer>
 			</dict>
 		</array>
-        <key>EnvironmentVariables</key>
-		<dict>
-			<key>PATH</key>
-			<string>/usr/local/bin:/usr/bin:/bin</string>
-		</dict>
-		<!-- how use $HOME? -->
-		<key>StandardOutPath</key>
-		<string>/Users/erikw/Library/Logs/restic/restic_stdout.txt</string>
-		<key>StandardErrorPath</key>
-		<string>/Users/erikw/Library/Logs/restic/restic_stderr.txt</string>
 	</dict>
 </plist>

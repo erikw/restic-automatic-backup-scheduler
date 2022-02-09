@@ -268,10 +268,21 @@ LaunchAgent is the modern service schedulerin in macOS that uses [Launchd](https
 ```console
 $ PREFIX=/usr/local make install-launchagent
 $ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist  # Edit schedule if needed.
+$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
 $ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
 $ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
 ```
 
+Debug with
+```console
+$ sudo launchctl debug gui/$UID/com.github.erikw.restic-automatic-backup --stdout --stderr
+```
+
+TODO how disable?
+```
+$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup
+$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup
+```
 
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
