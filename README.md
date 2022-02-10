@@ -40,6 +40,7 @@ Tip: use the Section icon in the top left of this document to navigate the secti
 
 # Requirements
 * `restic >=v0.9.6`
+* `bash >=v4.0.0`
 * (recommended)  GNU `make` if you want an automated install
   * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the preinstalled or a more recent with Homebrew)
 
