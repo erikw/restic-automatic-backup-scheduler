@@ -6,6 +6,7 @@
 [![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
 [![AUR version](https://img.shields.io/aur/version/restic-systemd-automatic-backup)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
 [![AUR maintainer](https://img.shields.io/aur/maintainer/restic-systemd-automatic-backup?label=AUR%20maintainer)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
+[![Homebrew Formula](https://img.shields.io/badge/homebrew-erikw%2Ftap-orange)](https://github.com/erikw/homebrew-tap)
 [![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
 [![Closed issues](https://img.shields.io/github/issues-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/issues?q=is%3Aissue+is%3Aclosed)
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/pulls?q=is%3Apr+is%3Aclosed)
@@ -265,6 +266,13 @@ straightforward (it needs to run with sudo to read environment). Just run:
 LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](https://www.launchd.info/).
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
 
+### Homebrew
+With Homebrew you can easily install this project from the [erikw/homebrew-tap](https://github.com/erikw/homebrew-tap):
+```console
+$ brew install erikw/tap/restic-automatic-backup-scheduler
+```
+
+### Manual
 1. In general, follow the same setup as in (#setup-linux-systemd) except for:
   * use `make install-launchagent` instead of `make install-systemd`
   * install everything to `/usr/local` and run restic as your own user, not root
@@ -331,4 +339,5 @@ To make a new release:
    $ git tag vX.Y.Z
    $ git push && git push --tags
    ```
-1. Test and update the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) if needed.
+1. Update version in the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/).
+1. Update version in the Homebrew [Formula](https://github.com/erikw/homebrew-tap/blob/main/Formula/restic-automatic-backup-scheduler.rb).
