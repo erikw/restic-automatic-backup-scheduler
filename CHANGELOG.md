@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.1.0] - 2022-02-11
 ### Added
 - macos LaunchAgent support. Install with `make install-launchagent` and activate with `make activate-launchagent`. See [README.md](README.md) for details.
+- make option INSTALL_PREFIX to make PKGBUILD and such easier to write.
 
 ## [5.0.0] - 2022-02-08
 ### Added
