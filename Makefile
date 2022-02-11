@@ -50,6 +50,9 @@ LAUNCHAGENT_TARGET	= gui/$(UID)/$(LAUNCHAGENT)
 # package in a separate build directory (PREFIX).
 INSTALL_PREFIX := $(PREFIX)
 
+# Where to install persistent configuration files. Used by Homebrew.
+SYSCONFDIR := $(PREFIX)
+
 # Source directories.
 DIR_SCRIPT		= bin
 DIR_CONF		= etc/restic
@@ -82,7 +85,7 @@ BUILD_SRCS_LAUNCHAGENT	= $(addprefix $(BUILD_DIR)/, $(SRCS_LAUNCHAGENT))
 
 # Destination directories
 DEST_DIR_SCRIPT		= $(PREFIX)/$(DIR_SCRIPT)
-DEST_DIR_CONF		= $(PREFIX)/$(DIR_CONF)
+DEST_DIR_CONF		= $(SYSCONFDIR)/$(DIR_CONF)
 DEST_DIR_SYSTEMD	= $(PREFIX)/$(DIR_SYSTEMD)
 DEST_DIR_CRON		= $(PREFIX)/$(DIR_CRON)
 DEST_DIR_LAUNCHAGENT= $(HOME)/$(DIR_LAUNCHAGENT)
@@ -90,7 +93,7 @@ DEST_DIR_MAC_LOG	= $(HOME)/Library/Logs/restic
 
 # Destination file targets.
 DEST_TARGS_SCRIPT		= $(addprefix $(PREFIX)/, $(SRCS_SCRIPT))
-DEST_TARGS_CONF			= $(addprefix $(PREFIX)/, $(SRCS_CONF))
+DEST_TARGS_CONF			= $(addprefix $(SYSCONFDIR)/, $(SRCS_CONF))
 DEST_TARGS_SYSTEMD		= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
 DEST_TARGS_CRON			= $(addprefix $(PREFIX)/, $(SRCS_CRON))
 DEST_TARGS_LAUNCHAGENT	= $(addprefix $(HOME)/, $(SRCS_LAUNCHAGENT))
