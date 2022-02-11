@@ -45,6 +45,11 @@ UID					:= $(shell id -u)
 LAUNCHAGENT			= com.github.erikw.restic-automatic-backup
 LAUNCHAGENT_TARGET	= gui/$(UID)/$(LAUNCHAGENT)
 
+# What to substitute $INSTALL_PREFIX in sources to.
+# This can be useful to set to empty on commandline when building e.g. an AUR
+# package in a separate build directory (PREFIX).
+INSTALL_PREFIX := $(PREFIX)
+
 # Source directories.
 DIR_SCRIPT		= bin
 DIR_CONF		= etc/restic
@@ -139,7 +144,7 @@ install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) \
 $(BUILD_DIR)/% : %
 	@${MKDIR_PARENTS} $@
 	cp $< $@
-	sed -i.bak -e 's|$$INSTALL_PREFIX|$(PREFIX)|g' $@; rm $@.bak
+	sed -i.bak -e 's|$$INSTALL_PREFIX|$(INSTALL_PREFIX)|g' $@; rm $@.bak
 
 # Install destination script files.
 $(DEST_DIR_SCRIPT)/%: $(BUILD_DIR_SCRIPT)/%
