@@ -149,7 +149,7 @@ $(BUILD_DIR)/% : %
 # Install destination script files.
 $(DEST_DIR_SCRIPT)/%: $(BUILD_DIR_SCRIPT)/%
 	@${MKDIR_PARENTS} $@
-	install -m 0755 $< $@
+	install -m 0555 $< $@
 
 # Install destination conf files. Additionally backup existing files.
 $(DEST_DIR_CONF)/%: $(BUILD_DIR_CONF)/%
