@@ -12,7 +12,7 @@
 		<array>
 			<string>/bin/bash</string>
 			<string>-c</string>
-			<string>source /usr/local/etc/restic/erikw.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh >>$HOME/$LOG_OUT 2>>$HOME/$LOG_ERR</string>
+			<string>source /usr/local/etc/restic/default.env.sh &amp;&amp; /usr/local/bin/restic_backup.sh >>$HOME/$LOG_OUT 2>>$HOME/$LOG_ERR</string>
 		</array>
 		<key>EnvironmentVariables</key>
 		<dict>
