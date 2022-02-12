@@ -272,6 +272,13 @@ With Homebrew you can easily install this project from the [erikw/homebrew-tap](
 $ brew install erikw/tap/restic-automatic-backup-scheduler
 ```
 
+Then control the service with homebrew:
+```console
+$ brew services start restic-automatic-backup-scheduler
+$ brew services restart restic-automatic-backup-scheduler
+$ brew services stop restic-automatic-backup-scheduler
+```
+
 ### Manual
 1. In general, follow the same setup as in (#setup-linux-systemd) except for:
   * use `make install-launchagent` instead of `make install-systemd`
