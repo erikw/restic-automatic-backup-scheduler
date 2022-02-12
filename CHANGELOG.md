@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.0] - 2022-02-12
+### Added
+- Allow custom launchagent dir, used by Homebrew.
+
 ## [5.2.1] - 2022-02-11
 ### Added
 - Homebrew Formula at [erikw/homebrew-tap](https://github.com/erikw/homebrew-tap). You can now install with `$ brew install erikw/tap/restic-automatic-backup-scheduler`!
