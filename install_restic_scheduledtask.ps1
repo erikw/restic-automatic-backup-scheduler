@@ -10,10 +10,10 @@
 
 # Install restic_backup.sh
 $action = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\git-bash.exe' -Argument '-l -c "source $INSTALL_PREFIX/etc/restic/default.env.sh && $INSTALL_PREFIX/bin/restic_backup.sh"'
-$trigger =  New-ScheduledTaskTrigger -Daily -At 8pm
+$trigger =  New-ScheduledTaskTrigger -Daily -At 7pm
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "restic_backup" -Description "Daily backup to B2 with restic."
 
 # Install restic_check.sh
 $action = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\git-bash.exe' -Argument '-l -c "source $INSTALL_PREFIX/etc/restic/default.env.sh && /INSTALL_PREFIX/bin/restic_check.sh"'
-$trigger =  New-ScheduledTaskTrigger  -Weekly -WeeksInterval 4 -DaysOfWeek Sunday -At 7pm -RandomDelay 128
+$trigger =  New-ScheduledTaskTrigger  -Weekly -WeeksInterval 4 -DaysOfWeek Sunday -At 8pm -RandomDelay 128
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "restic_check" -Description "Check B2 backups with restic."

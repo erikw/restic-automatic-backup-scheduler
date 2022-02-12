@@ -329,7 +329,7 @@ This is one of may ways you can get restic and this backup script working on Win
 1. Edit configs and initialize repo according to *TL;DR* section above
    ```console
     git-bash$ vim /etc/restic/*
-    git-bash$ source /etc/restic/default.sh
+    git-bash$ source /etc/restic/default.env.sh
     git-bash$ restic init
     git-bash$ restic_backup.sh
    ```
@@ -340,8 +340,14 @@ This is one of may ways you can get restic and this backup script working on Win
 1. Inspect the installed tasks and make a test run
    1. Open the app "Task Scheduler" (`taskschd.msc`)
    1. Go to the local "Task Scheduler Library"
-   1. Right click on one of the newly installed tasks (`restic_backup` & `restic_check`) and click "run".
-1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking!
+   1. Right click on one of the newly installed tasks e.g. `restic_backup` and click "run".
+      - If the tasks are not there, maybe you opended it up before `make install-schedtask`: just close and start it again to refresh.
+   1. Now a git-bash window should open running `restic_backup.sh`, and the next time the configured schedule hits!
+1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking.
+
+
+After installing, you can control your backups through `tasksched.msc`:
+<a href="img/tasksched.png" title="Windows Task Scheduler"><img src="img/tasksched.png" width="512" alt="Windows Task Schedulder"></a>
 
 
 ## Setup Cron
