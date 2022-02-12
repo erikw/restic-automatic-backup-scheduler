@@ -66,18 +66,19 @@ done
 restic unlock &
 wait $!
 
-# Do the backup!
+# Do the backup! (and capture the output for further processing)
 # See restic-backup(1) or http://restic.readthedocs.io/en/latest/040_backup.html
 # --one-file-system makes sure we only backup exactly those mounted file systems specified in $RESTIC_BACKUP_PATHS, and thus not directories like /dev, /sys etc.
 # --tag lets us reference these backups later when doing restic-forget.
-{ backup_output=$(restic backup \
-	--verbose="$RESTIC_VERBOSITY_LEVEL" \
-	--one-file-system \
-	--tag "$RESTIC_BACKUP_TAG" \
-	--option b2.connections="$B2_CONNECTIONS" \
-	"${exclusion_args[@]}" \
-	"${extra_args[@]}" \
-	"${backup_paths[@]}" \
+{ backup_output=$( \
+	restic backup \
+		--verbose="$RESTIC_VERBOSITY_LEVEL" \
+		--one-file-system \
+		--tag "$RESTIC_BACKUP_TAG" \
+		--option b2.connections="$B2_CONNECTIONS" \
+		"${exclusion_args[@]}" \
+		"${extra_args[@]}" \
+		"${backup_paths[@]}" \
 	| tee /dev/fd/3 & )  # store output in var for further proc; also tee to a temp fd that's redirected to stdout
 } 3>&1
 wait $!
