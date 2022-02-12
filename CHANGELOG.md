@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.1] - 2022-02-12
+### Fixed
+- Launchagentdir make macro
+
 ## [5.3.0] - 2022-02-12
 ### Added
 - Allow custom launchagent dir, used by Homebrew.
