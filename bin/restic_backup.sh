@@ -116,18 +116,17 @@ echo "Backup & cleaning is done."
 # TODO Clean/or rephrase the example comments below
 # In this case I'm running a user process that reads from a special pipe file and sends a desktop notification using
 # `notify-send`.
-# 
+#
 # See: https://github.com/gerardbosch/dotfiles-linux/blob/main/home/.config/autostart/notification-queue.desktop and
 #      https://github.com/gerardbosch/dotfiles-linux/blob/main/home/bin/notification-queue-start-processing
 #
 if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
 	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
-		added=$(grep -i 'Added to the repo:' <<< "$backup_output" | sed -E 's/.*dded to the repo: (.*)/\1/')
+		added=$(echo "$backup_output" | grep -i 'Added to the repo:' | sed -E 's/.*dded to the repo: (.*)/\1/')
 		# sample:  processed N files, N.XYZ GiB in H:mm
-		size=$(grep  -i 'processed.*files,'  <<< "$backup_output" | sed -E 's/.*rocessed.*files, (.*) in.*/\1/g')
+		size=$(echo "$backup_output" | grep  -i 'processed.*files,' | sed -E 's/.*rocessed.*files, (.*) in.*/\1/g')
 		echo "Added: ${added}. Snapshot size: ${size}" >> "$RESTIC_BACKUP_NOTIFICATION_FILE"
 	else
 		echo "[WARN] Couldn't write the backup summary stats. File not found or not writable: ${RESTIC_BACKUP_NOTIFICATION_FILE}"
 	fi
 fi
-

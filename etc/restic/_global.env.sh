@@ -30,7 +30,6 @@ export RESTIC_BACKUP_EXTRA_ARGS=
 # Override this value in a profile if needed.
 export RESTIC_VERBOSITY_LEVEL=0
 
-# (optional) Desktop notifications
+# (optional) Desktop notifications. See restic_backup.sh for details on how to set this up.
 export RESTIC_NOTIFY_BACKUP_STATS="false"
 export RESTIC_BACKUP_NOTIFICATION_FILE=""
-
