@@ -1,6 +1,9 @@
 #!/usr/bin/env pwsh
 # Install restic scheduled tasks.
-# Test run the installed actions by opening the app "Task Scheduler" and go to "Task Scheduler Library" and right clicking on the new tasks > run.
+# Test run the installed actions by
+#   1. open the app "Task Scheduler" (taskschd.msc)
+#   2. go to the local "Task Scheduler Library"
+#   3. right click on the new tasks  and click "run".
 # Reference: https://blogs.technet.microsoft.com/heyscriptingguy/2015/01/13/use-powershell-to-create-scheduled-tasks/
 # Reference: https://www.davidjnice.com/cygwin_scheduled_tasks.html
 
@@ -9,8 +12,6 @@
 $action = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\git-bash.exe' -Argument '-l -c "/c$INSTALL_PREFIX/bin/restic_backup.sh"'
 $trigger =  New-ScheduledTaskTrigger -Daily -At 8pm
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "restic_backup" -Description "Daily backup to B2 with restic."
-
-
 
 # Install restic_check.sh
 $action = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\git-bash.exe' -Argument '-l -c "/c$INSTALL_PREFIX/bin/restic_check.sh"'

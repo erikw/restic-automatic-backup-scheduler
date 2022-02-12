@@ -322,6 +322,25 @@ This is one of may ways you can get restic and this backup script working on Win
 	git-bash$ mkdir ~/src && cd ~/src/
     git-bash$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
    ```
+1. Install scripts, conf and the ScheduledTask
+   ```console
+    git-bash$ make install-schedtask
+   ```
+1. Edit configs and initialize repo according to *TL;DR* section above
+   ```console
+    git-bash$ vim /etc/restic/*
+    git-bash$ source /etc/restic/default.sh
+    git-bash$ restic init
+    git-bash$ restic_backup.sh
+   ```
+   Note that you should use cygwin/git-bash paths e.g. in `default.env.sh` you can have
+   ```bash
+	export RESTIC_BACKUP_PATHS='/c/Users/<username>/My Documents'
+   ```
+1. Inspect the installed tasks and make a test run
+   1. Open the app "Task Scheduler" (`taskschd.msc`)
+   1. Go to the local "Task Scheduler Library"
+   1. Right click on one of the newly installed tasks and click "run".
 
 
 ## Setup Cron
