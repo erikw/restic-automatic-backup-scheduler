@@ -18,7 +18,7 @@
 .PHONY: help clean uninstall \
 	install-systemd install-cron \
 	install-targets-script install-targets-conf install-targets-systemd \
-	install-targets-cron \
+	install-targets-cron install-targets-launchagent \
 	activate-launchagent deactivate-launchagent
 
 #### Macros ###################################################################
