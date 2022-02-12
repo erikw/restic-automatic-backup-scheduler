@@ -57,6 +57,10 @@ for backup_path in "${backup_paths[@]}"; do
 	fi
 done
 
+# --one-file-system is not supportd on Windows (=msys).
+FS_ARG=
+test "$OSTYPE" = msys || FS_ARG=--one-file-system
+
 # NOTE start all commands in background and wait for them to finish.
 # Reason: bash ignores any signals while child process is executing and thus the trap exit hook is not triggered.
 # However if put in subprocesses, wait(1) waits until the process finishes OR signal is received.
@@ -72,7 +76,7 @@ wait $!
 # --tag lets us reference these backups later when doing restic-forget.
 restic backup \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" \
-	--one-file-system \
+	$FS_ARG \
 	--tag "$RESTIC_BACKUP_TAG" \
 	--option b2.connections="$B2_CONNECTIONS" \
 	"${exclusion_args[@]}" \
