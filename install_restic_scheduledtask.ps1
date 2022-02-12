@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 # Install restic scheduled tasks.
 # Test run the installed actions by opening the app "Task Scheduler" and go to "Task Scheduler Library" and right clicking on the new tasks > run.
 # Reference: https://blogs.technet.microsoft.com/heyscriptingguy/2015/01/13/use-powershell-to-create-scheduled-tasks/
