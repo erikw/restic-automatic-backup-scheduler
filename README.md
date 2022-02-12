@@ -50,6 +50,7 @@ Tip: use the Section icon in the top left of this document to navigate the secti
 Depending on your system, the setup will look different. Choose one of
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" /> [Linux + Systemd](#setup-linux-systemd)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" /> [macOS + LaunchAgent](#setup-macos-launchagent)
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/windows.svg" /> [Windows + ScheduledTask](#setup-windows-scheduledtask)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
 ## Setup Linux Systemd
@@ -306,6 +307,48 @@ $ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup
 ```
 
 If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
+
+
+## Setup Windows ScheduledTask
+This is one of may ways you can get restic and this backup script working on Windows:
+1. Install [scoop](https://scoop.sh/)
+1. Install dependencies from a PowerShell with administrator privileges:
+   ```console
+	powershell> scoop install restic make git
+   ```
+1. In a non-privileged PowerShell, start git-bash and clone this repo
+   ```console
+	powershell> git-bash
+	git-bash$ mkdir ~/src && cd ~/src/
+    git-bash$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
+   ```
+1. Install scripts, conf and the ScheduledTask
+   ```console
+    git-bash$ make install-schedtask
+   ```
+1. Edit configs and initialize repo according to *TL;DR* section above
+   ```console
+    git-bash$ vim /etc/restic/*
+    git-bash$ source /etc/restic/default.env.sh
+    git-bash$ restic init
+    git-bash$ restic_backup.sh
+   ```
+   Note that you should use cygwin/git-bash paths e.g. in `default.env.sh` you can have
+   ```bash
+	export RESTIC_BACKUP_PATHS='/c/Users/<username>/My Documents'
+   ```
+1. Inspect the installed tasks and make a test run
+   1. Open the app "Task Scheduler" (`taskschd.msc`)
+   1. Go to the local "Task Scheduler Library"
+   1. Right click on one of the newly installed tasks e.g. `restic_backup` and click "run".
+      - If the tasks are not there, maybe you opended it up before `make install-schedtask`: just close and start it again to refresh.
+   1. Now a git-bash window should open running `restic_backup.sh`, and the next time the configured schedule hits!
+1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking.
+
+
+After installing, you can control your backups through `tasksched.msc`:
+<a href="img/tasksched.png" title="Windows Task Scheduler"><img src="img/tasksched.png" width="512" alt="Windows Task Schedulder"></a>
+
 
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
