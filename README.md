@@ -340,7 +340,8 @@ This is one of may ways you can get restic and this backup script working on Win
 1. Inspect the installed tasks and make a test run
    1. Open the app "Task Scheduler" (`taskschd.msc`)
    1. Go to the local "Task Scheduler Library"
-   1. Right click on one of the newly installed tasks and click "run".
+   1. Right click on one of the newly installed tasks (`restic_backup` & `restic_check`) and click "run".
+1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking!
 
 
 ## Setup Cron
