@@ -19,6 +19,7 @@
 	install-systemd install-cron \
 	install-targets-script install-targets-conf install-targets-systemd \
 	install-targets-cron install-targets-launchagent \
+	install-targets-schedtask \
 	activate-launchagent deactivate-launchagent
 
 #### Macros ###################################################################
@@ -69,6 +70,7 @@ SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
 SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
+SRCS_SCHEDTASK	= install_restic_scheduledtask.ps1
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
@@ -85,6 +87,7 @@ BUILD_SRCS_CONF			= $(addprefix $(BUILD_DIR)/, $(SRCS_CONF))
 BUILD_SRCS_SYSTEMD		= $(addprefix $(BUILD_DIR)/, $(SRCS_SYSTEMD))
 BUILD_SRCS_CRON			= $(addprefix $(BUILD_DIR)/, $(SRCS_CRON))
 BUILD_SRCS_LAUNCHAGENT	= $(addprefix $(BUILD_DIR)/, $(SRCS_LAUNCHAGENT))
+BUILD_SRCS_SCHEDTASK	= $(addprefix $(BUILD_DIR)/, $(SRCS_SCHEDTASK))
 
 # Destination directories
 DEST_DIR_SCRIPT		= $(PREFIX)/$(DIR_SCRIPT)
@@ -137,6 +140,10 @@ install-cron: install-targets-script install-targets-conf install-targets-cron
 install-launchagent: install-targets-script install-targets-conf \
 						install-targets-launchagent
 
+# target: install-schedtask - Install Windows ScheduledTask
+install-schedtask: install-targets-script install-targets-conf \
+						install-targets-schedtask
+
 # Install targets. Prereq build sources as well,
 # so that build dir is re-created if deleted.
 install-targets-script: $(DEST_TARGS_SCRIPT) $(BUILD_SRCS_SCRIPT)
@@ -145,6 +152,8 @@ install-targets-systemd: $(DEST_TARGS_SYSTEMD) $(BUILD_SRCS_SYSTEMD)
 install-targets-cron: $(DEST_TARGS_CRON) $(BUILD_SRCS_CRON)
 install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) \
 	$(BUILD_SRCS_LAUNCHAGENT) $(DEST_DIR_MAC_LOG)
+install-targets-schedtask: $(BUILD_SRCS_SCHEDTASK)
+	./$<
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %

@@ -50,6 +50,7 @@ Tip: use the Section icon in the top left of this document to navigate the secti
 Depending on your system, the setup will look different. Choose one of
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" /> [Linux + Systemd](#setup-linux-systemd)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" /> [macOS + LaunchAgent](#setup-macos-launchagent)
+* <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/windows.svg" /> [Windows + ScheduledTask](#setup-windows-scheduledtask)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
 ## Setup Linux Systemd
@@ -306,6 +307,22 @@ $ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup
 ```
 
 If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
+
+
+## Setup Windows ScheduledTask
+This is one of may ways you can get restic and this backup script working on Windows:
+1. Install [scoop](https://scoop.sh/)
+1. Install dependencies from a PowerShell with administrator privileges:
+   ```console
+	powershell> scoop install restic make git
+   ```
+1. In a non-privileged PowerShell, start git-bash and clone this repo
+   ```console
+	powershell> git-bash
+	git-bash$ mkdir ~/src && cd ~/src/
+    git-bash$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
+   ```
+
 
 ## Setup Cron
 If you want to run an all-classic cron job instead, do like this:
