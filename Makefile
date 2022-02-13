@@ -19,7 +19,7 @@
 	install-systemd install-cron \
 	install-targets-script install-targets-conf install-targets-systemd \
 	install-targets-cron install-targets-launchagent \
-	install-targets-schedtask \
+	install-targets-schedtask uninstall-targets-schedtask \
 	activate-launchagent deactivate-launchagent
 
 #### Macros ###################################################################
@@ -131,7 +131,7 @@ clean:
 	$(RM) -r $(BUILD_DIR)
 
 # target: uninstall - Uninstall ALL installed (including config) files.
-uninstall:
+uninstall: uninstall-schedtask
 	@for file in $(INSTALLED_FILES); do \
 			echo $(RM) $$file; \
 			$(RM) $$file; \
