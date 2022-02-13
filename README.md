@@ -1,28 +1,30 @@
 # Automatic restic backups using systemd services and timers
-[![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-systemd-automatic-backup?style=social)](#)
-[![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-systemd-automatic-backup?style=social)](#)
+*formerly named restic-systemd-automatic-backup*
+
+[![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-automatic-backup-scheduler?style=social)](#)
+[![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-automatic-backup-scheduler?style=social)](#)
 <br>
-[![Lint Code Base](https://github.com/erikw/restic-systemd-automatic-backup/actions/workflows/linter.yml/badge.svg)](https://github.com/erikw/restic-systemd-automatic-backup/actions/workflows/linter.yml)
-[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/tags)
-[![AUR version](https://img.shields.io/aur/version/restic-systemd-automatic-backup)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
-[![AUR maintainer](https://img.shields.io/aur/maintainer/restic-systemd-automatic-backup?label=AUR%20maintainer)](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/)
+[![Lint Code Base](https://github.com/erikw/restic-automatic-backup-scheduler/actions/workflows/linter.yml/badge.svg)](https://github.com/erikw/restic-automatic-backup-scheduler/actions/workflows/linter.yml)
+[![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-automatic-backup-scheduler)](https://github.com/erikw/restic-automatic-backup-scheduler/tags)
+[![AUR version](https://img.shields.io/aur/version/restic-automatic-backup-scheduler)](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/)
+[![AUR maintainer](https://img.shields.io/aur/maintainer/restic-automatic-backup-scheduler?label=AUR%20maintainer)](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/)
 [![Homebrew Formula](https://img.shields.io/badge/homebrew-erikw%2Ftap-orange)](https://github.com/erikw/homebrew-tap)
-[![Open issues](https://img.shields.io/github/issues/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/issues)
-[![Closed issues](https://img.shields.io/github/issues-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/issues?q=is%3Aissue+is%3Aclosed)
-[![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-systemd-automatic-backup?color=success)](https://github.com/erikw/restic-systemd-automatic-backup/pulls?q=is%3Apr+is%3Aclosed)
+[![Open issues](https://img.shields.io/github/issues/erikw/restic-automatic-backup-scheduler)](https://github.com/erikw/restic-automatic-backup-scheduler/issues)
+[![Closed issues](https://img.shields.io/github/issues-closed/erikw/restic-automatic-backup-scheduler?color=success)](https://github.com/erikw/restic-automatic-backup-scheduler/issues?q=is%3Aissue+is%3Aclosed)
+[![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-automatic-backup-scheduler?color=success)](https://github.com/erikw/restic-automatic-backup-scheduler/pulls?q=is%3Apr+is%3Aclosed)
 [![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE)
-[![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-systemd-automatic-backup)](https://github.com/Netflix/osstracker)
+[![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-automatic-backup-scheduler)](https://github.com/Netflix/osstracker)
 <br>
 
-[![Contributors](https://img.shields.io/github/contributors/erikw/restic-systemd-automatic-backup)](https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors) including these top contributors:
-<a href = "https://github.com/erikw/restic-systemd-automatic-backup/graphs/contributors">
-<img src = "https://contrib.rocks/image?repo=erikw/restic-systemd-automatic-backup&max=24"/>
+[![Contributors](https://img.shields.io/github/contributors/erikw/restic-automatic-backup-scheduler)](https://github.com/erikw/restic-automatic-backup-scheduler/graphs/contributors) including these top contributors:
+<a href = "https://github.com/erikw/restic-automatic-backup-scheduler/graphs/contributors">
+<img src = "https://contrib.rocks/image?repo=erikw/restic-automatic-backup-scheduler&max=24"/>
 </a>
 
 # Intro
 [restic](https://restic.net/) is a command-line tool for making backups, the right way. Check the official website for a feature explanation. As a storage backend, I recommend [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) as restic works well with it, and it is (at the time of writing) very affordable for the hobbyist hacker! (anecdotal: I pay for my full-systems backups each month typically < 1 USD).
 
-Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However it's possible to set this up yourself using systemd/cron and some wrappers. This example also features email notifications when a backup fails to complete.
+Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However it's possible to set this up yourself using built-in tools in your OS and some wrappers. For Linux with systemd, it's convenient to use systemd timers. For macOS systems, we can use built-in LaunchAgents. For Windows we can use ScheduledTasks. Any OS having something cron-like will also work!
 
 Here follows a step-by step tutorial on how to set it up, with my sample script and configurations that you can modify to suit your needs.
 
@@ -102,7 +104,7 @@ This is a more detailed explanation than the TL;DR section that will give you mo
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
 
 ```console
-$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
+$ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd $(basename "$_" .git)
 $ sudo make install-systemd
 ````
 
@@ -118,9 +120,9 @@ and you should now see that all files have been changed like e.g.
 This prefix is there so that `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`. So if we don't use the makefile, we need to remove this prefix with the command above just.
 
 
-Arch Linux users can install the aur package [restic-systemd-automatic-backup](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/) e.g.:
+Arch Linux users can install the aur package [restic-automatic-backup-scheduler](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/) e.g. with `yay(1)`:
 ```console
-$ yaourt -S restic-systemd-automatic-backup
+$ yay -S restic-automatic-backup-scheduler
 ````
 
 #### 1. Create Backblaze B2 Account, Bucket and keys
@@ -289,7 +291,7 @@ $ brew services stop restic-automatic-backup-scheduler
 	```
 1. After installation with `make` , edit the installed LaunchAgent if you want to change the default schedule or profile used:
 	```console
-	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist 
+	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
 	```
 1. Now install, enable and start the first run!
 	```console
@@ -319,7 +321,7 @@ This is one of may ways you can get restic and this backup script working on Win
    ```console
 	powershell> git-bash
 	git-bash$ mkdir ~/src && cd ~/src/
-    git-bash$ git clone https://github.com/erikw/restic-systemd-automatic-backup.git && cd $(basename "$_" .git)
+    git-bash$ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd $(basename "$_" .git)
    ```
 1. Install scripts, conf and the ScheduledTask
    ```console
@@ -367,7 +369,7 @@ $ sudo make uninstall
 
 # Variations
 A list of variations of this setup:
-* Using `--files-from` [#44](https://github.com/erikw/restic-systemd-automatic-backup/issues/44)
+* Using `--files-from` [#44](https://github.com/erikw/restic-automatic-backup-scheduler/issues/44)
 
 # Development
 * To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
@@ -388,5 +390,5 @@ To make a new release:
    $ git tag vX.Y.Z
    $ git push && git push --tags
    ```
-1. Update version in the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-systemd-automatic-backup/).
+1. Update version in the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/).
 1. Update version in the Homebrew [Formula](https://github.com/erikw/homebrew-tap/blob/main/Formula/restic-automatic-backup-scheduler.rb).
