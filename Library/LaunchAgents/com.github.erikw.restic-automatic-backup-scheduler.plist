@@ -6,7 +6,7 @@
 <plist version="1.0">
 	<dict>
 		<key>Label</key>
-		<string>com.github.erikw.restic-automatic-backup</string>
+		<string>com.github.erikw.restic-automatic-backup-scheduler</string>
 		<key>ProgramArguments</key>
 		<!-- exec in subshell to 1) source *.env.sh 2) expand $HOME to logpath (ref. https://apple.stackexchange.com/a/365880/197493) -->
 		<array>

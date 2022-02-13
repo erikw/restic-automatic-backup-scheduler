@@ -295,16 +295,16 @@ $ brew services stop restic-automatic-backup-scheduler
 	```
 1. Now install, enable and start the first run!
 	```console
-	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
-	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup
-	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
 	```
 	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
 
 Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
 ```
-$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup
+$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
 ```
 
 If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
