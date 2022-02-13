@@ -237,7 +237,10 @@ Put this file in `/bin`:
 Put this files in `/etc/systemd/system/`:
 * `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file.
 
-As you maybe noticed already before, `restic-backup.service` is configured to start `status-email-user.service` on failure.
+Now edit `restic-backup.service` and `status-email-user.service` to call this service failure.
+```
+OnFailure=status-email-user@%n.service
+```
 
 
 #### 9. Optional: automated backup checks
@@ -249,7 +252,23 @@ There is companion scripts, service and timer (`*check*`) to restic-backup.sh th
 $ sudo systemctl enable --now restic-check@default.timer
 ````
 
-#### 10. Optional: 🏃 Restic wrapper
+#### 10. Optional: No backup on metered connections
+For a laptop, it can make sense to not do heavy backups when your on a metered connection like a shared connection from you mobile phone. To solve this we can set up a systemd service that is in success state only when a connection is unmetered. Then we can tell our backup service to depend on this service simply! When the unmetered service detects an unmetered connection it will go to failed state. Then our backup service will not run as it requires this other service to be in success state.
+
+Put this file in `/bin`:
+* `nm-unmetered-connection.sh`: Detects metered connections and returns will error code if one is detected. This scripts requires the Gnome [NetworkManager](https://wiki.gnome.org/Projects/NetworkManager) to be installed. Modify this script if your system has a different network manager.
+
+Put this files in `/etc/systemd/system/`:
+* `nm-unmetered-connection.service`: A service that is in success state if the connection is unmetered only.
+
+Now edit `restic-backup.service` and `status-email-user.service` to require the new service to be in success state:
+```
+Requires=nm-unmetered-connection.service
+```
+
+
+
+#### 11. Optional: 🏃 Restic wrapper
 For convenience there's a `restic` wrapper script that makes loading profiles and **running restic**
 straightforward (it needs to run with sudo to read environment). Just run:
 

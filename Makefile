@@ -79,16 +79,23 @@ DIR_LAUNCHAGENT	= Library/LaunchAgents
 DIR_SCHEDTASK	= ScheduledTask
 
 # Source files.
-SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
+SRCS_SCRIPT		= $(filter-out \
+						%cron_mail \
+						%systemd-email \
+						%nm-unmetered-connection.sh \
+					, $(wildcard $(DIR_SCRIPT)/*))
 SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
-SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
+SRCS_SYSTEMD	= $(filter-out \
+						%status-email-user@.service \
+						%nm-unmetered-connection.service \
+					, $(wildcard $(DIR_SYSTEMD)/*))
 SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
 SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
 SRCS_SCHEDTASK	= $(wildcard $(DIR_SCHEDTASK)/*)
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
-BUILD_DIR				:= build
+BUILD_DIR				= build
 BUILD_DIR_SCRIPT		= $(BUILD_DIR)/$(DIR_SCRIPT)
 BUILD_DIR_CONF			= $(BUILD_DIR)/$(DIR_CONF)
 BUILD_DIR_SYSTEMD		= $(BUILD_DIR)/$(DIR_SYSTEMD)
