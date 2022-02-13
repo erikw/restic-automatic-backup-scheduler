@@ -264,7 +264,6 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
 ## Setup macOS LaunchAgent
-LaunchAgent is the modern service scheduler in in macOS that uses [Launchd](https://www.launchd.info/).
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
 
 ### Homebrew
