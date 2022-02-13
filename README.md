@@ -300,6 +300,12 @@ $ brew services restart restic-automatic-backup-scheduler
 $ brew services stop restic-automatic-backup-scheduler
 ```
 
+If `services start` fails, it might be due to previous version installed. In that case remove the existing version and try again:
+```console
+$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ brew services start restic-automatic-backup-scheduler
+```
+
 ### Manual
 1. In general, follow the same setup as in (#setup-linux-systemd) except for:
   * use `make install-launchagent` instead of `make install-systemd`
