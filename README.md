@@ -1,4 +1,4 @@
-# Automatic restic backups using systemd services and timers
+# Automatic restic backups using OS native task schedulers
 *formerly named restic-systemd-automatic-backup*
 
 [![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-automatic-backup-scheduler?style=social)](#)
