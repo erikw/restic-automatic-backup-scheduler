@@ -311,6 +311,8 @@ If you updated the `.plist` file, you need to issue the `bootout` followed by `b
 
 
 ## Setup Windows ScheduledTask
+Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
+
 This is one of may ways you can get restic and this backup script working on Windows:
 1. Install [scoop](https://scoop.sh/)
 1. Install dependencies from a PowerShell with administrator privileges:
