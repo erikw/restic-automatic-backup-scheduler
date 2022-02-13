@@ -1,4 +1,6 @@
 # Automatic restic backups using systemd services and timers
+*formerly named restic-systemd-automatic-backup*
+
 [![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-systemd-automatic-backup?style=social)](#)
 [![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-systemd-automatic-backup?style=social)](#)
 <br>
@@ -22,7 +24,7 @@
 # Intro
 [restic](https://restic.net/) is a command-line tool for making backups, the right way. Check the official website for a feature explanation. As a storage backend, I recommend [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) as restic works well with it, and it is (at the time of writing) very affordable for the hobbyist hacker! (anecdotal: I pay for my full-systems backups each month typically < 1 USD).
 
-Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However it's possible to set this up yourself using systemd/cron and some wrappers. This example also features email notifications when a backup fails to complete.
+Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However it's possible to set this up yourself using built-in tools in your OS and some wrappers. For Linux with systemd, it's convenient to use systemd timers. For macOS systems, we can use built-in LaunchAgents. For Windows we can use ScheduledTasks. Any OS having something cron-like will also work!
 
 Here follows a step-by step tutorial on how to set it up, with my sample script and configurations that you can modify to suit your needs.
 
@@ -289,7 +291,7 @@ $ brew services stop restic-automatic-backup-scheduler
 	```
 1. After installation with `make` , edit the installed LaunchAgent if you want to change the default schedule or profile used:
 	```console
-	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist 
+	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
 	```
 1. Now install, enable and start the first run!
 	```console
