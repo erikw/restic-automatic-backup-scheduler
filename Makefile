@@ -34,6 +34,15 @@ else
     BAK_SUFFIX = -B .$(NOW).bak
 endif
 
+
+# Source: https://stackoverflow.com/a/14777895/265508
+ifeq ($(OS),Windows_NT)
+    CUR_OS := Windows
+else
+    CUR_OS := $(shell uname)
+endif
+
+
 # Create parent directories of a file, if not existing.
 # Reference: https://stackoverflow.com/a/25574592/265508
 MKDIR_PARENTS=sh -c '\
@@ -70,7 +79,10 @@ SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
 SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
-SRCS_SCHEDTASK	= schedtask_install.ps1
+
+SCHEDTASK_INSTALL	= schedtask_install.ps1
+SCHEDTASK_UNINSTALL = schedtask_uninstall.ps1
+SRCS_SCHEDTASK		= $(SCHEDTASK_INSTALL) $(SCHEDTASK_UNINSTALL)
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
@@ -140,9 +152,12 @@ install-cron: install-targets-script install-targets-conf install-targets-cron
 install-launchagent: install-targets-script install-targets-conf \
 						install-targets-launchagent
 
-# target: install-schedtask - Install Windows ScheduledTask
+# target: install-schedtask - Install Windows ScheduledTasks
 install-schedtask: install-targets-script install-targets-conf \
 						install-targets-schedtask
+
+# target: uninstall-schedtask - Uninstall Windows ScheduledTasks
+uninstall-schedtask: uninstall-targets-schedtask
 
 # Install targets. Prereq build sources as well,
 # so that build dir is re-created if deleted.
@@ -152,8 +167,11 @@ install-targets-systemd: $(DEST_TARGS_SYSTEMD) $(BUILD_SRCS_SYSTEMD)
 install-targets-cron: $(DEST_TARGS_CRON) $(BUILD_SRCS_CRON)
 install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) \
 	$(BUILD_SRCS_LAUNCHAGENT) $(DEST_DIR_MAC_LOG)
-install-targets-schedtask: $(BUILD_SRCS_SCHEDTASK)
+install-targets-schedtask: $(BUILD_DIR)/$(SCHEDTASK_INSTALL)
 	./$<
+
+uninstall-targets-schedtask: $(BUILD_DIR)/$(SCHEDTASK_UNINSTALL)
+	test $(CUR_OS) != Windows || ./$<
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
 $(BUILD_DIR)/% : %
