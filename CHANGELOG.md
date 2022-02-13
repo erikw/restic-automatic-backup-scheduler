@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [7.0.0] - 2022-02-13
+### Changed
+- Renamed project from `restic-systemd-automatic-backup` to `restic-automatic-backup-scheduler` to fit all now supported setups.
+
+## [6.0.0] - 2022-02-12
 ### Added
 - Windows support with native ScheduledTask! New target `$ make install-schedtask` for Windows users.
 
