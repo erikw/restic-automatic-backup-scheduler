@@ -66,12 +66,17 @@ SYSCONFDIR := $(PREFIX)
 # Where to install LaunchAgent. Used by Homebrew.
 LAUNCHAGENTDIR := $(HOME)
 
+# ScheduledTask powershell scripts.
+SCHEDTASK_INSTALL	= install.ps1
+SCHEDTASK_UNINSTALL = uninstall.ps1
+
 # Source directories.
 DIR_SCRIPT		= bin
 DIR_CONF		= etc/restic
 DIR_SYSTEMD		= usr/lib/systemd/system
 DIR_CRON		= etc/cron.d
 DIR_LAUNCHAGENT	= Library/LaunchAgents
+DIR_SCHEDTASK	= ScheduledTask
 
 # Source files.
 SRCS_SCRIPT		= $(filter-out %cron_mail, $(wildcard $(DIR_SCRIPT)/*))
@@ -79,10 +84,7 @@ SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
 SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
-
-SCHEDTASK_INSTALL	= schedtask_install.ps1
-SCHEDTASK_UNINSTALL = schedtask_uninstall.ps1
-SRCS_SCHEDTASK		= $(SCHEDTASK_INSTALL) $(SCHEDTASK_UNINSTALL)
+SRCS_SCHEDTASK	= $(wildcard $(DIR_SCHEDTASK)/*)
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
@@ -92,6 +94,7 @@ BUILD_DIR_CONF			= $(BUILD_DIR)/$(DIR_CONF)
 BUILD_DIR_SYSTEMD		= $(BUILD_DIR)/$(DIR_SYSTEMD)
 BUILD_DIR_CRON			= $(BUILD_DIR)/$(DIR_CRON)
 BUILD_DIR_LAUNCHAGENT	= $(BUILD_DIR)/$(DIR_LAUNCHAGENT)
+BUILD_DIR_SCHEDTASK		= $(BUILD_DIR)/$(DIR_SCHEDTASK)
 
 # Sources copied to build directory.
 BUILD_SRCS_SCRIPT		= $(addprefix $(BUILD_DIR)/, $(SRCS_SCRIPT))
@@ -167,10 +170,10 @@ install-targets-systemd: $(DEST_TARGS_SYSTEMD) $(BUILD_SRCS_SYSTEMD)
 install-targets-cron: $(DEST_TARGS_CRON) $(BUILD_SRCS_CRON)
 install-targets-launchagent: $(DEST_TARGS_LAUNCHAGENT) \
 	$(BUILD_SRCS_LAUNCHAGENT) $(DEST_DIR_MAC_LOG)
-install-targets-schedtask: $(BUILD_DIR)/$(SCHEDTASK_INSTALL)
-	./$<
+install-targets-schedtask: $(BUILD_DIR_SCHEDTASK)/$(SCHEDTASK_INSTALL)
+	test $(CUR_OS) != Windows || ./$<
 
-uninstall-targets-schedtask: $(BUILD_DIR)/$(SCHEDTASK_UNINSTALL)
+uninstall-targets-schedtask: $(BUILD_DIR_SCHEDTASK)/$(SCHEDTASK_UNINSTALL)
 	test $(CUR_OS) != Windows || ./$<
 
 # Copies sources to build directory & replace "$INSTALL_PREFIX".
