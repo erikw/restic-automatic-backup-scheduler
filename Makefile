@@ -70,7 +70,7 @@ SRCS_CONF		= $(wildcard $(DIR_CONF)/*)
 SRCS_SYSTEMD	= $(wildcard $(DIR_SYSTEMD)/*)
 SRCS_CRON		= $(wildcard $(DIR_CRON)/*)
 SRCS_LAUNCHAGENT= $(wildcard $(DIR_LAUNCHAGENT)/*)
-SRCS_SCHEDTASK	= install_restic_scheduledtask.ps1
+SRCS_SCHEDTASK	= schedtask_install.ps1
 
 # Local build directory. Sources will be copied here,
 # modified and then installed from this directory.
