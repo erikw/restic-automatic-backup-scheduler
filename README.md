@@ -396,10 +396,6 @@ There is a make target to remove all files (scripts and configs) that were insta
 $ sudo make uninstall
 ```
 
-# Variations
-A list of variations of this setup:
-* Using `--files-from` [#44](https://github.com/erikw/restic-automatic-backup-scheduler/issues/44)
-
 # Development
 * To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
    ```console
