@@ -1,5 +1,3 @@
-restic-automatic-backup-scheduler - Automatic restic backup using Backblaze B2 storage, Linux systemd timers, macOS LaunchAgent, Windows ScheduledTask or simply cron
-
 Copyright (c) 2022, Erik Westrup + see commit log for auhtors
 All rights reserved.
 
