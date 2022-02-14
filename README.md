@@ -245,12 +245,40 @@ With `taskschd.msc` you can easily start, stop, delete and configure the schedul
 ## Setup Cron
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" />
 
-If you want to run an all-classic cron job instead, do like this:
+☝ **Note** There are many different cron [implementations](https://wiki.archlinux.org/title/Cron) out there and they all work slightly different.
+
+Any system that has a cron-like system can easily setup restic backups as well. However if you system supports any of the previous setups, those are recommended over cron as they provide more features and reliability for your backups.
 
 1. Follow the main setup from [Detailed Manual Setup](#Detailed Manual Setup) but skip the systemd parts.
 1. `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
   * You can use `$ make install-cron` to copy it over to `/etc/cron.d`.
 1. (Optional) `bin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
+
+
+**TL;DR setup**
+1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
+1. Install scripts, configs systemd units/timers:
+   ```console
+   $ sudo make install-cron
+   ```
+   * This assumes that your cron supports dropping files into `/etc/cron.d/`. If that is not the case, simply copy the relevant contents of the installed `/etc/cron.d/restic` in to your `/etc/crontab`.
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/etc/restic`.
+1. [Initialize](#3-initialize-remote-repo) the remote repo.
+	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
+   ```console
+	# source /etc/restic/default.env.sh
+	# restic init
+   ```
+1. Make the first backup
+   ```console
+    # restic_backup.sh
+   ```
+1. Verify the backup
+   ```console
+   # restic snapshots
+   ```
+1. Configure [how often](https://crontab.guru/) backups should be done by directly editing `/etc/cron.d/restic` (or `/etc/crontab`).
+1. Consider more [optional features](#optional-features).
 
 
 ## Detailed Manual Setup
@@ -393,6 +421,17 @@ $ sudo systemctl enable --now restic-check@default.timer
 
 
 ## Optional Features
+### Optional: Multiple profiles
+To have different backup jobs having e.g. different buckets, backup path of schedule,  just make a copy of the `default.env.sh` and use the defined profile name in place of `default` in the previous steps.
+
+To create a different backup and use you can do:
+```console
+# cp /etc/restic/default.env.sh /etc/restic/other.env.sh
+# vi /etc/restic/default.other.sh  # Set backup path, bucket etc.
+# source /etc/restic/default.other.sh 
+# restic_backup.sh
+```
+
 ### Optional: Email Notification on Failure
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
