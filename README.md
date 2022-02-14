@@ -28,7 +28,7 @@ Unfortunately restic does not come pre-configured with a way to run automated ba
 
 Here follows a step-by step tutorial on how to set it up, with my sample script and configurations that you can modify to suit your needs.
 
-Note, you can use any of the supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar but you will have to use other configuration variables to match your backend of choice.
+Note, you can use any restic's supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar but you will have to use other configuration variables to match your backend of choice.
 
 ## Project Scope
 The scope for this is not to be a full-fledged super solution that solves all the problems and all possible setups. The aim is to be a hackable code base for you to start sewing up the perfect backup solution that fits your requirements!
@@ -54,7 +54,7 @@ Depending on your system, the setup will look different. Choose one of:
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/windows.svg" /> [Windows + ScheduledTask](#setup-windows-scheduledtask)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
-☝ **Note** `$` means a user shell and `#` means a root shell (or use `sudo`).
+☝ **Note** in the command listing below, `$` means a user shell and `#` means a root shell (or use `sudo`).
 
 ## Setup Linux Systemd
 ☝ **Note** The Linux setup here will assume an installation to `/`.
@@ -68,7 +68,10 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```console
    $ sudo make install-systemd
    ```
-   * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/archlinux.svg" /> Arch Linux users: use the [AUR](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler) package.
+   * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/archlinux.svg" /> Arch Linux users: use the [AUR](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler) package, e.g.
+   ```console
+   $ yay -S restic-automatic-backup-scheduler
+   ```
 1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
 	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
