@@ -280,16 +280,14 @@ Any system that has a cron-like system can easily setup restic backups as well. 
 ## Detailed Manual Setup
 <img height="64" width="64" src="img/pen-paper.png" />
 
-This is a more detailed explanation than the TL;DR section that will give you more understanding in the setup, and maybe inspire you to develop your own setup based on this one even!
+This is a more detailed explanation than the TL;DR sections above that will give you more understanding in the setup. This section is more general, but uses Linux + Systemd as the example setup.
 
-Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
-
+#### 0. Clone Repo
 ```console
 $ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd $(basename "$_" .git)
-$ sudo make install-systemd
 ````
 
-If you want to install everything manually, we will install files to `/etc`, `/bin`, and not use the `$make install-systemd` command, then you need to clean up a placeholder `$INSTALL_PREFIX` in the souce files first by running:
+Make a quick search-and-replace in the source files:
 ```console
 $ find etc bin -type f -exec sed -i.bak -e 's|$INSTALL_PREFIX||g' {} \; -exec rm {}.bak \;
 ```
@@ -298,13 +296,11 @@ and you should now see that all files have been changed like e.g.
 -export RESTIC_PASSWORD_FILE="$INSTALL_PREFIX/etc/restic/pw.txt"
 +export RESTIC_PASSWORD_FILE="/etc/restic/pw.txt"
 ```
-This prefix is there so that `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`. So if we don't use the makefile, we need to remove this prefix with the command above just.
 
+Why? The OS specific TL;DR setups above all use the [Makefile](Makefile) or a package manager to install these files. The placeholder string `$INSTALL_PREFIX` is in the source files for portability reasons, so that the Makefile can support all different operating systems. `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`. 
 
-Arch Linux users can install the aur package [restic-automatic-backup-scheduler](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/) e.g. with `yay(1)`:
-```console
-$ yay -S restic-automatic-backup-scheduler
-````
+In this detailed manual setup we will copy all files manually to `/etc`and `/bin`. Thus we need to remove the placeholder string `$INSTALL_PREFIX` in the source files as a first step.
+
 
 #### 1. Create Backblaze B2 Account, Bucket and Keys
 In short:
