@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- [README.md](README.md) is restructured with easier TL;DR for each OS and a more general detailed section for the interested.
 
 ## [7.1.0] - 2022-02-13
 ### Changed

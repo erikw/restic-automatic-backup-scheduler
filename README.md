@@ -136,7 +136,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
 	```
 	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
-1. Watch the first backup progress from the log file
+1. Watch the first backup progress from the log files:
    ```console
    $ tail -f ~/Library/Logs/restic/restic_*
    ```
@@ -352,9 +352,7 @@ $ journalctl -f -u restic-backup@default.service
 
 (skip `-f` to see all backups that has run)
 
-
-## Optional Features
-### Recommended: Automated Backup Checks
+#### Recommended: Automated Backup Checks
 Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
 There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `bin/` and copy what you need over to their corresponding locations.
@@ -363,6 +361,8 @@ There is companion scripts, service and timer (`*check*`) to restic-backup.sh th
 $ sudo systemctl enable --now restic-check@default.timer
 ````
 
+
+## Optional Features
 ### Optional: Email Notification on Failure
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
