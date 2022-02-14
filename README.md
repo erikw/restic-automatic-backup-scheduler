@@ -417,6 +417,8 @@ $ sudo systemctl enable --now restic-check@default.timer
 
 
 ## Optional Features
+<img height="64" width="64" src="img/plus.png" />
+
 ### Optional: Multiple profiles
 To have different backup jobs having e.g. different buckets, backup path of schedule,  just make a copy of the `default.env.sh` and use the defined profile name in place of `default` in the previous steps.
 
