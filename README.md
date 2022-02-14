@@ -37,7 +37,6 @@ Nevertheless the project should work out of the box, be minimal but still open t
 
 ## Navigate this README
 Tip: use the Section icon in the top left of this document to navigate the sections.
-
 ![README Sections](img/readme_sections.png)
 
 
@@ -45,62 +44,188 @@ Tip: use the Section icon in the top left of this document to navigate the secti
 * `restic >=v0.9.6`
 * `bash >=v4.0.0`
 * (recommended)  GNU `make` if you want an automated install
-  * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the preinstalled or a more recent with Homebrew)
+  * Arch: part of the `base-devel` meta package, Debian/Ubuntu: part of the `build-essential` meta package, macOS: use the pre-installed or a more recent with Homebrew
 
 
 # Setup
-Depending on your system, the setup will look different. Choose one of
+Depending on your system, the setup will look different. Choose one of:
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" /> [Linux + Systemd](#setup-linux-systemd)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" /> [macOS + LaunchAgent](#setup-macos-launchagent)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/windows.svg" /> [Windows + ScheduledTask](#setup-windows-scheduledtask)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
+☝ **Note** `$` means a user shell and `#` means a root shell (or use `sudo`).
+
 ## Setup Linux Systemd
-### TL;DR Setup
-1. Create B2 credentials as instructed [below](#1-create-backblaze-b2-account)
-1. Install config and scripts:
-   *
+☝ **Note** The Linux setup here will assume an installation to `/`.
+
+Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Systemd), which features good support for running services and scheduled jobs. If your distribution is no on Systemd, check out the [cron setup](#setup-cron) instead.
+
+**TL;DR setup**
+1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
+1. Install configs and scripts:
+   * With `make`:
    ```console
    $ sudo make install-systemd
    ```
-   * ☝ **Note**: `sudo` is required here, as some files are installed into system directories (`/etc/`
-   and `/usr/bin`). Have a look to the `Makefile` to know more.
-   * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/archlinux.svg" /> Arch Linux users: use the [AUR](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler).
-1. Fill out configuration values (edit with sudo):
-   * `/etc/restic/pw.txt` - Contains the password (single line) to be used by restic to encrypt the repository files. Should be different than your B2 password!
-   * `/etc/restic/_global.env.sh` - Global environment variables.
-   * `/etc/restic/default.env.sh` - Profile specific environment variables (multiple profiles can be defined by copying to `/etc/restic/something.env.sh`).
-   * `/etc/restic/backup_exclude.txt` - List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
-1. Initialize remote repo as described [below](#3-initialize-remote-repo)
-1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) back up should be made.
-   * Edit if needed `OnCalendar` in `/usr/lib/systemd/system/restic-backup@.timer`.
-1. Enable automated backup for starting with the system (`enable` creates symlinks):
+   * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/archlinux.svg" /> Arch Linux users: use the [AUR](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler) package.
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc`.
+1. [Initialize](#3-initialize-remote-repo) the remote repo.
+	Source the profile to make all needed configuration avilable to `restic`. All commands after this assumes the profile is sourced in the current shell.
    ```console
-   $ sudo systemctl enable --now restic-backup@default.timer
+	# source /etc/restic/default.env.sh
+	# restic init
    ```
-1. And run an immediate backup if you want (if not, it will run on daily basis):
+1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) backups should be done.
+   * If needed, edit `OnCalendar` in `/usr/lib/systemd/system/restic-backup@.timer`.
+1. Enable automated backup for starting with the system & make the first backup:
    ```console
-   $ sudo systemctl start restic-backup@default
+   # systemctl enable --now restic-backup@default.timer
    ```
-1. Watch its progress with Systemd journal:
+1. Watch the first backup progress with Systemd journal:
    ```console
-   $ journalctl -f --lines=50 -u restic-backup@default
+   # journalctl -f --lines=50 -u restic-backup@default
    ```
 1. Verify the backup
    ```console
-   $ sudo -i
-   $ source /etc/restic/default.env.sh
+   # restic snapshots
+   ```
+1. (recommended) Enable the check job that verifies that the backups for the profile are all intact.
+   ```console
+   # systemctl enable --now restic-check@default.timer
+   ````
+1. (optional) Define multiple profiles: just make a copy of the `default.env.sh` and use the defined profile name in place of `default` to run backups or enable timers. Notice that the value after `@` works as a parameter.
+   ```console
+   # systemctl enable restic-backup@other_profile.timer
+   ```
+1. Consider more [optional features](#optional-features).
+
+
+## Setup macOS LaunchAgent
+☝ **Note** The macOS setup here will assume an installation to `/usr/local`, as [custom](https://docs.brew.sh/FAQ#why-does-homebrew-say-sudo-is-bad) with Homebrew installations.
+
+[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
+
+**TL;DR setup**
+1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
+1. Install configs and scripts:
+   * (recommended) with Homebrew from the [erikw/homebrew-tap](https://github.com/erikw/homebrew-tap):
+   ```console
+	$ brew install erikw/tap/restic-automatic-backup-scheduler
+   ```
+   * Using `make`:
+   ```console
+	$ make PREFIX=/usr/local install-launchagent
+   ```
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc`.
+1. [Initialize](#3-initialize-remote-repo) the remote repo.
+	Source the profile to make all needed configuration avilable to `restic`. All commands after this assumes the profile is sourced in the current shell.
+   ```console
+	$ source /usr/local/etc/restic/default.env.sh
+	$ restic init
+   ```
+1. Configure [how often](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html#//apple_ref/doc/uid/10000172i-CH1-SW1) backups should be done. If needed, edit `OnCalendar` in
+   * Homebrew install: `~/Library/LaunchAgents/homebrew.mxcl.restic-automatic-backup-scheduler.plist`.
+   * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist`.
+1. Enable automated backup for starting with the system & make the first backup:
+   * Homebrew install: `$ brew services start restic-automatic-backup-scheduler`
+   * `make` install: 
+    ```console
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+	```
+	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
+1. Watch the first backup progress from the log file
+   ```console
+   $ tail -f ~/Library/Logs/restic/restic_*
+   ```
+1. Verify the backup
+   ```console
    $ restic snapshots
    ```
-1. (optional) Define multiple profiles: just make a copy of the `default.env.sh` and use the defined profile name in place of `default` to run backups or enable timers. Notice that the value after `@` works as a parameter.
-1. (optional) Enable the check job that verifies that the backups for the profile are all intact.
+1. (recommended) Enable the check job that verifies that the backups for the profile are all intact.
+   TODO #81
+1. Consider more [optional features](#optional-features).
+
+### Homebrew Setup Notes
+Then control the service with homebrew:
+```console
+$ brew services start restic-automatic-backup-scheduler
+$ brew services restart restic-automatic-backup-scheduler
+$ brew services stop restic-automatic-backup-scheduler
+```
+
+If `services start` fails, it might be due to previous version installed. In that case remove the existing version and try again:
+```console
+$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ brew services start restic-automatic-backup-scheduler
+```
+
+### Make Setup Notes
+Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
+```
+$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+```
+
+If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
+
+
+
+## Setup Windows ScheduledTask
+Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
+
+This is one of may ways you can get restic and this backup script working on Windows:
+1. Install [scoop](https://scoop.sh/)
+1. Install dependencies from a PowerShell with administrator privileges:
    ```console
-   $ sudo systemctl enable --now restic-check@default.timer
-   ````
-1. (optional) Setup email on failure as described [here](#8-email-notification-on-failure)
+	powershell> scoop install restic make git
+   ```
+1. In a non-privileged PowerShell, start git-bash and clone this repo
+   ```console
+	powershell> git-bash
+	git-bash$ mkdir ~/src && cd ~/src/
+    git-bash$ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd $(basename "$_" .git)
+   ```
+1. Install scripts, conf and the ScheduledTask
+   ```console
+    git-bash$ make install-schedtask
+   ```
+1. Edit configs and initialize repo according to *TL;DR* section above
+   ```console
+    git-bash$ vim /etc/restic/*
+    git-bash$ source /etc/restic/default.env.sh
+    git-bash$ restic init
+    git-bash$ restic_backup.sh
+   ```
+   Note that you should use cygwin/git-bash paths e.g. in `default.env.sh` you can have
+   ```bash
+	export RESTIC_BACKUP_PATHS='/c/Users/<username>/My Documents'
+   ```
+1. Inspect the installed tasks and make a test run
+   1. Open the app "Task Scheduler" (`taskschd.msc`)
+   1. Go to the local "Task Scheduler Library"
+   1. Right click on one of the newly installed tasks e.g. `restic_backup` and click "run".
+      - If the tasks are not there, maybe you opended it up before `make install-schedtask`: just close and start it again to refresh.
+   1. Now a git-bash window should open running `restic_backup.sh`, and the next time the configured schedule hits!
+1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking.
 
 
-### Step-by-step and manual setup
+After installing, you can control your backups through `tasksched.msc`:
+<a href="img/tasksched.png" title="Windows Task Scheduler"><img src="img/tasksched.png" width="512" alt="Windows Task Schedulder"></a>
+
+
+## Setup Cron
+If you want to run an all-classic cron job instead, do like this:
+
+1. Follow the main setup from [Detailed Manual Setup](#Detailed Manual Setup) but skip the systemd parts.
+1. `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
+  * You can use `$ make install-cron` to copy it over to `/etc/cron.d`.
+1. (Optional) `bin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
+
+
+## Detailed Manual Setup
 This is a more detailed explanation than the TL;DR section that will give you more understanding in the setup, and maybe inspire you to develop your own setup based on this one even!
 
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
@@ -127,15 +252,13 @@ Arch Linux users can install the aur package [restic-automatic-backup-scheduler]
 $ yay -S restic-automatic-backup-scheduler
 ````
 
-#### 1. Create Backblaze B2 Account, Bucket and keys
+#### 1. Create Backblaze B2 Account, Bucket and Keys
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
 For restic to be able to connect to your bucket, you want to in the B2 settings create a pair of keyID and applicationKey. It's a good idea to create a separate pair of ID and Key with for each bucket that you will use, with limited read&write access to only that bucket.
 
 
-#### 2. Configure your B2 credentials locally
-> **Attention!** Going the manual way requires that most of the following commands are run as root.
-
+#### 2. Configure B2 Credentials Locally
 Put these files in `/etc/restic/`:
 * `_global.env.sh`: Fill this file out with your global settings including B2 keyID & applicationKey. A global exclude list is set here (explained in section below).
 * `default.env.sh`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env.sh` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
@@ -143,10 +266,11 @@ Put these files in `/etc/restic/`:
    $ source /etc/restic/default.env.sh
    $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
    ````
-* `pw.txt`: This file should contain the restic password used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
+* `pw.txt`: This file should contain the restic password (single line) used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
    ```console
    $ openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
    ```
+* `backup_exclude.txt`: List of file patterns to ignore. This will trim down your backup size and the speed of the backup a lot when done properly!
 
 #### 3. Initialize remote repo
 Now we must initialize the repository on the remote end:
@@ -229,8 +353,17 @@ $ journalctl -f -u restic-backup@default.service
 (skip `-f` to see all backups that has run)
 
 
+## Optional Features
+### Recommended: Automated Backup Checks
+Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
-#### 8. Optional: Email notification on failure
+There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `bin/` and copy what you need over to their corresponding locations.
+
+```console
+$ sudo systemctl enable --now restic-check@default.timer
+````
+
+### Optional: Email Notification on Failure
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
 Put this file in `/bin`:
@@ -245,16 +378,8 @@ OnFailure=status-email-user@%n.service
 ```
 
 
-#### 9. Optional: automated backup checks
-Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
 
-There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `bin/` and copy what you need over to their corresponding locations.
-
-```console
-$ sudo systemctl enable --now restic-check@default.timer
-````
-
-#### 10. Optional: No backup on metered connections
+### Optional: No Backup on Metered Connections
 For a laptop, it can make sense to not do heavy backups when your on a metered connection like a shared connection from you mobile phone. To solve this we can set up a systemd service that is in success state only when a connection is unmetered. Then we can tell our backup service to depend on this service simply! When the unmetered service detects an unmetered connection it will go to failed state. Then our backup service will not run as it requires this other service to be in success state.
 
 Put this file in `/bin`:
@@ -268,17 +393,14 @@ Now edit `restic-backup.service` and `status-email-user.service` to require the 
 Requires=nm-unmetered-connection.service
 ```
 
-
-
-#### 11. Optional: 🏃 Restic wrapper
+### Optional: Restic Wrapper Script
 For convenience there's a `restic` wrapper script that makes loading profiles and **running restic**
 straightforward (it needs to run with sudo to read environment). Just run:
 
-- `sudo resticw WHATEVER` (e.g. `sudo resticw snapshots`) to use the default profile.
-- You can run the wrapper by passing a specific profile: `resticw -p anotherprofile snapshots`.
+* `sudo resticw WHATEVER` (e.g. `sudo resticw snapshots`) to use the default profile.
+* You can run the wrapper by passing a specific profile: `resticw -p anotherprofile snapshots`.
 
-##### Useful commands
-
+Useful commands:
 | Command                                           | Description                                                       |
 |---------------------------------------------------|-------------------------------------------------------------------|
 | `resticw snapshots`                               | List backup snapshots                                             |
@@ -286,111 +408,10 @@ straightforward (it needs to run with sudo to read environment). Just run:
 | `resticw stats` / `resticw stats snapshot-id ...` | Show the statistics for the whole repo or the specified snapshots |
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
-## Setup macOS LaunchAgent
-[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
-
-### Homebrew
-With Homebrew you can easily install this project from the [erikw/homebrew-tap](https://github.com/erikw/homebrew-tap):
-```console
-$ brew install erikw/tap/restic-automatic-backup-scheduler
-```
-
-Then control the service with homebrew:
-```console
-$ brew services start restic-automatic-backup-scheduler
-$ brew services restart restic-automatic-backup-scheduler
-$ brew services stop restic-automatic-backup-scheduler
-```
-
-If `services start` fails, it might be due to previous version installed. In that case remove the existing version and try again:
-```console
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-$ brew services start restic-automatic-backup-scheduler
-```
-
-### Manual
-1. In general, follow the same setup as in (#setup-linux-systemd) except for:
-  * use `make install-launchagent` instead of `make install-systemd`
-  * install everything to `/usr/local` and run restic as your own user, not root
-  * Thus, install with
-	```console
-	$ PREFIX=/usr/local make install-launchagent
-	```
-1. After installation with `make` , edit the installed LaunchAgent if you want to change the default schedule or profile used:
-	```console
-	$ vim ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup.plist
-	```
-1. Now install, enable and start the first run!
-	```console
-	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist
-	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-	```
-	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
-
-Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
-```
-$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-```
-
-If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
-
-
-## Setup Windows ScheduledTask
-Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
-
-This is one of may ways you can get restic and this backup script working on Windows:
-1. Install [scoop](https://scoop.sh/)
-1. Install dependencies from a PowerShell with administrator privileges:
-   ```console
-	powershell> scoop install restic make git
-   ```
-1. In a non-privileged PowerShell, start git-bash and clone this repo
-   ```console
-	powershell> git-bash
-	git-bash$ mkdir ~/src && cd ~/src/
-    git-bash$ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd $(basename "$_" .git)
-   ```
-1. Install scripts, conf and the ScheduledTask
-   ```console
-    git-bash$ make install-schedtask
-   ```
-1. Edit configs and initialize repo according to *TL;DR* section above
-   ```console
-    git-bash$ vim /etc/restic/*
-    git-bash$ source /etc/restic/default.env.sh
-    git-bash$ restic init
-    git-bash$ restic_backup.sh
-   ```
-   Note that you should use cygwin/git-bash paths e.g. in `default.env.sh` you can have
-   ```bash
-	export RESTIC_BACKUP_PATHS='/c/Users/<username>/My Documents'
-   ```
-1. Inspect the installed tasks and make a test run
-   1. Open the app "Task Scheduler" (`taskschd.msc`)
-   1. Go to the local "Task Scheduler Library"
-   1. Right click on one of the newly installed tasks e.g. `restic_backup` and click "run".
-      - If the tasks are not there, maybe you opended it up before `make install-schedtask`: just close and start it again to refresh.
-   1. Now a git-bash window should open running `restic_backup.sh`, and the next time the configured schedule hits!
-1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking.
-
-
-After installing, you can control your backups through `tasksched.msc`:
-<a href="img/tasksched.png" title="Windows Task Scheduler"><img src="img/tasksched.png" width="512" alt="Windows Task Schedulder"></a>
-
-
-## Setup Cron
-If you want to run an all-classic cron job instead, do like this:
-
-1. Follow the main setup from [Step-by-step and manual setup](#step-by-step-and-manual-setup) but skip the systemd parts.
-1. `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
-  * You can use `$ make install-cron` to copy it over to `/etc/cron.d`.
-1. (Optional) `bin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
 
 
 # Uninstall
-There is a make target to remove all files (scripts and configs) that were installed by `sudo make install-*`. Just run:
+There is a make target to remove all files (scripts and **configs)** that were installed by `sudo make install-*`. Just run:
 
 ```console
 $ sudo make uninstall
