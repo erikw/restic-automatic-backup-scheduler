@@ -35,9 +35,10 @@ The scope for this is not to be a full-fledged super solution that solves all th
 
 Nevertheless the project should work out of the box, be minimal but still open the doors for configuration and extensions by users.
 
-## Navigate this README
-Tip: use the Section icon in the top left of this document to navigate the sections.
-![README Sections](img/readme_sections.png)
+## Notes
+* Tip: Navigate this document easily from the Section icon in the top left corner.
+   ![README Sections](img/readme_sections.png)
+* ☝ **Note**: in the command listing in this document, `$` means a user shell and `#` means a root shell (or use `sudo`).
 
 
 # Requirements
@@ -54,7 +55,6 @@ Depending on your system, the setup will look different. Choose one of:
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/windows.svg" /> [Windows + ScheduledTask](#setup-windows-scheduledtask)
 * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" /> [Cron](#setup-cron) - for any system having a cron daemon. Tested on FreeBSD and macOS.
 
-☝ **Note** in the command listing below, `$` means a user shell and `#` means a root shell (or use `sudo`).
 
 ## Setup Linux Systemd
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" />
