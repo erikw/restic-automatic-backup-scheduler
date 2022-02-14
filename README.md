@@ -249,10 +249,6 @@ With `taskschd.msc` you can easily start, stop, delete and configure the schedul
 
 Any system that has a cron-like system can easily setup restic backups as well. However if you system supports any of the previous setups, those are recommended over cron as they provide more features and reliability for your backups.
 
-1. Follow the main setup from [Detailed Manual Setup](#Detailed Manual Setup) but skip the systemd parts.
-1. `etc/cron.d/restic`: Depending on your system's cron, put this in `/etc/cron.d/` or similar, or copy the contents to $(sudo crontab -e). The format of this file is tested under FreeBSD, and might need adaptions depending on your cron.
-  * You can use `$ make install-cron` to copy it over to `/etc/cron.d`.
-1. (Optional) `bin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command.
 
 
 **TL;DR setup**
@@ -433,6 +429,7 @@ To create a different backup and use you can do:
 ```
 
 ### Optional: Email Notification on Failure
+#### Systemd
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
 Put this file in `/bin`:
@@ -445,7 +442,14 @@ Now edit `restic-backup.service` and `status-email-user.service` to call this se
 ```
 OnFailure=status-email-user@%n.service
 ```
+#### Cron
+Use `bin/cron_mail`: A wrapper for running cron jobs, that sends output of the job as an email using the mail(1) command. This assumes that the `mail` program is correctly setup on the system to send emails.
 
+To use this, wrap the restic script command with it in your cron file like:
+```diff
+-@midnight	root	. /etc/restic/default.sh && restic_backup.sh
++@midnight	root	. /etc/restic/default.sh && cron_mail restic_backup.sh
+```
 
 
 ### Optional: No Backup on Metered Connections
