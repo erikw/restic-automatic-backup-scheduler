@@ -63,15 +63,15 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 
 **TL;DR setup**
 1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
-1. Install configs and scripts:
+1. Install scripts, configs systemd units/timers:
    * With `make`:
    ```console
    $ sudo make install-systemd
    ```
    * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/archlinux.svg" /> Arch Linux users: use the [AUR](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler) package.
-1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc`.
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
-	Source the profile to make all needed configuration avilable to `restic`. All commands after this assumes the profile is sourced in the current shell.
+	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	# source /etc/restic/default.env.sh
 	# restic init
@@ -108,7 +108,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 
 **TL;DR setup**
 1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
-1. Install configs and scripts:
+1. Install scripts, configs and LaunchAgent:
    * (recommended) with Homebrew from the [erikw/homebrew-tap](https://github.com/erikw/homebrew-tap):
    ```console
 	$ brew install erikw/tap/restic-automatic-backup-scheduler
@@ -117,9 +117,9 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```console
 	$ make PREFIX=/usr/local install-launchagent
    ```
-1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc`.
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
-	Source the profile to make all needed configuration avilable to `restic`. All commands after this assumes the profile is sourced in the current shell.
+	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	$ source /usr/local/etc/restic/default.env.sh
 	$ restic init
@@ -176,7 +176,10 @@ If you updated the `.plist` file, you need to issue the `bootout` followed by `b
 ## Setup Windows ScheduledTask
 Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
 
-This is one of may ways you can get restic and this backup script working on Windows:
+I describe here one of may ways you can get restic and this backup script working on Windows. Here I chose to work with `scoop` and `git-bash`.
+
+
+**TL;DR setup**
 1. Install [scoop](https://scoop.sh/)
 1. Install dependencies from a PowerShell with administrator privileges:
    ```console
@@ -188,31 +191,42 @@ This is one of may ways you can get restic and this backup script working on Win
 	git-bash$ mkdir ~/src && cd ~/src/
     git-bash$ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd $(basename "$_" .git)
    ```
-1. Install scripts, conf and the ScheduledTask
+1. Install scripts, configs and ScheduledTasks
    ```console
     git-bash$ make install-schedtask
    ```
-1. Edit configs and initialize repo according to *TL;DR* section above
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/etc/restic`.
    ```console
     git-bash$ vim /etc/restic/*
-    git-bash$ source /etc/restic/default.env.sh
-    git-bash$ restic init
-    git-bash$ restic_backup.sh
    ```
-   Note that you should use cygwin/git-bash paths e.g. in `default.env.sh` you can have
+   Note that you should use cygwin/git-bash paths. E.g. in `default.env.sh` you could have
    ```bash
 	export RESTIC_BACKUP_PATHS='/c/Users/<username>/My Documents'
    ```
-1. Inspect the installed tasks and make a test run
+1. [Initialize](#3-initialize-remote-repo) the remote repo.
+	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
+   ```console
+    git-bash$ source /etc/restic/default.env.sh
+    git-bash$ restic init
+   ```
+1. Make the first backup
+   ```console
+    git-bash$ restic_backup.sh
+   ```
+1. Verify the backup
+   ```console
+    git-bash$ restic snapshots
+   ```
+1. Inspect the installed ScheduledTasks and make a test run
    1. Open the app "Task Scheduler" (`taskschd.msc`)
    1. Go to the local "Task Scheduler Library"
    1. Right click on one of the newly installed tasks e.g. `restic_backup` and click "run".
       - If the tasks are not there, maybe you opended it up before `make install-schedtask`: just close and start it again to refresh.
    1. Now a git-bash window should open running `restic_backup.sh`, and the next time the configured schedule hits!
-1. With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking.
+1. Consider more [optional features](#optional-features).
 
 
-After installing, you can control your backups through `tasksched.msc`:
+With `taskschd.msc` you can easily start, stop, delete and configure the scheduled tasks to your liking:
 <a href="img/tasksched.png" title="Windows Task Scheduler"><img src="img/tasksched.png" width="512" alt="Windows Task Schedulder"></a>
 
 
