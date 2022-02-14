@@ -59,11 +59,13 @@ Depending on your system, the setup will look different. Choose one of
 ### TL;DR Setup
 1. Create B2 credentials as instructed [below](#1-create-backblaze-b2-account)
 1. Install config and scripts:
+   *
    ```console
    $ sudo make install-systemd
    ```
-   ☝ **Note**: `sudo` is required here, as some files are installed into system directories (`/etc/`
+   * ☝ **Note**: `sudo` is required here, as some files are installed into system directories (`/etc/`
    and `/usr/bin`). Have a look to the `Makefile` to know more.
+   * <img height="16" width="16" src="https://unpkg.com/simple-icons@v6/icons/archlinux.svg" /> Arch Linux users: use the [AUR](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler).
 1. Fill out configuration values (edit with sudo):
    * `/etc/restic/pw.txt` - Contains the password (single line) to be used by restic to encrypt the repository files. Should be different than your B2 password!
    * `/etc/restic/_global.env.sh` - Global environment variables.
@@ -228,7 +230,7 @@ $ journalctl -f -u restic-backup@default.service
 
 
 
-#### 8. Email notification on failure
+#### 8. Optional: Email notification on failure
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
 
 Put this file in `/bin`:
