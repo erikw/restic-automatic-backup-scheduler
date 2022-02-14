@@ -307,6 +307,13 @@ $ yay -S restic-automatic-backup-scheduler
 ````
 
 #### 1. Create Backblaze B2 Account, Bucket and Keys
+In short:
+1. Create a [Backblaze](https://www.backblaze.com/) account (use 2FA!).
+1. Create a new [B2 bucket](https://secure.backblaze.com/b2_buckets.htm).
+   * Private, without B2 encryption and without the object lock feature
+1. Create a pair of [keyId and applicationKey](https://secure.backblaze.com/app_keys.htm?bznetid=17953438771644852981527)
+  * Limit scope of the new id and key pair to only the above created bucket.
+
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
 For restic to be able to connect to your bucket, you want to in the B2 settings create a pair of keyID and applicationKey. It's a good idea to create a separate pair of ID and Key with for each bucket that you will use, with limited read&write access to only that bucket.
@@ -314,7 +321,7 @@ For restic to be able to connect to your bucket, you want to in the B2 settings 
 
 #### 2. Configure B2 Credentials Locally
 Put these files in `/etc/restic/`:
-* `_global.env.sh`: Fill this file out with your global settings including B2 keyID & applicationKey. A global exclude list is set here (explained in section below).
+* `_global.env.sh`: Fill this file out with your global settings including B2 keyID & applicationKey. 
 * `default.env.sh`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env.sh` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
    ```console
    $ source /etc/restic/default.env.sh
