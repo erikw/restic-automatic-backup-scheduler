@@ -107,6 +107,8 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 
 
 ## Setup macOS LaunchAgent
+<img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" />
+
 ☝ **Note** The macOS setup here will assume an installation to `/usr/local`, as [custom](https://docs.brew.sh/FAQ#why-does-homebrew-say-sudo-is-bad) with Homebrew installations.
 
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
@@ -182,6 +184,8 @@ If you updated the `.plist` file, you need to issue the `bootout` followed by `b
 
 
 ## Setup Windows ScheduledTask
+<img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/windows.svg" />
+
 Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task Scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
 
 I describe here one of may ways you can get restic and this backup script working on Windows. Here I chose to work with `scoop` and `git-bash`.
@@ -239,6 +243,8 @@ With `taskschd.msc` you can easily start, stop, delete and configure the schedul
 
 
 ## Setup Cron
+<img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" />
+
 If you want to run an all-classic cron job instead, do like this:
 
 1. Follow the main setup from [Detailed Manual Setup](#Detailed Manual Setup) but skip the systemd parts.
