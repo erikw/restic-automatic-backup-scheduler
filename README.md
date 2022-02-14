@@ -57,6 +57,7 @@ Depending on your system, the setup will look different. Choose one of:
 ☝ **Note** in the command listing below, `$` means a user shell and `#` means a root shell (or use `sudo`).
 
 ## Setup Linux Systemd
+<img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" />
 ☝ **Note** The Linux setup here will assume an installation to `/`.
 
 Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Systemd), which features good support for running services and scheduled jobs. If your distribution is no on Systemd, check out the [cron setup](#setup-cron) instead.
@@ -131,7 +132,10 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    * Homebrew install: `~/Library/LaunchAgents/homebrew.mxcl.restic-automatic-backup-scheduler.plist`.
    * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist`.
 1. Enable automated backup for starting with the system & make the first backup:
-   * Homebrew install: `$ brew services start restic-automatic-backup-scheduler`
+   * Homebrew install: 
+    ```console
+	$ brew services start restic-automatic-backup-scheduler
+	```
    * `make` install: 
     ```console
 	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist
@@ -177,18 +181,18 @@ If you updated the `.plist` file, you need to issue the `bootout` followed by `b
 
 
 ## Setup Windows ScheduledTask
-Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
+Windows comes with a built-in task scheduler called [ScheduledTask](https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtask?view=windowsserver2022-ps). The frontend app is "Task Scheduler" (`taskschd.msc`) and we can use PowerShell commands to install a new scheduled task.
 
 I describe here one of may ways you can get restic and this backup script working on Windows. Here I chose to work with `scoop` and `git-bash`.
 
 
 **TL;DR setup**
 1. Install [scoop](https://scoop.sh/)
-1. Install dependencies from a PowerShell with administrator privileges:
+1. Install dependencies from a PowerShell with *administrator privileges*:
    ```console
 	powershell> scoop install restic make git
    ```
-1. In a non-privileged PowerShell, start git-bash and clone this repo
+1. In a *non-privileged* PowerShell, start git-bash and clone this repo
    ```console
 	powershell> git-bash
 	git-bash$ mkdir ~/src && cd ~/src/
