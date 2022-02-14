@@ -500,7 +500,7 @@ $ sudo make uninstall
 
 # Releasing
 To make a new release:
-1.
+1. Create a new tag:
    ```console
    $ vi CHANGELOG.md && git commit -am "Update CHANGELOG.md"
    $ git tag vX.Y.Z
