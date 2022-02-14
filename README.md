@@ -58,6 +58,7 @@ Depending on your system, the setup will look different. Choose one of:
 
 ## Setup Linux Systemd
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" />
+
 ☝ **Note** The Linux setup here will assume an installation to `/`.
 
 Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Systemd), which features good support for running services and scheduled jobs. If your distribution is no on Systemd, check out the [cron setup](#setup-cron) instead.
