@@ -312,7 +312,7 @@ In short:
 1. Create a new [B2 bucket](https://secure.backblaze.com/b2_buckets.htm).
    * Private, without B2 encryption and without the object lock feature
 1. Create a pair of [keyId and applicationKey](https://secure.backblaze.com/app_keys.htm?bznetid=17953438771644852981527)
-  * Limit scope of the new id and key pair to only the above created bucket.
+   * Limit scope of the new id and key pair to only the above created bucket.
 
 First, see this official Backblaze [tutorial](https://help.backblaze.com/hc/en-us/articles/4403944998811-Quickstart-Guide-for-Restic-and-Backblaze-B2-Cloud-Storage) on restic, and follow the instructions ("Create Backblaze account with B2 enabled") there on how to create a new B2 bucket. In general, you'd want a private bucket, without B2 encryption (restic does the encryption client side for us) and without the object lock feature.
 
