@@ -254,6 +254,8 @@ If you want to run an all-classic cron job instead, do like this:
 
 
 ## Detailed Manual Setup
+<img height="64" width="64" src="img/pen-paper.png" />
+
 This is a more detailed explanation than the TL;DR section that will give you more understanding in the setup, and maybe inspire you to develop your own setup based on this one even!
 
 Tip: The steps in this section will instruct you to copy files from this repo to system directories. If you don't want to do this manually, you can use the Makefile:
