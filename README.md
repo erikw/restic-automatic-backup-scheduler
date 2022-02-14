@@ -333,8 +333,8 @@ Put these files in `/etc/restic/`:
 Now we must initialize the repository on the remote end:
 ```console
 $ sudo -i
-$ source /etc/restic/default.env.sh
-$ restic init
+# source /etc/restic/default.env.sh
+# restic init
 ```
 
 #### 4. Script for doing the backup
@@ -349,27 +349,24 @@ Restic support exclude files. They list file pattern paths to exclude from you b
 Now see if the backup itself works, by running as root
 
 ```console
-$ sudo -i
-$ source /etc/restic/default.env.sh
-$ /bin/restic_backup.sh
+# source /etc/restic/default.env.sh
+# /bin/restic_backup.sh
 ````
 
 #### 6. Verify the backup
-As the `default.env.sh` is already sourced in your root shell, you can now just list the snapshos
+As the `default.env.sh` is already sourced in your root shell, you can now just list the snapshost
 ```console
-$ sudo -i
-$ source /etc/restic/default.env.sh
-$ restic snapshots
+# restic snapshots
 ```
 
 Alternatively you can mount the restic snapshots to a directory set `/mnt/restic`
 ```console
-$ restic mount /mnt/restic
-$ ls /mnt/restic
+# restic mount /mnt/restic
+# ls /mnt/restic
 ```
 
-#### 7. Backup automatically; systemd service + timer
-Now we can do the modern version of a cron-job, a systemd service + timer, to run the backup every day!
+#### 7. Backup automatically
+All OS setups differs in what task scheduler they use. As a demonstration, let's look at how we can do this with systemd under Linux here.
 
 Put these files in `/etc/systemd/system` (note that the Makefile installs as package to `/usr/lib/systemd/system`)
 * `restic-backup@.service`: A service that calls the backup script with the specified profile. The profile is specified
@@ -379,35 +376,30 @@ Put these files in `/etc/systemd/system` (note that the Makefile installs as pac
 
 Now simply enable the timer with:
 ```console
-$ sudo systemctl enable --now restic-backup@default.timer
+# systemctl enable --now restic-backup@default.timer
 ````
-
- ☝ **Note**: You can run it with different values instead of `default` if you use multiple profiles.
 
 You can see when your next backup is scheduled to run with
 ```console
-$ systemctl list-timers | grep restic
+# systemctl list-timers | grep restic
 ```
 
-and see the status of a currently running backup with
-
+and see the status of a currently running backup with:
 ```console
-$ systemctl status restic-backup
+# systemctl status restic-backup
 ```
 
-or start a backup manually
-
+or start a backup manually:
 ```console
 $ systemctl start restic-backup@default
 ```
 
 You can follow the backup stdout output live as backup is running with:
-
 ```console
 $ journalctl -f -u restic-backup@default.service
 ````
-
 (skip `-f` to see all backups that has run)
+
 
 #### Recommended: Automated Backup Checks
 Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
@@ -415,7 +407,7 @@ Once in a while it can be good to do a health check of the remote repository, to
 There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `bin/` and copy what you need over to their corresponding locations.
 
 ```console
-$ sudo systemctl enable --now restic-check@default.timer
+# systemctl enable --now restic-check@default.timer
 ````
 
 
@@ -428,7 +420,7 @@ To have different backup jobs having e.g. different buckets, backup path of sche
 To create a different backup and use you can do:
 ```console
 # cp /etc/restic/default.env.sh /etc/restic/other.env.sh
-# vi /etc/restic/default.other.sh  # Set backup path, bucket etc.
+# vim /etc/restic/default.other.sh  # Set backup path, bucket etc.
 # source /etc/restic/default.other.sh 
 # restic_backup.sh
 ```
