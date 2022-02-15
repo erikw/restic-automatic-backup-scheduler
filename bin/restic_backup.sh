@@ -105,18 +105,17 @@ echo "Backup & cleaning is done."
 #
 # (optionally) Notify about backup summary stats.
 #
-# How to perform the notification is up to the user; the script only writes the info to the user-owned file in a fire
-# and forget fashion.
+# How to perform the notification is up to the user; the script only writes the info to a user-owned file in a fire
+# and forget fashion. One option is using a special FIFO file (aka pipe file) on user-side (which will work as a queue)
+# together with an auto-started user process to read from that queue and trigger the notification.
 #
-# One option to trigger desktop notifications on user-side is using a special FIFO file (a.k.a. pipe file), which will
-# work as a queue; plus, a user process to read from that queue and run a desktop notification command.
-#
-# TODO Clean/or rephrase the example comments below
-# In this case I'm running a user process that reads from a special pipe file and sends a desktop notification using
-# `notify-send`.
-#
-# See: https://github.com/gerardbosch/dotfiles-linux/blob/main/home/.config/autostart/notification-queue.desktop and
-#      https://github.com/gerardbosch/dotfiles-linux/blob/main/home/bin/notification-queue-start-processing
+# Examples of such setup:
+#   - Linux autostart + cross-platform notifier
+#       https://github.com/gerardbosch/dotfiles-linux/blob/ea0f75bfd7a356945544ecaa42a2fc35c9fab3a1/home/.config/autostart/notification-queue.desktop
+#       https://github.com/gerardbosch/dotfiles/blob/ddc1491056822eab45dedd131f1946308ef62135/home/bin/notification-queue-notifier
+#   - MacOS autostart + terminal-notifier
+#       https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/com.user.notificationqueue.plist
+#       https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/notification-queue-notifier.sh
 #
 if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
 	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
