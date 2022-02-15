@@ -5,10 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [7.3.0] - 2022-02-15
+### Added
+- optional user-controlled notification. See `RESTIC_NOTIFY_BACKUP_STATS` and in `backup.sh`.
 
 ## [7.2.0] - 2022-02-15
 ### Added
-- restic-check launchagent.
+- restic-check LaunchAgent.
 
 ### Changed
 - [README.md](README.md) is restructured with easier TL;DR for each OS and a more general detailed section for the interested.
