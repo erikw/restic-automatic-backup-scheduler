@@ -31,5 +31,5 @@ export RESTIC_BACKUP_EXTRA_ARGS=
 export RESTIC_VERBOSITY_LEVEL=0
 
 # (optional) Desktop notifications. See restic_backup.sh for details on how to set this up.
-export RESTIC_NOTIFY_BACKUP_STATS="false"
-export RESTIC_BACKUP_NOTIFICATION_FILE=""
+export RESTIC_NOTIFY_BACKUP_STATS=false
+export RESTIC_BACKUP_NOTIFICATION_FILE=
