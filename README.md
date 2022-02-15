@@ -486,16 +486,22 @@ To use this, wrap the restic script command with it in your cron file like:
 ```
 
 
-### Optional: No Backup on Metered Connections
+### Optional: No Backup on Metered Connections (Linux/systemd only)
 For a laptop, it can make sense to not do heavy backups when your on a metered connection like a shared connection from you mobile phone. To solve this we can set up a systemd service that is in success state only when a connection is unmetered. Then we can tell our backup service to depend on this service simply! When the unmetered service detects an unmetered connection it will go to failed state. Then our backup service will not run as it requires this other service to be in success state.
 
-Put this file in `/bin`:
+Install this file in `/bin`:
 * `nm-unmetered-connection.sh`: Detects metered connections and returns will error code if one is detected. This scripts requires the Gnome [NetworkManager](https://wiki.gnome.org/Projects/NetworkManager) to be installed. Modify this script if your system has a different network manager.
+  ```console
+  sudo install -m 0555 bin/nm-unmetered-connection.sh /bin
+  ```
 
-Put this files in `/etc/systemd/system/`:
+Install this file in `/etc/systemd/system/`:
 * `nm-unmetered-connection.service`: A service that is in success state if the connection is unmetered only.
+  ```console
+  sudo install -m 0644 usr/lib/systemd/system/nm-unmetered-connection.service /etc/systemd/system
+  ```
 
-Now edit `restic-backup.service` and `status-email-user.service` to require the new service to be in success state:
+Now edit `restic-backup.service` and `restic-check.service` to require the new service to be in success state:
 ```
 Requires=nm-unmetered-connection.service
 ```
