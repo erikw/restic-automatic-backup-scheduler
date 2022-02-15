@@ -1,4 +1,3 @@
-# TODO add install for launchagent completely, and unisntall target using bootstrap?
 #### Notes ####################################################################
 # This build process is done in three stages (out-of-source build):
 # 1. copy source files to the local build directory.
@@ -20,7 +19,8 @@
 	install-targets-script install-targets-conf install-targets-systemd \
 	install-targets-cron install-targets-launchagent \
 	install-targets-schedtask uninstall-targets-schedtask \
-	activate-launchagent deactivate-launchagent
+	activate-launchagent-backup deactivate-launchagent-backup \
+	activate-launchagent-chec deactivate-launchagent-check
 
 #### Macros ###################################################################
 NOW := $(shell date +%Y-%m-%d_%H:%M:%S)
@@ -52,8 +52,10 @@ MKDIR_PARENTS=sh -c '\
 
 # LaunchAgent names.
 UID					:= $(shell id -u)
-LAUNCHAGENT			= com.github.erikw.restic-automatic-backup-scheduler
-LAUNCHAGENT_TARGET	= gui/$(UID)/$(LAUNCHAGENT)
+LAUNCHAGENT_BACKUP			= com.github.erikw.restic-backup
+LAUNCHAGENT_CHECK			= com.github.erikw.restic-check
+LAUNCHAGENT_TARGET_BACKUP	= gui/$(UID)/$(LAUNCHAGENT_BACKUP)
+LAUNCHAGENT_TARGET_CHECK	= gui/$(UID)/$(LAUNCHAGENT_CHECK)
 
 # What to substitute $INSTALL_PREFIX in sources to.
 # This can be useful to set to empty on commandline when building e.g. an AUR
@@ -126,6 +128,9 @@ DEST_TARGS_SYSTEMD		= $(addprefix $(PREFIX)/, $(SRCS_SYSTEMD))
 DEST_TARGS_CRON			= $(addprefix $(PREFIX)/, $(SRCS_CRON))
 DEST_TARGS_LAUNCHAGENT	= $(addprefix $(LAUNCHAGENTDIR)/, $(SRCS_LAUNCHAGENT))
 
+DEST_LAUNCHAGENT_BACKUP = $(DEST_DIR_LAUNCHAGENT)/$(LAUNCHAGENT_BACKUP).plist
+DEST_LAUNCHAGENT_CHECK = $(DEST_DIR_LAUNCHAGENT)/$(LAUNCHAGENT_CHECK).plist
+
 INSTALLED_FILES = $(DEST_TARGS_SCRIPT) $(DEST_TARGS_CONF) \
 				  $(DEST_TARGS_SYSTEMD) $(DEST_TARGS_CRON) \
 				  $(DEST_TARGS_LAUNCHAGENT)
@@ -158,9 +163,13 @@ install-systemd: install-targets-script install-targets-conf \
 # target: install-cron - Install cron setup.
 install-cron: install-targets-script install-targets-conf install-targets-cron
 
-# target: install-launchagent - Install LaunchAgent setup.
+# target: install-launchagent - Install backup LaunchAgent setup.
 install-launchagent: install-targets-script install-targets-conf \
 						install-targets-launchagent
+
+# target: install-launchagent-check - Install check LaunchAgent setup.
+# Intended to be run after install-launchagent, thus not requiring scripts/conf
+#install-launchagent: install-targets-launchagent
 
 # target: install-schedtask - Install Windows ScheduledTasks
 install-schedtask: install-targets-script install-targets-conf \
@@ -218,12 +227,22 @@ $(DEST_DIR_LAUNCHAGENT)/%: $(BUILD_DIR_LAUNCHAGENT)/%
 $(DEST_DIR_MAC_LOG):
 	mkdir -p $@
 
-# target: activate-launchagent - Activate the LaunchAgent.
-activate-launchagent:
-	launchctl bootstrap gui/$(UID) $(DEST_TARGS_LAUNCHAGENT)
-	launchctl enable $(LAUNCHAGENT_TARGET)
-	launchctl kickstart -p $(LAUNCHAGENT_TARGET)
+# target: activate-launchagent-backup - Activate the backup LaunchAgent.
+activate-launchagent-backup:
+	launchctl bootstrap gui/$(UID) $(DEST_LAUNCHAGENT_BACKUP)
+	launchctl enable $(LAUNCHAGENT_TARGET_BACKUP)
+	launchctl kickstart -p $(LAUNCHAGENT_TARGET_BACKUP)
 
-# target: deactivate-launchagent - Deactivate and remove the LaunchAgent.
-deactivate-launchagent:
-	launchctl bootout $(LAUNCHAGENT_TARGET)
+# target: activate-launchagent-check - Activate the check LaunchAgent.
+activate-launchagent-check:
+	launchctl bootstrap gui/$(UID) $(DEST_LAUNCHAGENT_CHECK)
+	launchctl enable $(LAUNCHAGENT_TARGET_CHECK)
+	launchctl kickstart -p $(LAUNCHAGENT_TARGET_CHECK)
+
+# target: deactivate-launchagent-backup - Remove the backup LaunchAgent.
+deactivate-launchagent-backup:
+	launchctl bootout $(LAUNCHAGENT_TARGET_BACKUP)
+
+# target: deactivate-launchagent-check - Remove the check LaunchAgent.
+deactivate-launchagent-check:
+	launchctl bootout $(LAUNCHAGENT_TARGET_CHECK)

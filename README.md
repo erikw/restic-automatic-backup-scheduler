@@ -64,7 +64,7 @@ Depending on your system, the setup will look different. Choose one of:
 Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Systemd), which features good support for running services and scheduled jobs. If your distribution is no on Systemd, check out the [cron setup](#setup-cron) instead.
 
 **TL;DR setup**
-1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
+1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials
 1. Install scripts, configs systemd units/timers:
    * With `make`:
    ```console
@@ -114,7 +114,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
 
 **TL;DR setup**
-1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
+1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials
 1. Install scripts, configs and LaunchAgent:
    * (recommended) with Homebrew from the [erikw/homebrew-tap](https://github.com/erikw/homebrew-tap):
    ```console
@@ -133,29 +133,39 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Configure [how often](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html#//apple_ref/doc/uid/10000172i-CH1-SW1) backups should be done. If needed, edit `OnCalendar` in
    * Homebrew install: `~/Library/LaunchAgents/homebrew.mxcl.restic-automatic-backup-scheduler.plist`.
-   * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist`.
+   * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-backup.plist`.
 1. Enable automated backup for starting with the system & make the first backup:
-   * Homebrew install: 
+   * Homebrew install:
     ```console
 	$ brew services start restic-automatic-backup-scheduler
 	```
-   * `make` install: 
+   * `make` install:
     ```console
-	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist
-	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-backup.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-backup
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-backup
 	```
-	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
+	As a convenience, a shortcut for the above commands are `$ make activate-launchagent-backup`.
 1. Watch the first backup progress from the log files:
    ```console
-   $ tail -f ~/Library/Logs/restic/restic_*
+   $ tail -f ~/Library/Logs/restic/backup*
    ```
 1. Verify the backup
    ```console
    $ restic snapshots
    ```
 1. (recommended) Enable the check job that verifies that the backups for the profile are all intact.
-   TODO #81
+   * Homebrew install:
+    ```console
+	$ brew services start restic-automatic-backup-scheduler-check
+	```
+   * `make` install:
+    ```console
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-check.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-check
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-check
+	```
+	As a convenience, a shortcut for the above commands are `$ make activate-launchagent-check`.
 1. Consider more [optional features](#optional-features).
 
 ### Homebrew Setup Notes
@@ -168,15 +178,15 @@ $ brew services stop restic-automatic-backup-scheduler
 
 If `services start` fails, it might be due to previous version installed. In that case remove the existing version and try again:
 ```console
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ launchctl bootout gui/$UID/com.github.erikw.restic-backup
 $ brew services start restic-automatic-backup-scheduler
 ```
 
 ### Make Setup Notes
 Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
 ```
-$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ launchctl disable gui/$UID/com.github.erikw.restic-backup
+$ launchctl bootout gui/$UID/com.github.erikw.restic-backup
 ```
 
 If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.
@@ -252,7 +262,7 @@ Any system that has a cron-like system can easily setup restic backups as well. 
 
 
 **TL;DR setup**
-1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials 
+1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials
 1. Install scripts, configs systemd units/timers:
    ```console
    $ sudo make install-cron
@@ -297,7 +307,7 @@ and you should now see that all files have been changed like e.g.
 +export RESTIC_PASSWORD_FILE="/etc/restic/pw.txt"
 ```
 
-Why? The OS specific TL;DR setups above all use the [Makefile](Makefile) or a package manager to install these files. The placeholder string `$INSTALL_PREFIX` is in the source files for portability reasons, so that the Makefile can support all different operating systems. `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`. 
+Why? The OS specific TL;DR setups above all use the [Makefile](Makefile) or a package manager to install these files. The placeholder string `$INSTALL_PREFIX` is in the source files for portability reasons, so that the Makefile can support all different operating systems. `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`.
 
 In this detailed manual setup we will copy all files manually to `/etc`and `/bin`. Thus we need to remove the placeholder string `$INSTALL_PREFIX` in the source files as a first step.
 
@@ -317,7 +327,7 @@ For restic to be able to connect to your bucket, you want to in the B2 settings 
 
 #### 2. Configure B2 Credentials Locally
 Put these files in `/etc/restic/`:
-* `_global.env.sh`: Fill this file out with your global settings including B2 keyID & applicationKey. 
+* `_global.env.sh`: Fill this file out with your global settings including B2 keyID & applicationKey.
 * `default.env.sh`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env.sh` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
    ```console
    $ source /etc/restic/default.env.sh
@@ -421,7 +431,7 @@ To create a different backup and use you can do:
 ```console
 # cp /etc/restic/default.env.sh /etc/restic/other.env.sh
 # vim /etc/restic/default.other.sh  # Set backup path, bucket etc.
-# source /etc/restic/default.other.sh 
+# source /etc/restic/default.other.sh
 # restic_backup.sh
 ```
 
