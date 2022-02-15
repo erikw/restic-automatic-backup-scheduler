@@ -148,7 +148,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
 1. Watch the first backup progress from the log files:
    ```console
-   $ tail -f ~/Library/Logs/restic/restic_*
+   $ tail -f ~/Library/Logs/restic/backup*
    ```
 1. Verify the backup
    ```console
