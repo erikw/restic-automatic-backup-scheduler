@@ -66,21 +66,18 @@ done
 restic unlock &
 wait $!
 
-# Do the backup! (and capture the output for further processing)
+# Do the backup!
 # See restic-backup(1) or http://restic.readthedocs.io/en/latest/040_backup.html
 # --one-file-system makes sure we only backup exactly those mounted file systems specified in $RESTIC_BACKUP_PATHS, and thus not directories like /dev, /sys etc.
 # --tag lets us reference these backups later when doing restic-forget.
-{ backup_output=$( \
-	restic backup \
-		--verbose="$RESTIC_VERBOSITY_LEVEL" \
-		--one-file-system \
-		--tag "$RESTIC_BACKUP_TAG" \
-		--option b2.connections="$B2_CONNECTIONS" \
-		"${exclusion_args[@]}" \
-		"${extra_args[@]}" \
-		"${backup_paths[@]}" \
-	| tee /dev/fd/3 & )  # store output in var for further proc; also tee to a temp fd that's redirected to stdout
-} 3>&1
+restic backup \
+	--verbose="$RESTIC_VERBOSITY_LEVEL" \
+	--one-file-system \
+	--tag "$RESTIC_BACKUP_TAG" \
+	--option b2.connections="$B2_CONNECTIONS" \
+	"${exclusion_args[@]}" \
+	"${extra_args[@]}" \
+	"${backup_paths[@]}" &
 wait $!
 
 # Dereference and delete/prune old backups.
@@ -123,10 +120,18 @@ echo "Backup & cleaning is done."
 #
 if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
 	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
-		added=$(echo "$backup_output" | grep -i 'Added to the repo:' | sed -E 's/.*dded to the repo: (.*)/\1/')
-		# sample:  processed N files, N.XYZ GiB in H:mm
-		size=$(echo "$backup_output" | grep  -i 'processed.*files,' | sed -E 's/.*rocessed.*files, (.*) in.*/\1/g')
-		echo "Added: ${added}. Snapshot size: ${size}" >> "$RESTIC_BACKUP_NOTIFICATION_FILE"
+		echo 'Notifications are enabled: Silently computing backup summary stats...'
+
+		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
+		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
+			| grep -Ei "^[abcdef0-9]{8} " \
+			| awk '{print $1}' \
+			| tr '\n' ' ' \
+			| xargs restic diff)
+        added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
+        removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
+
+		echo "Added: ${added}. Removed: ${removed}. Snap size: ${snapshot_size}" >> "$RESTIC_BACKUP_NOTIFICATION_FILE"
 	else
 		echo "[WARN] Couldn't write the backup summary stats. File not found or not writable: ${RESTIC_BACKUP_NOTIFICATION_FILE}"
 	fi
