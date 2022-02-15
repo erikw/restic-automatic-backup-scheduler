@@ -133,7 +133,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Configure [how often](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html#//apple_ref/doc/uid/10000172i-CH1-SW1) backups should be done. If needed, edit `OnCalendar` in
    * Homebrew install: `~/Library/LaunchAgents/homebrew.mxcl.restic-automatic-backup-scheduler.plist`.
-   * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist`.
+   * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-backup.plist`.
 1. Enable automated backup for starting with the system & make the first backup:
    * Homebrew install: 
     ```console
@@ -141,9 +141,9 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 	```
    * `make` install: 
     ```console
-	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-automatic-backup-scheduler.plist
-	$ launchctl enable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+	$ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.github.erikw.restic-backup.plist
+	$ launchctl enable gui/$UID/com.github.erikw.restic-backup
+	$ launchctl kickstart -p gui/$UID/com.github.erikw.restic-backup
 	```
 	As a convenience, a shortcut for the above commands are `$ make activate-launchagent`.
 1. Watch the first backup progress from the log files:
@@ -168,15 +168,15 @@ $ brew services stop restic-automatic-backup-scheduler
 
 If `services start` fails, it might be due to previous version installed. In that case remove the existing version and try again:
 ```console
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ launchctl bootout gui/$UID/com.github.erikw.restic-backup
 $ brew services start restic-automatic-backup-scheduler
 ```
 
 ### Make Setup Notes
 Use the `disable` command to temporarily pause the agent, or `bootout` to uninstall it.
 ```
-$ launchctl disable gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
-$ launchctl bootout gui/$UID/com.github.erikw.restic-automatic-backup-scheduler
+$ launchctl disable gui/$UID/com.github.erikw.restic-backup
+$ launchctl bootout gui/$UID/com.github.erikw.restic-backup
 ```
 
 If you updated the `.plist` file, you need to issue the `bootout` followed by `bootrstrap` and `enable` sub-commands of `launchctl`. This will guarantee that the file is properly reloaded.

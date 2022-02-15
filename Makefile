@@ -52,7 +52,7 @@ MKDIR_PARENTS=sh -c '\
 
 # LaunchAgent names.
 UID					:= $(shell id -u)
-LAUNCHAGENT			= com.github.erikw.restic-automatic-backup-scheduler
+LAUNCHAGENT			= com.github.erikw.restic-backup
 LAUNCHAGENT_TARGET	= gui/$(UID)/$(LAUNCHAGENT)
 
 # What to substitute $INSTALL_PREFIX in sources to.
