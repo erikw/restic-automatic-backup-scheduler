@@ -436,6 +436,8 @@ To create a different backup and use you can do:
 ```
 
 ### Optional: Desktop Notifications
+<img src="img/macos_notification.png" align="right" />
+
 It's a good idea to be on top of your backups to make sure that they don't increase a lot in size and incur high costs. However it's notoriously tricky to make GUI notifications correctly from a non-user process (e.g. root).
 
 Therefore this project provides a lightweight solution for desktop notifications that works like this: Basically `restic_backup.sh` will append a summary line of the last backup to a user-owned file (the user running your OS's desktop environment) in a fire-and-forget fashion. Then the user has a process that reads this and forward each line as a new message to the desktop environment in use.
@@ -457,6 +459,7 @@ To set desktop notifications up:
    * macOS auto start + [terminal-notifier](https://github.com/julienXX/terminal-notifier)
       * [notification-queue-notifier.sh](https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/notification-queue-notifier.sh)
       * [com.user.notificationqueue.plist](https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/com.user.notificationqueue.plist)
+
 
 
 ### Optional: Email Notification on Failure
