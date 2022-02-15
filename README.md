@@ -468,7 +468,7 @@ Put this file in `/bin`:
 Put this files in `/etc/systemd/system/`:
 * `nm-unmetered-connection.service`: A service that is in success state if the connection is unmetered only.
 
-Now edit `restic-backup.service` and `status-email-user.service` to require the new service to be in success state:
+Now edit `restic-backup.service` and `restic-check.service` to require the new service to be in success state:
 ```
 Requires=nm-unmetered-connection.service
 ```
