@@ -435,6 +435,30 @@ To create a different backup and use you can do:
 # restic_backup.sh
 ```
 
+### Optional: Desktop Notifications
+It's a good idea to be on top of your backups to make sure that they don't increase a lot in size and incur high costs. However it's notoriously tricky to make GUI notifications correctly from a non-user process (e.g. root).
+
+Therefore this project provides a lightweight solution for desktop notifications that works like this: Basically `restic_backup.sh` will append a summary line of the last backup to a user-owned file (the user running your OS's desktop environment) in a fire-and-forget fashion. Then the user has a process that reads this and forward each line as a new message to the desktop environment in use.
+
+To set desktop notifications up:
+1. Create a special FIFO file as your desktop user:
+	```console
+	$ mkfifo /home/user/.cache/notification-queue
+	```
+1. In your profile, e.g. `/etc/restic/default.sh`, set:
+	```bash
+	RESTIC_NOTIFY_BACKUP_STATS=true
+	RESTIC_BACKUP_NOTIFICATION_FILE=/home/user/.cache/notification-queue
+	```
+1. Create a listener on the notification queue file that forwards to desktop notifications
+   * Linux auto start + cross-platform notifier / notify-send
+      * [notification-queue-notifier](https://github.com/gerardbosch/dotfiles/blob/ddc1491056822eab45dedd131f1946308ef62135/home/bin/notification-queue-notifier)
+      * [notification-queue.desktop](https://github.com/gerardbosch/dotfiles-linux/blob/ea0f75bfd7a356945544ecaa42a2fc35c9fab3a1/home/.config/autostart/notification-queue.desktop)
+   * macOS auto start + [terminal-notifier](https://github.com/julienXX/terminal-notifier)
+      * [notification-queue-notifier.sh](https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/notification-queue-notifier.sh)
+      * [com.user.notificationqueue.plist](https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/com.user.notificationqueue.plist)
+
+
 ### Optional: Email Notification on Failure
 #### Systemd
 We want to be aware when the automatic backup fails, so we can fix it. Since my laptop does not run a mail server, I went for a solution to set up my laptop to be able to send emails with [postfix via my Gmail](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp/). Follow the instructions over there.
@@ -468,7 +492,7 @@ Put this file in `/bin`:
 Put this files in `/etc/systemd/system/`:
 * `nm-unmetered-connection.service`: A service that is in success state if the connection is unmetered only.
 
-Now edit `restic-backup.service` and `restic-check.service` to require the new service to be in success state:
+Now edit `restic-backup.service` and `status-email-user.service` to require the new service to be in success state:
 ```
 Requires=nm-unmetered-connection.service
 ```
