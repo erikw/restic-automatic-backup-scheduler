@@ -105,3 +105,37 @@ wait $!
 #wait $!
 
 echo "Backup & cleaning is done."
+
+#
+# (optionally) Notify about backup summary stats.
+#
+# How to perform the notification is up to the user; the script only writes the info to a user-owned file in a fire
+# and forget fashion. One option is using a special FIFO file (aka pipe file) on user-side (which will work as a queue)
+# together with an auto-started user process to read from that queue and trigger the notification.
+#
+# Examples of such setup:
+#   - Linux autostart + cross-platform notifier
+#       https://github.com/gerardbosch/dotfiles-linux/blob/ea0f75bfd7a356945544ecaa42a2fc35c9fab3a1/home/.config/autostart/notification-queue.desktop
+#       https://github.com/gerardbosch/dotfiles/blob/ddc1491056822eab45dedd131f1946308ef62135/home/bin/notification-queue-notifier
+#   - MacOS autostart + terminal-notifier
+#       https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/com.user.notificationqueue.plist
+#       https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/notification-queue-notifier.sh
+#
+if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
+	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
+		echo 'Notifications are enabled: Silently computing backup summary stats...'
+
+		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
+		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
+			| grep -Ei "^[abcdef0-9]{8} " \
+			| awk '{print $1}' \
+			| tr '\n' ' ' \
+			| xargs restic diff)
+        added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
+        removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
+
+		echo "Added: ${added}. Removed: ${removed}. Snap size: ${snapshot_size}" >> "$RESTIC_BACKUP_NOTIFICATION_FILE"
+	else
+		echo "[WARN] Couldn't write the backup summary stats. File not found or not writable: ${RESTIC_BACKUP_NOTIFICATION_FILE}"
+	fi
+fi

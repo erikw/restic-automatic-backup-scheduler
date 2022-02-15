@@ -29,3 +29,7 @@ export RESTIC_BACKUP_EXTRA_ARGS=
 # Verbosity level from 0-3. 0 means no --verbose.
 # Override this value in a profile if needed.
 export RESTIC_VERBOSITY_LEVEL=0
+
+# (optional) Desktop notifications. See restic_backup.sh for details on how to set this up.
+export RESTIC_NOTIFY_BACKUP_STATS="false"
+export RESTIC_BACKUP_NOTIFICATION_FILE=""
