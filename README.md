@@ -517,4 +517,6 @@ To make a new release:
    $ git push && git push --tags
    ```
 1. Update version in the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/).
-1. Update version in the Homebrew [Formula](https://github.com/erikw/homebrew-tap/blob/main/Formula/restic-automatic-backup-scheduler.rb).
+1. Update version in the Homebrew Formulas:
+   * [restic-automatic-backup-scheduler](https://github.com/erikw/homebrew-tap/blob/main/Formula/restic-automatic-backup-scheduler.rb).
+   * [restic-automatic-backup-scheduler-check](https://github.com/erikw/homebrew-tap/blob/main/Formula/restic-automatic-backup-scheduler-check.rb).
