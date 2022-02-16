@@ -489,21 +489,28 @@ To use this, wrap the restic script command with it in your cron file like:
 ### Optional: No Backup on Metered Connections (Linux/systemd only)
 For a laptop, it can make sense to not do heavy backups when your on a metered connection like a shared connection from you mobile phone. To solve this we can set up a systemd service that is in success state only when a connection is unmetered. Then we can tell our backup service to depend on this service simply! When the unmetered service detects an unmetered connection it will go to failed state. Then our backup service will not run as it requires this other service to be in success state.
 
-Install this file in `/bin`:
-* `nm-unmetered-connection.sh`: Detects metered connections and returns will error code if one is detected. This scripts requires the Gnome [NetworkManager](https://wiki.gnome.org/Projects/NetworkManager) to be installed. Modify this script if your system has a different network manager.
-  ```console
-  sudo install -m 0555 bin/nm-unmetered-connection.sh /bin
-  ```
+1. Edit `restic-backup.service` and `restic-check.service` to require the new service to be in success state:
+   ```
+   Requires=nm-unmetered-connection.service
+   ```
+1. Copy and paste the command below, it will install the following files and refresh systemd daemon:
+1. Put this file in `/etc/systemd/system/`:
+   * `nm-unmetered-connection.service`: A service that is in success state only if the connection is unmetered.
+1. Install this file in `/bin`:
+   * `nm-unmetered-connection.sh`: Detects metered connections and returns an error code if one is detected. This scripts requires the Gnome [NetworkManager](https://wiki.gnome.org/Projects/NetworkManager) to be installed (modify this script if your system has a different network manager).
+1. Reload systemd with
+	```console
+	# systemctl daemon-reload
+	```
 
-Install this file in `/etc/systemd/system/`:
-* `nm-unmetered-connection.service`: A service that is in success state if the connection is unmetered only.
-  ```console
-  sudo install -m 0644 usr/lib/systemd/system/nm-unmetered-connection.service /etc/systemd/system
-  ```
-
-Now edit `restic-backup.service` and `restic-check.service` to require the new service to be in success state:
-```
-Requires=nm-unmetered-connection.service
+☝ **Tip**: All steps but the first can be done in one go if you use the Makefile. Set `$PREFIX` as needed or leave empty for install to `/`.
+```bash
+sudo bash -c 'export PREFIX=
+ make build/usr/lib/systemd/system/nm-unmetered-connection.service
+ install -m 0644 build/usr/lib/systemd/system/nm-unmetered-connection.service $PREFIX/etc/systemd/system
+ install -m 0555 bin/nm-unmetered-connection.sh /bin
+ systemctl daemon-reload
+'
 ```
 
 ### Optional: Restic Wrapper Script
