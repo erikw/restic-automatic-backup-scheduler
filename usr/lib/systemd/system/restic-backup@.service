@@ -12,4 +12,4 @@ Nice=10
 Environment="HOME=/root"
 # The random sleep (in seconds) is in the case of multiple backup profiles. Many restic instances started at the same time could case high load or network bandwith usage.
 # `systemd-cat` allows showing the restic output to the systemd journal
-ExecStart=bash -c 'ps cax | grep -q restic && sleep $(shuf -i 0-300 -n 1); source $INSTALL_PREFIX/etc/restic/%I.env.sh && $INSTALL_PREFIX/bin/restic_backup.sh | systemd-cat'
+ExecStart=bash -c 'ps cax | grep -q restic && sleep $(shuf -i 0-300 -n 1); source $INSTALL_PREFIX/etc/restic/%I.env.sh && $INSTALL_PREFIX/bin/restic_backup.sh 2>&1 | systemd-cat'

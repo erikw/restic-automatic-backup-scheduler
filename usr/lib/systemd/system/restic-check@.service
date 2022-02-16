@@ -10,4 +10,4 @@ Conflicts=restic-backup.service
 Type=simple
 Nice=10
 # `systemd-cat` allows showing the restic output to the systemd journal
-ExecStart=bash -c 'source $INSTALL_PREFIX/etc/restic/%I.env.sh && $INSTALL_PREFIX/bin/restic_check.sh | systemd-cat'
+ExecStart=bash -c 'source $INSTALL_PREFIX/etc/restic/%I.env.sh && $INSTALL_PREFIX/bin/restic_check.sh 2>&1 | systemd-cat'
