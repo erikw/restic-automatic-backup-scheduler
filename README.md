@@ -517,7 +517,7 @@ Useful commands:
 | Command                                           | Description                                                       |
 |---------------------------------------------------|-------------------------------------------------------------------|
 | `resticw snapshots`                               | List backup snapshots                                             |
-| `resticw diff <snapshotId-1> <snapshotId-2>`      | Show the changes from the latest backup                           |
+| `resticw diff <snapshotId-1> <snapshotId-2>`      | Show the changes between backup snapshots                         |
 | `resticw stats` / `resticw stats snapshotId ...`  | Show the statistics for the whole repo or the specified snapshots |
 | `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
 
