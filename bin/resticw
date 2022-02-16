@@ -116,8 +116,9 @@ else eval "${prefix}"'_restic_arguments_line_=()'; fi; local docopt_i=1
 declare -p "${prefix}__profile" "${prefix}_restic_arguments_line_"; done; }
 # docopt parser above, complete command for generating this parser is `docopt.sh resticw`
 
-# Parse arguments
-eval "$(docopt "$@")" # See https://github.com/andsens/docopt.sh for the magic :)
+# Parse arguments - See https://github.com/andsens/docopt.sh for the magic :)
+DOCOPT_OPTIONS_FIRST=true  # treat everything after the first non-option as commands/arguments
+eval "$(docopt "$@")"
 
 # --^^^-- END OF GENERATED COMMAND LINE PARSING STUFF --^^^--
 #
