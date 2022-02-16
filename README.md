@@ -457,8 +457,8 @@ To set desktop notifications up:
       * [notification-queue-notifier](https://github.com/gerardbosch/dotfiles/blob/ddc1491056822eab45dedd131f1946308ef62135/home/bin/notification-queue-notifier)
       * [notification-queue.desktop](https://github.com/gerardbosch/dotfiles-linux/blob/ea0f75bfd7a356945544ecaa42a2fc35c9fab3a1/home/.config/autostart/notification-queue.desktop)
    * macOS auto start + [terminal-notifier](https://github.com/julienXX/terminal-notifier)
-      * [notification-queue-notifier.sh](https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/notification-queue-notifier.sh)
-      * [com.user.notificationqueue.plist](https://github.com/erikw/dotfiles/blob/c25f44db1cad675becf91fc3ff28a5a4dfc4a373/bin/com.user.notificationqueue.plist)
+      * [notification-queue-notifier.sh](https://github.com/erikw/dotfiles/blob/8a942defe268292200b614951cdf433ddccf7170/bin/notification-queue-notifier.sh)
+      * [com.user.notificationqueue.plist](https://github.com/erikw/dotfiles/blob/8a942defe268292200b614951cdf433ddccf7170/.config/LaunchAgents/com.user.notificationqueue.plist)
 
 
 
