@@ -126,7 +126,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
-	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
+	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	$ source /usr/local/etc/restic/default.env.sh
 	$ restic init
@@ -226,7 +226,7 @@ I describe here one of may ways you can get restic and this backup script workin
 	export RESTIC_BACKUP_PATHS='/c/Users/<username>/My Documents'
    ```
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
-	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
+	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
     git-bash$ source /etc/restic/default.env.sh
     git-bash$ restic init
@@ -270,7 +270,7 @@ Any system that has a cron-like system can easily setup restic backups as well. 
    * This assumes that your cron supports dropping files into `/etc/cron.d/`. If that is not the case, simply copy the relevant contents of the installed `/etc/cron.d/restic` in to your `/etc/crontab`.
 1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
-	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
+	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	# source /etc/restic/default.env.sh
 	# restic init
