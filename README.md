@@ -76,7 +76,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
-	Source the profile to make all needed configuration available to `restic`. All commands after this assumes the profile is sourced in the current shell.
+	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	# source /etc/restic/default.env.sh
 	# restic init
