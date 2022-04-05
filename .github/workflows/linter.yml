@@ -3,13 +3,13 @@ name: Lint Code Base
 on:
   workflow_dispatch:
   push:
-    branches: master
+    branches: main
     paths:
       - '**.sh'
       - '.github/workflows/linter.yml'
       - 'bin/**'
   pull_request:
-    branches: master
+    branches: main
     paths:
       - '**.sh'
       - '.github/workflows/linter.yml'
@@ -29,5 +29,5 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_BASH: true
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
