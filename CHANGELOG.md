@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.3.2] - 2022-04-11
+### Fixed
+- Trying to fix broken Homebrew bottles
+
 ## [7.3.1] - 2022-04-11
 ### Fixed
 - `resticw` is now a true wrapper in that it support `--` args to restic.
