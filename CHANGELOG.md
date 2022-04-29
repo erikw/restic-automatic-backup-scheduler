@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.3.4] - 2022-04-29
+### Fixed
+- Backup stats notifications: fix issue where `restic snapshots --latest 2` will show more than two snapshots due to different backup paths used.
+
 ## [7.3.3] - 2022-04-14
 ### Fixed
 - Trying to fix broken Homebrew bottles due to GitHub API issues.

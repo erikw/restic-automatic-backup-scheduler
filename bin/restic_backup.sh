@@ -115,6 +115,7 @@ if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
 		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
 			| grep -Ei "^[abcdef0-9]{8} " \
 			| awk '{print $1}' \
+			| tail -2 \
 			| tr '\n' ' ' \
 			| xargs restic diff)
         added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
