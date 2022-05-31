@@ -110,9 +110,9 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 ## Setup macOS LaunchAgent
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" />
 
-☝ **Note** The macOS setup here will assume an installation to `/usr/local`, as [custom](https://docs.brew.sh/FAQ#why-does-homebrew-say-sudo-is-bad) with Homebrew installations.
+☝ **Note** The macOS setup here will assume a Homebrew installation to the [recommended default location](https://docs.brew.sh/FAQ#why-should-i-install-homebrew-in-the-default-location). This is [`$HOMEBREW_PREFIX` (`brew --prefix`)](https://docs.brew.sh/Formula-Cookbook#variables-for-directory-locations) , which is `/usr/local` on Intel Macs and `/opt/homebrew` on [Apple Silicon](https://docs.brew.sh/FAQ#why-is-the-default-installation-prefix-opthomebrew-on-apple-silicon).
 
-[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up an LauchAgent to be run as your normal user for starting regular backups.
+[Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up a LaunchAgent to be run as your normal user for starting regular backups.
 
 **TL;DR setup**
 1. [Create](#1-create-backblaze-b2-account-bucket-and-keys) B2 bucket + credentials
@@ -123,13 +123,13 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
    * Using `make`:
    ```console
-	$ make PREFIX=/usr/local install-launchagent
+	$ make PREFIX=$(brew --prefix) install-launchagent
    ```
-1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `/usr/local/etc/restic`.
+1. Fill out [configuration values](#2-configure-b2-credentials-locally) in `$(brew --prefix)/etc/restic`.
 1. [Initialize](#3-initialize-remote-repo) the remote repo.
 	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
-	$ source /usr/local/etc/restic/default.env.sh
+	$ source $(brew --prefix)/etc/restic/default.env.sh
 	$ restic init
    ```
 1. Configure [how often](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html#//apple_ref/doc/uid/10000172i-CH1-SW1) backups should be done. If needed, edit `OnCalendar` in
