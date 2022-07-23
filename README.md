@@ -434,8 +434,8 @@ To have different backup jobs having e.g. different buckets, backup path of sche
 To create a different backup and use you can do:
 ```console
 # cp /etc/restic/default.env.sh /etc/restic/other.env.sh
-# vim /etc/restic/default.other.sh  # Set backup path, bucket etc.
-# source /etc/restic/default.other.sh
+# vim /etc/restic/other.env.sh  # Set backup path, bucket etc.
+# source /etc/restic/other.env.sh
 # restic_backup.sh
 ```
 
