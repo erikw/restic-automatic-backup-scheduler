@@ -32,6 +32,7 @@ export RESTIC_BACKUP_TAG=systemd.timer
 
 # Retention policy - How many backups to keep.
 # See https://restic.readthedocs.io/en/stable/060_forget.html?highlight=month#removing-snapshots-according-to-a-policy
+export RESTIC_RETENTION_HOURS=1
 export RESTIC_RETENTION_DAYS=14
 export RESTIC_RETENTION_WEEKS=16
 export RESTIC_RETENTION_MONTHS=18
