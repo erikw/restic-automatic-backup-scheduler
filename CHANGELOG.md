@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Support saving hourly snapshots. [#98](https://github.com/erikw/restic-automatic-backup-scheduler/pull/98)
+
 ### Fixed
 - Full path to `/bin/bash` in sytemd services. [#96](https://github.com/erikw/restic-automatic-backup-scheduler/issues/96)
 
