@@ -93,7 +93,7 @@ restic forget \
 	--option b2.connections="$B2_CONNECTIONS" \
 	--prune \
 	--group-by "paths,tags" \
-	--keep-hourly "$RESTIC_RETENTION_HOURS" \  
+	--keep-hourly "$RESTIC_RETENTION_HOURS" \
 	--keep-daily "$RESTIC_RETENTION_DAYS" \
 	--keep-weekly "$RESTIC_RETENTION_WEEKS" \
 	--keep-monthly "$RESTIC_RETENTION_MONTHS" \
