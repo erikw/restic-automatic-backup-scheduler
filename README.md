@@ -36,6 +36,8 @@ The scope for this is not to be a full-fledged super solution that solves all th
 
 Nevertheless the project should work out of the box, be minimal but still open the doors for configuration and extensions by users.
 
+To use a different storage backend than B2, you should only need to tweak a few settings variables in the backup profile as well as some restic arguments inside `restic_backup.sh`.
+
 ## Notes
 * Tip: Navigate this document easily from the Section icon in the top left corner.
    ![README Sections](img/readme_sections.png)
