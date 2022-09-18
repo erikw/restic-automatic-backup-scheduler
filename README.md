@@ -498,6 +498,7 @@ For a laptop, it can make sense to not do heavy backups when your on a metered c
 1. Edit `restic-backup@.service` and `restic-check@.service` to require the new service to be in success state:
    ```
    Requires=nm-unmetered-connection.service
+   After=nm-unmetered-connection.service
    ```
 1. Copy and paste the command below, it will install the following files and refresh systemd daemon:
 1. Put this file in `/etc/systemd/system/`:
