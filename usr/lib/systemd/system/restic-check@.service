@@ -5,6 +5,7 @@ Description=Check restic backup Backblaze B2 for errors
 Conflicts=restic-backup.service
 # Prevent backup on unmetered connection. Needs special setup. See README.md.
 #Requires=nm-unmetered-connection.service
+#After=nm-unmetered-connection.service
 
 [Service]
 Type=simple
