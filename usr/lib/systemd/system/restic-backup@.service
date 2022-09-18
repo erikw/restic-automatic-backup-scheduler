@@ -4,6 +4,7 @@ Description=Backup with restic to Backblaze B2
 #OnFailure=status-email-user@%n.service
 # Prevent backup on unmetered connection. Needs special setup. See README.md.
 #Requires=nm-unmetered-connection.service
+#After=nm-unmetered-connection.service
 
 [Service]
 Type=simple
