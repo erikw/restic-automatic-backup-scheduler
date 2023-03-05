@@ -47,7 +47,7 @@ IFS=' ' read -ra extra_args <<< "$RESTIC_BACKUP_EXTRA_ARGS"
 #run the commands listed here before running the actual backup.
 while IFS= read -r command; do
     $command
-done < /etc/restic/pre_backup.txt
+done < $INSTALL_PREFIX/etc/restic/pre_backup.txt
 
 # Set up exclude files: global + path-specific ones
 # NOTE that restic will fail the backup if not all listed --exclude-files exist. Thus we should only list them if they are really all available.
