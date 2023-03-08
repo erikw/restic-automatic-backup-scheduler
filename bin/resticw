@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# @generated
 
 DOC="A little wrapper over restic just to handle profiles and environment loading.
 

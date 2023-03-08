@@ -31,4 +31,6 @@ jobs:
                   VALIDATE_BASH: true
                   DEFAULT_BRANCH: main
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  FILTER_REGEX_EXCLUDE: .*bin/resticw.*
+                  IGNORE_GENERATED_FILES:
+                      true
+                      #FILTER_REGEX_EXCLUDE: .*bin/resticw.*
