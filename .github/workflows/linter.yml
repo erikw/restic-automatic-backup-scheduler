@@ -1,33 +1,34 @@
 name: Lint Code Base
 
 on:
-  workflow_dispatch:
-  push:
-    branches: main
-    paths:
-      - '**.sh'
-      - '.github/workflows/linter.yml'
-      - 'bin/**'
-  pull_request:
-    branches: main
-    paths:
-      - '**.sh'
-      - '.github/workflows/linter.yml'
-      - 'bin/**'
+    workflow_dispatch:
+    push:
+        branches: main
+        paths:
+            - "**.sh"
+            - ".github/workflows/linter.yml"
+            - "bin/**"
+    pull_request:
+        branches: main
+        paths:
+            - "**.sh"
+            - ".github/workflows/linter.yml"
+            - "bin/**"
 jobs:
-  build:
-    name: Lint Code Base
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
-      - name: Lint Code Base
-        uses: github/super-linter@v4
-        env:
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_BASH: true
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    build:
+        name: Lint Code Base
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v2
+              with:
+                  # Full git history is needed to get a proper list of changed files within `super-linter`
+                  fetch-depth: 0
+            - name: Lint Code Base
+              uses: github/super-linter@v4
+              env:
+                  VALIDATE_ALL_CODEBASE: true
+                  VALIDATE_BASH: true
+                  DEFAULT_BRANCH: main
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  FILTER_REGEX_EXCLUDE: ^bin/resticw$
