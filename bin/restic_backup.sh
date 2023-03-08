@@ -44,7 +44,7 @@ assert_envvars \
 IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 IFS=' ' read -ra extra_args <<< "$RESTIC_BACKUP_EXTRA_ARGS"
 
-#run the commands listed here before running the actual backup.
+# If you need to run some commands before performing the backup; create this file, put them there and make the file executable.
 PRE_SCRIPT="${INSTALL_PREFIX}/etc/restic/pre_backup.sh"
 test -x "$PRE_SCRIPT" && "$PRE_SCRIPT"
 
