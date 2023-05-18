@@ -35,15 +35,17 @@ assert_envvars() {
 }
 
 warn_on_missing_envvars() {
-	local unset_envs=
+	local unset_envs=()
 	local varnames=("$@")
 	for varname in "${varnames[@]}"; do
-		if [ -n "${!varname}" ]; then
+		if [ -z "${!varname}" ]; then
 			unset_envs=("${unset_envs[@]}" "$varname")
 		fi
 	done
-
-	printf "The following env variables are recommended, but have not been set. This script may not work as expected:%s\n" "${unset_envs[*]}" >&2
+	
+	if [ ${#unset_envs[@]} -gt 0 ]; then
+		printf "The following env variables are recommended, but have not been set. This script may not work as expected: %s\n" "${unset_envs[*]}" >&2
+	fi
 }
 
 assert_envvars \
