@@ -27,7 +27,7 @@ assert_envvars() {
 }
 
 warn_on_missing_envvars() {
-	unset_envs=
+	local unset_envs=
 	local varnames=("$@")
 	for varname in "${varnames[@]}"; do
 		if [ -z ${!varname+x} ]; then
