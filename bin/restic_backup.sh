@@ -9,7 +9,7 @@
 #   $ restic_backup.sh
 
 # Exit on error, unset var, pipe failure
-set -euo pipefail
+set -eo pipefail
 
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
@@ -57,10 +57,14 @@ warn_on_missing_envvars \
 	B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
 	RESTIC_PASSWORD_FILE
 
-
 # Convert to arrays, as arrays should be used to build command lines. See https://github.com/koalaman/shellcheck/wiki/SC2086
 IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
-IFS=' ' read -ra extra_args <<< "$RESTIC_BACKUP_EXTRA_ARGS"
+
+# Convert to array, an preserve spaces. See #111
+extra_args=( )
+while IFS= read -r -d ''; do
+  extra_args+=( "$REPLY" )
+done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
 
 B2_ARG=
 [ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
