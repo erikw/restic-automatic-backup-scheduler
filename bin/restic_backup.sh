@@ -94,7 +94,8 @@ test "$OSTYPE" = msys || FS_ARG=--one-file-system
 # Reference: https://unix.stackexchange.com/questions/146756/forward-sigterm-to-child-in-bash
 
 # Remove locks from other stale processes to keep the automated backup running.
-restic unlock &
+restic unlock \
+	"${extra_args[@]}" &
 wait $!
 
 # Do the backup!
