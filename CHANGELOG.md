@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Warn on certain unset envvars instead of error-exit.
+
 ## [7.4.0] - 2023-03-08
 ### Added
 - Support saving hourly snapshots. [#98](https://github.com/erikw/restic-automatic-backup-scheduler/pull/98)
