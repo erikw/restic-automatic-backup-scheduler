@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Warn on certain unset envvars instead of error-exit.
+- Allow escaped spaces in EXTRA_ARGS.
 
 ## [7.4.0] - 2023-03-08
 ### Added

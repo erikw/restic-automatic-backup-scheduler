@@ -9,7 +9,7 @@
 #   $ restic_backup.sh
 
 # Exit on error, unset var, pipe failure
-set -euo pipefail
+set -eo pipefail
 
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
@@ -48,19 +48,22 @@ warn_on_missing_envvars() {
 	fi
 }
 
-assert_envvars \
-	RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
-	RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
-	RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
 
-warn_on_missing_envvars \
-	B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
-	RESTIC_PASSWORD_FILE
+#assert_envvars \
+#    RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
+#    RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
+#    RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
+
+#warn_on_missing_envvars \
+#    B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
+#    RESTIC_PASSWORD_FILE
 
 
 # Convert to arrays, as arrays should be used to build command lines. See https://github.com/koalaman/shellcheck/wiki/SC2086
 IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
-IFS=' ' read -ra extra_args <<< "$RESTIC_BACKUP_EXTRA_ARGS"
+
+extra_args=
+[ -n "${RESTIC_BACKUP_EXTRA_ARGS}" ] && extra_args=( "$RESTIC_BACKUP_EXTRA_ARGS" )
 
 B2_ARG=
 [ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
@@ -104,7 +107,7 @@ restic backup \
 	--tag "$RESTIC_BACKUP_TAG" \
 	"${B2_ARG[@]}" \
 	"${exclusion_args[@]}" \
-	"${extra_args[@]}" \
+	"$extra_args" \
 	"${backup_paths[@]}" &
 wait $!
 
