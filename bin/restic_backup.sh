@@ -115,6 +115,7 @@ restic backup \
 	--tag "$RESTIC_BACKUP_TAG" \
 	"${B2_ARG[@]}" \
 	"${exclusion_args[@]}" \
+	"${extra_args[@]}" \
 	"${backup_extra_args[@]}" \
 	"${backup_paths[@]}" &
 wait $!
