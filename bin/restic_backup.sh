@@ -50,13 +50,13 @@ warn_on_missing_envvars() {
 }
 
 assert_envvars \
-    RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
-    RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
-    RESTIC_RETENTION_HOURS RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
+	RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
+	RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
+	RESTIC_RETENTION_HOURS RESTIC_RETENTION_DAYS RESTIC_RETENTION_MONTHS RESTIC_RETENTION_WEEKS RESTIC_RETENTION_YEARS
 
 warn_on_missing_envvars \
-    B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
-    RESTIC_PASSWORD_FILE
+	B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
+	RESTIC_PASSWORD_FILE
 
 # Convert to arrays, as arrays should be used to build command lines. See https://github.com/koalaman/shellcheck/wiki/SC2086
 IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
@@ -64,12 +64,12 @@ IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 # Convert to array, an preserve spaces. See #111
 extra_args=( )
 while IFS= read -r -d ''; do
-  extra_args+=( "$REPLY" )
+	extra_args+=( "$REPLY" )
 done < <(xargs printf '%s\0' <<<"$RESTIC_EXTRA_ARGS")
 
 backup_extra_args=( )
 while IFS= read -r -d ''; do
-  backup_extra_args+=( "$REPLY" )
+	backup_extra_args+=( "$REPLY" )
 done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
 
 B2_ARG=
