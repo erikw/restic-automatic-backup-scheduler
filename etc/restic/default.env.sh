@@ -43,3 +43,10 @@ export RESTIC_RETENTION_YEARS=3
 #RESTIC_BACKUP_EXTRA_ARGS="--exclude-file /path/to/extra/exclude/file/a --exclude-file /path/to/extra/exclude/file/b"
 # Example: exclude all directories that have a .git/ directory inside it.
 #RESTIC_BACKUP_EXTRA_ARGS="--exclude-if-present .git"
+
+# Optional extra space-separated arguments to all restic commands, i.e. global arguments.
+# Example: Limit download speed to a maximum of 1000 KiB/s
+#RESTIC_EXTRA_ARGS="--limit-download 1000"
+# Example: Set custom sftp parameters or a custom path.
+#RESTIC_EXTRA_ARGS="--option sftp.command='ssh\ backup-host\ -s\ sftp'"
+

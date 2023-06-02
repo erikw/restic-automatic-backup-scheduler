@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+### Added
+- Support for extra args for all restic commands with `RESTIC_EXTRA_ARGS`. [115](https://github.com/erikw/restic-automatic-backup-scheduler/pull/115/)
 ### Changed
 - Warn on certain unset envvars instead of error-exit.
 - Allow escaped spaces in EXTRA_ARGS.
