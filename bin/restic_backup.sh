@@ -8,9 +8,8 @@
 #   $ source $PREFIX/etc/default.env.sh
 #   $ restic_backup.sh
 
-set -o errexit
-set -o pipefail
-[[ "${TRACE-0}" =~ ^1|t|y|true|yes$ ]] && set -o xtrace
+# Exit on error, unset var, pipe failure
+set -eo pipefail
 
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
