@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Support for extra args for all restic commands with `RESTIC_EXTRA_ARGS`. [115](https://github.com/erikw/restic-automatic-backup-scheduler/pull/115/)
+- Debug scripts by setting `TRACE=1`.
 ### Changed
 - Warn on certain unset envvars instead of error-exit.
 - Allow escaped spaces in EXTRA_ARGS.

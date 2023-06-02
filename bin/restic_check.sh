@@ -2,8 +2,9 @@
 # Check the backups made with restic to Backblaze B2 for errors.
 # See restic_backup.sh on how this script is run (as it's analogous for this script).
 
-# Exit on error, unset var, pipe failure
-set -euo pipefail
+set -o errexit
+set -o pipefail
+[[ "${TRACE-0}" =~ ^1|t|y|true|yes$ ]] && set -o xtrace
 
 # Clean up lock if we are killed.
 # If killed by systemd, like $(systemctl stop restic), then it kills the whole cgroup and all it's subprocesses.
@@ -34,7 +35,7 @@ warn_on_missing_envvars() {
 			unset_envs=("${unset_envs[@]}" "$varname")
 		fi
 	done
-	
+
 	if [ ${#unset_envs[@]} -gt 0 ]; then
 		printf "The following env variables are recommended, but have not been set. This script may not work as expected: %s\n" "${unset_envs[*]}" >&2
 	fi
