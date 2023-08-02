@@ -83,7 +83,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	# source /etc/restic/default.env.sh
-	# restic init
+	# restic $RESTIC_EXTRA_ARGS init
    ```
 1. Configure [how often](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) backups should be done.
    * If needed, edit `OnCalendar` in `/usr/lib/systemd/system/restic-backup@.timer`.
@@ -97,7 +97,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Verify the backup
    ```console
-   # restic snapshots
+   # restic $RESTIC_EXTRA_ARGS snapshots
    ```
 1. (recommended) Enable the check job that verifies that the backups for the profile are all intact.
    ```console
@@ -133,7 +133,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	$ source $(brew --prefix)/etc/restic/default.env.sh
-	$ restic init
+	$ restic $RESTIC_EXTRA_ARGS init
    ```
 1. Configure [how often](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html#//apple_ref/doc/uid/10000172i-CH1-SW1) backups should be done. If needed, edit `OnCalendar` in
    * Homebrew install: `~/Library/LaunchAgents/homebrew.mxcl.restic-automatic-backup-scheduler.plist`.
@@ -156,7 +156,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Verify the backup
    ```console
-   $ restic snapshots
+   $ restic $RESTIC_EXTRA_ARGS snapshots
    ```
 1. (recommended) Enable the check job that verifies that the backups for the profile are all intact.
    * Homebrew install:
@@ -233,7 +233,7 @@ I describe here one of may ways you can get restic and this backup script workin
 	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
     git-bash$ source /etc/restic/default.env.sh
-    git-bash$ restic init
+    git-bash$ restic $RESTIC_EXTRA_ARGS init
    ```
 1. Make the first backup
    ```console
@@ -241,7 +241,7 @@ I describe here one of may ways you can get restic and this backup script workin
    ```
 1. Verify the backup
    ```console
-    git-bash$ restic snapshots
+    git-bash$ restic $RESTIC_EXTRA_ARGS snapshots
    ```
 1. Inspect the installed ScheduledTasks and make a test run
    1. Open the app "Task Scheduler" (`taskschd.msc`)
@@ -280,7 +280,7 @@ Any system that has a cron-like system can easily setup restic backups as well. 
 	Source the profile to make all needed configuration available to `restic(1)`. All commands after this assumes the profile is sourced in the current shell.
    ```console
 	# source /etc/restic/default.env.sh
-	# restic init
+	# restic $RESTIC_EXTRA_ARGS init
    ```
 1. Make the first backup
    ```console
@@ -288,7 +288,7 @@ Any system that has a cron-like system can easily setup restic backups as well. 
    ```
 1. Verify the backup
    ```console
-   # restic snapshots
+   # restic $RESTIC_EXTRA_ARGS snapshots
    ```
 1. Configure [how often](https://crontab.guru/) backups should be done by directly editing `/etc/cron.d/restic` (or `/etc/crontab`).
 1. Consider more [optional features](#optional-features).
@@ -338,7 +338,7 @@ Put these files in `/etc/restic/`:
 * `default.env.sh`: This is the default profile. Fill this out with bucket name, backup paths and retention policy. This file sources `_global.env.sh` and is thus self-contained and can be sourced in the shell when you want to issue some manual restic commands. For example:
    ```console
    $ source /etc/restic/default.env.sh
-   $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
+   $ restic $RESTIC_EXTRA_ARGS snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
    ````
 * `pw.txt`: This file should contain the restic password (single line) used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
    ```console
@@ -351,7 +351,7 @@ Now we must initialize the repository on the remote end:
 ```console
 $ sudo -i
 # source /etc/restic/default.env.sh
-# restic init
+# restic $RESTIC_EXTRA_ARGS init
 ```
 
 #### 4. Script for doing the backup
@@ -373,12 +373,12 @@ Now see if the backup itself works, by running as root
 #### 6. Verify the backup
 As the `default.env.sh` is already sourced in your root shell, you can now just list the snapshost
 ```console
-# restic snapshots
+# restic $RESTIC_EXTRA_ARGS snapshots
 ```
 
 Alternatively you can mount the restic snapshots to a directory set `/mnt/restic`
 ```console
-# restic mount /mnt/restic
+# restic $RESTIC_EXTRA_ARGS mount /mnt/restic
 # ls /mnt/restic
 ```
 
@@ -419,7 +419,7 @@ $ journalctl -f -u restic-backup@default.service
 
 
 #### Recommended: Automated Backup Checks
-Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic check`.
+Once in a while it can be good to do a health check of the remote repository, to make sure it's not getting corrupt. This can be done with `$ restic $RESTIC_EXTRA_ARGS check`.
 
 There is companion scripts, service and timer (`*check*`) to restic-backup.sh that checks the restic backup for errors; look in the repo in `usr/lib/systemd/system/` and `bin/` and copy what you need over to their corresponding locations.
 
