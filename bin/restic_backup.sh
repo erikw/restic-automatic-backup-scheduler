@@ -102,7 +102,7 @@ test "$OSTYPE" = msys || FS_ARG=--one-file-system
 
 # Remove locks from other stale processes to keep the automated backup running.
 restic unlock \
-	"${extra_args[@]}" &
+	${extra_args[@]} &
 wait $!
 
 # Do the backup!
@@ -115,7 +115,7 @@ restic backup \
 	--tag "$RESTIC_BACKUP_TAG" \
 	"${B2_ARG[@]}" \
 	"${exclusion_args[@]}" \
-	"${extra_args[@]}" \
+	${extra_args[@]} \
 	"${backup_extra_args[@]}" \
 	"${backup_paths[@]}" &
 wait $!
@@ -127,7 +127,7 @@ restic forget \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" \
 	--tag "$RESTIC_BACKUP_TAG" \
 	"${B2_ARG[@]}" \
-	"${extra_args[@]}" \
+	${extra_args[@]} \
 	--prune \
 	--group-by "paths,tags" \
 	--keep-hourly "$RESTIC_RETENTION_HOURS" \
@@ -149,13 +149,13 @@ if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
 	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
 		echo 'Notifications are enabled: Silently computing backup summary stats...'
 
-		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" "${extra_args[@]}" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
-		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact "${extra_args[@]}" \
+		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" ${extra_args[@]} | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
+		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact ${extra_args[@]} \
 			| grep -Ei "^[abcdef0-9]{8} " \
 			| awk '{print $1}' \
 			| tail -2 \
 			| tr '\n' ' ' \
-			| xargs restic diff "${extra_args[@]}")
+			| xargs restic diff ${extra_args[@]})
         added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
         removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
 
