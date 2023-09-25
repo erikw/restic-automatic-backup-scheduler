@@ -64,12 +64,7 @@ IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 # Convert to array, an preserve spaces. See #111
 extra_args=( )
 while IFS= read -r -d ''; do
-	extra_args+=( "$REPLY" )
-done < <(xargs printf '%s\0' <<<"$RESTIC_EXTRA_ARGS")
-
-backup_extra_args=( )
-while IFS= read -r -d ''; do
-	backup_extra_args+=( "$REPLY" )
+  extra_args+=( "$REPLY" )
 done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
 
 B2_ARG=
@@ -101,8 +96,7 @@ test "$OSTYPE" = msys || FS_ARG=--one-file-system
 # Reference: https://unix.stackexchange.com/questions/146756/forward-sigterm-to-child-in-bash
 
 # Remove locks from other stale processes to keep the automated backup running.
-restic unlock \
-	"${extra_args[@]}" &
+restic unlock &
 wait $!
 
 # Do the backup!
@@ -116,7 +110,6 @@ restic backup \
 	"${B2_ARG[@]}" \
 	"${exclusion_args[@]}" \
 	"${extra_args[@]}" \
-	"${backup_extra_args[@]}" \
 	"${backup_paths[@]}" &
 wait $!
 
@@ -127,7 +120,6 @@ restic forget \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" \
 	--tag "$RESTIC_BACKUP_TAG" \
 	"${B2_ARG[@]}" \
-	"${extra_args[@]}" \
 	--prune \
 	--group-by "paths,tags" \
 	--keep-hourly "$RESTIC_RETENTION_HOURS" \
@@ -149,13 +141,13 @@ if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
 	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
 		echo 'Notifications are enabled: Silently computing backup summary stats...'
 
-		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" "${extra_args[@]}" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
-		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact "${extra_args[@]}" \
+		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
+		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
 			| grep -Ei "^[abcdef0-9]{8} " \
 			| awk '{print $1}' \
 			| tail -2 \
 			| tr '\n' ' ' \
-			| xargs restic diff "${extra_args[@]}")
+			| xargs restic diff)
         added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
         removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
 
