@@ -62,9 +62,9 @@ warn_on_missing_envvars \
 IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 
 # Convert to array, an preserve spaces. See #111
-extra_args=( )
+backup_extra_args=( )
 while IFS= read -r -d ''; do
-  extra_args+=( "$REPLY" )
+  backup_extra_args+=( "$REPLY" )
 done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
 
 B2_ARG=
@@ -109,7 +109,7 @@ restic backup \
 	--tag "$RESTIC_BACKUP_TAG" \
 	"${B2_ARG[@]}" \
 	"${exclusion_args[@]}" \
-	"${extra_args[@]}" \
+	"${backup_extra_args[@]}" \
 	"${backup_paths[@]}" &
 wait $!
 
