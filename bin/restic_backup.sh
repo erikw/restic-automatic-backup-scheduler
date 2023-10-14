@@ -61,19 +61,21 @@ warn_on_missing_envvars \
 # Convert to arrays, as arrays should be used to build command lines. See https://github.com/koalaman/shellcheck/wiki/SC2086
 IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 
+B2_ARG=
+[ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
+
 # Convert to array, an preserve spaces. See #111
 extra_args=( )
 while IFS= read -r -d ''; do
   extra_args+=( "$REPLY" )
 done < <(xargs printf '%s\0' <<<"$RESTIC_EXTRA_ARGS")
 
+extra_args=( "${B2_ARG[@]}" "${extra_args[@]}" )
+
 backup_extra_args=( )
 while IFS= read -r -d ''; do
   backup_extra_args+=( "$REPLY" )
 done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
-
-B2_ARG=
-[ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
 
 # If you need to run some commands before performing the backup; create this file, put them there and make the file executable.
 PRE_SCRIPT="${INSTALL_PREFIX}/etc/restic/pre_backup.sh"
@@ -113,7 +115,6 @@ restic backup \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" \
 	$FS_ARG \
 	--tag "$RESTIC_BACKUP_TAG" \
-	"${B2_ARG[@]}" \
 	"${exclusion_args[@]}" \
 	"${extra_args[@]}" \
 	"${backup_extra_args[@]}" \
@@ -126,7 +127,6 @@ wait $!
 restic forget \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" \
 	--tag "$RESTIC_BACKUP_TAG" \
-	"${B2_ARG[@]}" \
 	"${extra_args[@]}" \
 	--prune \
 	--group-by "paths,tags" \
