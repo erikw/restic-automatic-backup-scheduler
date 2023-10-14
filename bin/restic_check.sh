@@ -50,6 +50,14 @@ warn_on_missing_envvars \
 B2_ARG=
 [ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
 
+# Convert to array, an preserve spaces. See #111
+extra_args=( )
+while IFS= read -r -d ''; do
+  extra_args+=( "$REPLY" )
+done < <(xargs printf '%s\0' <<<"$RESTIC_EXTRA_ARGS")
+
+extra_args=( "${B2_ARG[@]}" "${extra_args[@]}" )
+
 # Remove locks from other stale processes to keep the automated backup running.
 # NOTE nope, don't unlock like restic_backup.sh. restic_backup.sh should take precedence over this script.
 #restic unlock &
@@ -57,6 +65,6 @@ B2_ARG=
 
 # Check repository for errors.
 echo restic check \
-	"${B2_ARG[@]}" \
+	"${extra_args[@]}" \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" &
 wait $!
