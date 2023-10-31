@@ -545,6 +545,32 @@ There is a make target to remove all files (scripts and **configs)** that were i
 $ sudo make uninstall
 ```
 
+
+# Debugging
+The best way to debug what's going on is to run the `restic_backup.sh` script with bash's trace function. You can activate it by running the script with `bash -x`:
+
+```bash
+source /etc/restic/default.env.sh
+bash -x /bin/restic_backup.sh
+```
+
+To debug smaller portions of of the backup script, insert these lines at the top and bottom of the relevant code portions e.g.:
+
+```bash
+set -x
+exec 2>/tmp/restic-automatic-backup-scheduler.log
+<code to debug>
+set +x
+```
+
+and then inspect the outputs like
+
+```shell
+less /tmp/restic-automatic-backup-scheduler.log
+tail -f /tmp/restic-automatic-backup-scheduler.log # or follow output like this.
+```
+
+
 # Development
 * To not mess up your real installation when changing the `Makefile` simply install to a `$PREFIX` like
    ```console
