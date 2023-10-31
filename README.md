@@ -207,9 +207,9 @@ I describe here one of may ways you can get restic and this backup script workin
 
 **TL;DR setup**
 1. Install [scoop](https://scoop.sh/)
-1. Install dependencies from a PowerShell with *administrator privileges*:
+1. Install dependencies from a PowerShell with *administrator privileges*. `pwsh` should be installed to be able to run powershell in shebang scripts.
    ```console
-	powershell> scoop install restic make git
+	powershell> scoop install restic make git pwsh
    ```
 1. In a *non-privileged* PowerShell, start git-bash and clone this repo
    ```console
