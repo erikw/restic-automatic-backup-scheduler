@@ -566,8 +566,8 @@ set +x
 and then inspect the outputs like
 
 ```shell
-less /tmp/restic-automatic-backup-scheduler.log
-tail -f /tmp/restic-automatic-backup-scheduler.log # or follow output like this.
+$ less /tmp/restic-automatic-backup-scheduler.log
+$ tail -f /tmp/restic-automatic-backup-scheduler.log # or follow output like this.
 ```
 
 
