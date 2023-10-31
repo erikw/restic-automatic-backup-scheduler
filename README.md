@@ -549,9 +549,9 @@ $ sudo make uninstall
 # Debugging
 The best way to debug what's going on is to run the `restic_backup.sh` script with bash's trace function. You can activate it by running the script with `bash -x`:
 
-```bash
-source /etc/restic/default.env.sh
-bash -x /bin/restic_backup.sh
+```consle
+$ source /etc/restic/default.env.sh
+$ bash -x /bin/restic_backup.sh
 ```
 
 To debug smaller portions of of the backup script, insert these lines at the top and bottom of the relevant code portions e.g.:
