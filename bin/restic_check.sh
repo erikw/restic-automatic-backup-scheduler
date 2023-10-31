@@ -56,7 +56,7 @@ B2_ARG=
 #wait $!
 
 # Check repository for errors.
-echo restic check \
+restic check \
 	"${B2_ARG[@]}" \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" &
 wait $!
