@@ -63,7 +63,7 @@ IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 
 # Convert to array, an preserve spaces. See #111
 backup_extra_args=( )
-if [ ! -z "$RESTIC_BACKUP_EXTRA_ARGS" ]; then
+if [ -n "$RESTIC_BACKUP_EXTRA_ARGS" ]; then
 	while IFS= read -r -d ''; do
 	backup_extra_args+=( "$REPLY" )
 	done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
