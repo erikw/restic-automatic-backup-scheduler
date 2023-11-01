@@ -63,9 +63,11 @@ IFS=':' read -ra backup_paths <<< "$RESTIC_BACKUP_PATHS"
 
 # Convert to array, an preserve spaces. See #111
 backup_extra_args=( )
-while IFS= read -r -d ''; do
-  backup_extra_args+=( "$REPLY" )
-done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
+if [ ! -z "$RESTIC_BACKUP_EXTRA_ARGS" ]; then
+	while IFS= read -r -d ''; do
+	backup_extra_args+=( "$REPLY" )
+	done < <(xargs printf '%s\0' <<<"$RESTIC_BACKUP_EXTRA_ARGS")
+fi
 
 B2_ARG=
 [ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
