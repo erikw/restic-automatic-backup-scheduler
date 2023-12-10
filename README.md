@@ -476,10 +476,10 @@ We want to be aware when the automatic backup fails, so we can fix it. Since my 
 Put this file in `/bin`:
 * `systemd-email`: Sends email using sendmail(1). This script also features time-out for not spamming Gmail servers and getting my account blocked.
 
-Put this files in `/etc/systemd/system/`:
-* `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file.
+Put this file in `/etc/systemd/system/`:
+* `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file and remove `$INSTALL_PREFIX` from `ExecStart` line if needed.
 
-Now edit `restic-backup@.service` and `status-email-user@.service` to call this service failure.
+Now edit `restic-backup@.service` and `restic-check@.service` at `/usr/lib/systemd/system/`, under `[Unit]`, to call this service failure:
 ```
 OnFailure=status-email-user@%n.service
 ```
