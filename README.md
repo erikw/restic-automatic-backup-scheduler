@@ -442,6 +442,12 @@ To create a different backup and use you can do:
 # restic_backup.sh
 ```
 
+### Optional (enabled): Summary stats log
+
+Enabled by default but can be disabled (opt-out) by setting its env variable empty: `RESTIC_BACKUP_STATS_DIR=` either on a specific profile, or on the global environment file (default: `$INSTALL_PREFIX/var/log/restic-automatic-backup-scheduler/`).
+
+The stats log (as well as) the desktop notifications incur in an additional run of `restic snapshots` and `restic diff`. This execution is shared with the notifications (no extra run).
+
 ### Optional: Desktop Notifications
 <img src="img/macos_notification.png" align="right" />
 
