@@ -52,7 +52,8 @@ warn_on_missing_envvars() {
 # Log the backup summary stats to a CSV file
 logBackupStatsCsv() {
 	local snapId="$1" added="$2" removed="$3" snapSize="$4"
-	local logFile="${RESTIC_BACKUP_STATS_DIR}/$(date '+%Y')-stats.log.csv"
+	local logFile
+	logFile="${RESTIC_BACKUP_STATS_DIR}/$(date '+%Y')-stats.log.csv"
 	test -e "$logFile" || install -D -m 0644 <(echo "Date, Snapshot ID, Added, Removed, Snapshot size") "$logFile"
 	# DEV-NOTE: using `ex` due `sed` inconsistencies (GNU vs. BSD) and `awk` cannot edit in-place. `ex` does a good job
 	printf '1a\n%s\n.\nwq\n' "$(date '+%F %H:%M:%S'), ${snapId}, ${added}, ${removed}, ${snapSize}" | ex "$logFile"
