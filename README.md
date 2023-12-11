@@ -306,7 +306,7 @@ $ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd
 
 Make a quick search-and-replace in the source files:
 ```console
-$ find etc bin -type f -exec sed -i.bak -e 's|$INSTALL_PREFIX||g' {} \; -exec rm {}.bak \;
+$ find etc bin usr -type f -exec sed -i.bak -e 's|$INSTALL_PREFIX||g' {} \; -exec rm {}.bak \;
 ```
 and you should now see that all files have been changed like e.g.
 ```diff
