@@ -456,7 +456,6 @@ To set desktop notifications up:
 	```
 1. In your profile, e.g. `/etc/restic/default.sh`, set:
 	```bash
-	RESTIC_NOTIFY_BACKUP_STATS=true
 	RESTIC_BACKUP_NOTIFICATION_FILE=/home/user/.cache/notification-queue
 	```
 1. Create a listener on the notification queue file that forwards to desktop notifications

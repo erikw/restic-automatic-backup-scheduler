@@ -30,6 +30,8 @@ export RESTIC_BACKUP_EXTRA_ARGS=
 # Override this value in a profile if needed.
 export RESTIC_VERBOSITY_LEVEL=0
 
-# (optional) Desktop notifications. See restic_backup.sh for details on how to set this up.
-export RESTIC_NOTIFY_BACKUP_STATS=false
+# Backup summary stats log: snapshot size, etc. (empty/unset won't log)
+export RESTIC_BACKUP_STATS_DIR="$INSTALL_PREFIX/var/log/restic-automatic-backup-scheduler"
+
+# (optional) Desktop notifications. See README and restic_backup.sh for details on how to set this up (empty/unset means disabled)
 export RESTIC_BACKUP_NOTIFICATION_FILE=
