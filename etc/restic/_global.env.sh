@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 
-# Global envionment variables
+# Global environment variables
 # These variables are sourced FIRST, and any values inside of *.env.sh files for
 # specific configurations will override if also defined there.
 

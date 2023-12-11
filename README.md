@@ -26,16 +26,16 @@
 # Intro
 [restic](https://restic.net/) is a command-line tool for making backups, the right way. Check the official website for a feature explanation. As a storage backend, I recommend [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) as restic works well with it, and it is (at the time of writing) very affordable for the hobbyist hacker! (anecdotal: I pay for my full-systems backups each month typically < 1 USD).
 
-Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However it's possible to set this up yourself using built-in tools in your OS and some wrappers. For Linux with systemd, it's convenient to use systemd timers. For macOS systems, we can use built-in LaunchAgents. For Windows we can use ScheduledTasks. Any OS having something cron-like will also work!
+Unfortunately restic does not come pre-configured with a way to run automated backups, say every day. However, it's possible to set this up yourself using built-in tools in your OS and some wrappers. For Linux with systemd, it's convenient to use systemd timers. For macOS systems, we can use built-in LaunchAgents. For Windows we can use ScheduledTasks. Any OS having something cron-like will also work!
 
 Here follows a step-by step tutorial on how to set it up, with my sample script and configurations that you can modify to suit your needs.
 
-Note, you can use any restic's supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar but you will have to use other configuration variables to match your backend of choice.
+Note, you can use any restic's supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar, but you will have to use other configuration variables to match your backend of choice.
 
 ## Project Scope
 The scope for this is not to be a full-fledged super solution that solves all the problems and all possible setups. The aim is to be a hackable code base for you to start sewing up the perfect backup solution that fits your requirements!
 
-Nevertheless the project should work out of the box, be minimal but still open the doors for configuration and extensions by users.
+Nevertheless, the project should work out of the box, be minimal but still open the doors for configuration and extensions by users.
 
 To use a different storage backend than B2, you should only need to tweak a few settings variables in the backup profile as well as some restic arguments inside `restic_backup.sh`.
 
@@ -445,9 +445,9 @@ To create a different backup and use you can do:
 ### Optional: Desktop Notifications
 <img src="img/macos_notification.png" align="right" />
 
-It's a good idea to be on top of your backups to make sure that they don't increase a lot in size and incur high costs. However it's notoriously tricky to make GUI notifications correctly from a non-user process (e.g. root).
+It's a good idea to be on top of your backups to make sure that they don't increase a lot in size and incur high costs. However, it's notoriously tricky to make GUI notifications correctly from a non-user process (e.g. root).
 
-Therefore this project provides a lightweight solution for desktop notifications that works like this: Basically `restic_backup.sh` will append a summary line of the last backup to a user-owned file (the user running your OS's desktop environment) in a fire-and-forget fashion. Then the user has a process that reads this and forward each line as a new message to the desktop environment in use.
+Therefore, this project provides a lightweight solution for desktop notifications that works like this: Basically `restic_backup.sh` will append a summary line of the last backup to a user-owned file (the user running your OS's desktop environment) in a fire-and-forget fashion. Then the user has a process that reads this and forward each line as a new message to the desktop environment in use.
 
 To set desktop notifications up:
 1. Create a special FIFO file as your desktop user:
@@ -461,7 +461,7 @@ To set desktop notifications up:
 	```
 1. Create a listener on the notification queue file that forwards to desktop notifications
    * Linux auto start + cross-platform notifier / notify-send
-      * [notification-queue-notifier](https://github.com/gerardbosch/dotfiles/blob/ddc1491056822eab45dedd131f1946308ef62135/home/bin/notification-queue-notifier)
+      * [notification-queue-notifier](https://github.com/gerardbosch/dotfiles/blob/2130d54daa827e7f885abac0d4f10b6f67d28ad3/home/bin/notification-queue-notifier)
       * [notification-queue.desktop](https://github.com/gerardbosch/dotfiles-linux/blob/ea0f75bfd7a356945544ecaa42a2fc35c9fab3a1/home/.config/autostart/notification-queue.desktop)
    * macOS auto start + [terminal-notifier](https://github.com/julienXX/terminal-notifier)
       * [notification-queue-notifier.sh](https://github.com/erikw/dotfiles/blob/8a942defe268292200b614951cdf433ddccf7170/bin/notification-queue-notifier.sh)
@@ -554,7 +554,7 @@ $ source /etc/restic/default.env.sh
 $ bash -x /bin/restic_backup.sh
 ```
 
-To debug smaller portions of of the backup script, insert these lines at the top and bottom of the relevant code portions e.g.:
+To debug smaller portions of the backup script, insert these lines at the top and bottom of the relevant code portions e.g.:
 
 ```bash
 set -x
