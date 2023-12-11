@@ -51,11 +51,11 @@ warn_on_missing_envvars() {
 
 # Log the backup summary stats to a CSV file
 logBackupStatsCsv() {
-	local added="$1" removed="$2" snapSize="$3"
+	local snapId="$1" added="$2" removed="$3" snapSize="$4"
 	local logFile="${RESTIC_BACKUP_STATS_DIR}/$(date '+%Y')-stats.log.csv"
-	test -e "$logFile" || install -D -m 0644 <(echo "Date, Added, Removed, Snapshot size") "$logFile"
+	test -e "$logFile" || install -D -m 0644 <(echo "Date, Snapshot ID, Added, Removed, Snapshot size") "$logFile"
 	# DEV-NOTE: using `ex` due `sed` inconsistencies (GNU vs. BSD) and `awk` cannot edit in-place. `ex` does a good job
-	printf '1a\n%s\n.\nwq\n' "$(date '+%F %H:%M:%S'), ${added}, ${removed}, ${snapSize}" | ex "$logFile"
+	printf '1a\n%s\n.\nwq\n' "$(date '+%F %H:%M:%S'), ${snapId}, ${added}, ${removed}, ${snapSize}" | ex "$logFile"
 }
 
 # Notify the backup summary stats to the user
@@ -164,18 +164,19 @@ echo "Backup & cleaning is done."
 # (optional) Compute backup summary stats
 if [[ -n "$RESTIC_BACKUP_STATS_DIR" || -n "$RESTIC_BACKUP_NOTIFICATION_FILE" ]]; then
 	echo 'Silently computing backup summary stats...'
-	latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
+	latest_snapshots=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
 		| grep -Ei "^[abcdef0-9]{8} " \
 		| awk '{print $1}' \
 		| tail -2 \
-		| tr '\n' ' ' \
-		| xargs restic diff)
+		| tr '\n' ' ')
+	latest_snapshot_diff=$(echo "$latest_snapshots"	| xargs restic diff)
 	added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
 	removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
 	snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
+	snapshotId=$(echo $latest_snapshots | cut -d ' ' -f2)
 	statsMsg="Added: ${added}. Removed: ${removed}. Snap size: ${snapshot_size}"
 
 	echo "$statsMsg"
-	test -n "$RESTIC_BACKUP_STATS_DIR"         && logBackupStatsCsv "$added" "$removed" "$snapshot_size"
+	test -n "$RESTIC_BACKUP_STATS_DIR"         && logBackupStatsCsv "$snapshotId" "$added" "$removed" "$snapshot_size"
 	test -n "$RESTIC_BACKUP_NOTIFICATION_FILE" && notifyBackupStats "$statsMsg"
 fi
