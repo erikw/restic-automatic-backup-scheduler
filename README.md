@@ -534,14 +534,16 @@ straightforward (it needs to run with sudo to read environment). Just run:
 
 * `sudo resticw WHATEVER` (e.g. `sudo resticw snapshots`) to use the default profile.
 * You can run the wrapper by passing a specific profile: `resticw -p anotherprofile snapshots`.
+* The wrapper has extras on top of `restic` like `--diff-latest` option.
 
 Useful commands:
-| Command                                           | Description                                                       |
-|---------------------------------------------------|-------------------------------------------------------------------|
-| `resticw snapshots`                               | List backup snapshots                                             |
-| `resticw diff <snapshotId-1> <snapshotId-2>`      | Show the changes between backup snapshots                         |
-| `resticw stats` / `resticw stats snapshotId ...`  | Show the statistics for the whole repo or the specified snapshots |
-| `resticw mount /mnt/restic`                       | Mount your remote repository                                      |
+| Command                                           | Description                                                                           |
+|---------------------------------------------------|---------------------------------------------------------------------------------------|
+| `resticw snapshots`                               | List backup snapshots                                                                 |
+| `resticw diff <snapshotId-1> <snapshotId-2>`      | Show the changes between backup snapshots                                             |
+| `resticw stats` / `resticw stats snapshotId ...`  | Show the statistics for the whole repo or the specified snapshots                     |
+| `resticw mount /mnt/restic`                       | Mount your remote repository                                                          |
+| `resticw --diff-latest`                           | Show latest snapshot changes: Runs `restic diff` after finding the latest 2 snapshots |
 
 
 
