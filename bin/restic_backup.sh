@@ -49,6 +49,30 @@ warn_on_missing_envvars() {
 	fi
 }
 
+# Log the backup summary stats to a CSV file
+logBackupStatsCsv() {
+	local snapId="$1" added="$2" removed="$3" snapSize="$4"
+	local logFile
+	logFile="${RESTIC_BACKUP_STATS_DIR}/$(date '+%Y')-stats.log.csv"
+	test -e "$logFile" || install -D -m 0644 <(echo "Date, Snapshot ID, Added, Removed, Snapshot size") "$logFile"
+	# DEV-NOTE: using `ex` due `sed` inconsistencies (GNU vs. BSD) and `awk` cannot edit in-place. `ex` does a good job
+	printf '1a\n%s\n.\nwq\n' "$(date '+%F %H:%M:%S'), ${snapId}, ${added}, ${removed}, ${snapSize}" | ex "$logFile"
+}
+
+# Notify the backup summary stats to the user
+notifyBackupStats() {
+	local statsMsg="$1"
+	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
+		echo "$statsMsg" >> "$RESTIC_BACKUP_NOTIFICATION_FILE"
+	else
+		echo "[WARN] Couldn't write to the backup notification file. File not found or not writable: ${RESTIC_BACKUP_NOTIFICATION_FILE}"
+	fi
+}
+
+# ------------
+# === Main ===
+# ------------
+
 assert_envvars \
 	RESTIC_BACKUP_PATHS RESTIC_BACKUP_TAG \
 	RESTIC_BACKUP_EXCLUDE_FILE RESTIC_BACKUP_EXTRA_ARGS RESTIC_REPOSITORY RESTIC_VERBOSITY_LEVEL \
@@ -138,23 +162,22 @@ wait $!
 
 echo "Backup & cleaning is done."
 
-# (optionally) Notify about backup summary stats.
-if [ "$RESTIC_NOTIFY_BACKUP_STATS" = true ]; then
-	if [ -w "$RESTIC_BACKUP_NOTIFICATION_FILE" ]; then
-		echo 'Notifications are enabled: Silently computing backup summary stats...'
+# (optional) Compute backup summary stats
+if [[ -n "$RESTIC_BACKUP_STATS_DIR" || -n "$RESTIC_BACKUP_NOTIFICATION_FILE" ]]; then
+	echo 'Silently computing backup summary stats...'
+	latest_snapshots=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
+		| grep -Ei "^[abcdef0-9]{8} " \
+		| awk '{print $1}' \
+		| tail -2 \
+		| tr '\n' ' ')
+	latest_snapshot_diff=$(echo "$latest_snapshots"	| xargs restic diff)
+	added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
+	removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
+	snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
+	snapshotId=$(echo "$latest_snapshots" | cut -d ' ' -f2)
+	statsMsg="Added: ${added}. Removed: ${removed}. Snap size: ${snapshot_size}"
 
-		snapshot_size=$(restic stats latest --tag "$RESTIC_BACKUP_TAG" | grep -i 'total size:' | cut -d ':' -f2 | xargs)  # xargs acts as trim
-		latest_snapshot_diff=$(restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
-			| grep -Ei "^[abcdef0-9]{8} " \
-			| awk '{print $1}' \
-			| tail -2 \
-			| tr '\n' ' ' \
-			| xargs restic diff)
-        added=$(echo "$latest_snapshot_diff" | grep -i 'added:' | awk '{print $2 " " $3}')
-        removed=$(echo "$latest_snapshot_diff" | grep -i 'removed:' | awk '{print $2 " " $3}')
-
-		echo "Added: ${added}. Removed: ${removed}. Snap size: ${snapshot_size}" >> "$RESTIC_BACKUP_NOTIFICATION_FILE"
-	else
-		echo "[WARN] Couldn't write the backup summary stats. File not found or not writable: ${RESTIC_BACKUP_NOTIFICATION_FILE}"
-	fi
+	echo "$statsMsg"
+	test -n "$RESTIC_BACKUP_STATS_DIR"         && logBackupStatsCsv "$snapshotId" "$added" "$removed" "$snapshot_size"
+	test -n "$RESTIC_BACKUP_NOTIFICATION_FILE" && notifyBackupStats "$statsMsg"
 fi
