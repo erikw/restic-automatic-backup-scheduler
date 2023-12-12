@@ -484,7 +484,7 @@ Put this file in `/bin`:
 * `systemd-email`: Sends email using sendmail(1). This script also features time-out for not spamming Gmail servers and getting my account blocked.
 
 Put this file in `/etc/systemd/system/`:
-* `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file.
+* `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file, and replace or remove `{{ INSTALL_PREFIX }}` according to your installation.
 
 Now edit `restic-backup@.service` and `status-email-user@.service` to call this service failure.
 ```
