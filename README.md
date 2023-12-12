@@ -33,7 +33,7 @@ Here follows a step-by step tutorial on how to set it up, with my sample script 
 Note, you can use any restic's supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar, but you will have to use other configuration variables to match your backend of choice.
 
 ## Project Scope
-**Update** this project is feature complete (see reasoning below). Only bug fixes wull be accepted. Feel free to fork if you want to add more features; forking vase was the initial scope of this project!
+**Update:** this project is feature complete (see reasoning below). Only bug fixes wull be accepted. Feel free to fork if you want to add more features; forking vase was the initial scope of this project!
 
 The scope for this is not to be a full-fledged super solution that solves all the problems and all possible setups. The aim is to be a hackable code base for you to start sewing up the perfect backup solution that fits your requirements!
 
