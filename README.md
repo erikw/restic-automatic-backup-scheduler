@@ -308,17 +308,17 @@ $ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd
 
 Make a quick search-and-replace in the source files:
 ```console
-$ find etc bin -type f -exec sed -i.bak -e 's|$INSTALL_PREFIX||g' {} \; -exec rm {}.bak \;
+$ find etc bin -type f -exec sed -i.bak -e 's|{{ INSTALL_PREFIX }}||g' {} \; -exec rm {}.bak \;
 ```
 and you should now see that all files have been changed like e.g.
 ```diff
--export RESTIC_PASSWORD_FILE="$INSTALL_PREFIX/etc/restic/pw.txt"
+-export RESTIC_PASSWORD_FILE="{{ INSTALL_PREFIX }}/etc/restic/pw.txt"
 +export RESTIC_PASSWORD_FILE="/etc/restic/pw.txt"
 ```
 
-Why? The OS specific TL;DR setups above all use the [Makefile](Makefile) or a package manager to install these files. The placeholder string `$INSTALL_PREFIX` is in the source files for portability reasons, so that the Makefile can support all different operating systems. `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`.
+Why? The OS specific TL;DR setups above all use the [Makefile](Makefile) or a package manager to install these files. The placeholder string `{{ INSTALL_PREFIX }}` is in the source files for portability reasons, so that the Makefile can support all different operating systems. `make` users can set a different `$PREFIX` when installing like `PREFIX=/usr/local make install-systemd`.
 
-In this detailed manual setup we will copy all files manually to `/etc`and `/bin`. Thus we need to remove the placeholder string `$INSTALL_PREFIX` in the source files as a first step.
+In this detailed manual setup we will copy all files manually to `/etc`and `/bin`. Thus, we need to remove the placeholder string `{{ INSTALL_PREFIX }}` in the source files as a first step.
 
 
 #### 1. Create Backblaze B2 Account, Bucket and Keys

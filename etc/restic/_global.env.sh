@@ -10,9 +10,9 @@
 
 
 # The restic repository encryption key
-export RESTIC_PASSWORD_FILE="$INSTALL_PREFIX/etc/restic/pw.txt"
+export RESTIC_PASSWORD_FILE="{{ INSTALL_PREFIX }}/etc/restic/pw.txt"
 # The global restic exclude file
-export RESTIC_BACKUP_EXCLUDE_FILE="$INSTALL_PREFIX/etc/restic/backup_exclude.txt"
+export RESTIC_BACKUP_EXCLUDE_FILE="{{ INSTALL_PREFIX }}/etc/restic/backup_exclude.txt"
 
 # Backblaze B2 credentials keyID & applicationKey pair.
 # Restic environment variables are documented at https://restic.readthedocs.io/en/latest/040_backup.html#environment-variables
@@ -31,7 +31,7 @@ export RESTIC_BACKUP_EXTRA_ARGS=
 export RESTIC_VERBOSITY_LEVEL=0
 
 # (optional, uncomment to enable) Backup summary stats log: snapshot size, etc. (empty/unset won't log)
-#export RESTIC_BACKUP_STATS_DIR="$INSTALL_PREFIX/var/log/restic-automatic-backup-scheduler"
+#export RESTIC_BACKUP_STATS_DIR="{{ INSTALL_PREFIX }}/var/log/restic-automatic-backup-scheduler"
 
 # (optional) Desktop notifications. See README and restic_backup.sh for details on how to set this up (empty/unset means disabled)
 export RESTIC_BACKUP_NOTIFICATION_FILE=

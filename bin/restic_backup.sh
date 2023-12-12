@@ -29,7 +29,7 @@ assert_envvars() {
 	local varnames=("$@")
 	for varname in "${varnames[@]}"; do
 		if [ -z ${!varname+x} ]; then
-			printf "%s must be set for this script to work.\n\nDid you forget to source a $INSTALL_PREFIX/etc/restic/*.env.sh profile in the current shell before executing this script?\n" "$varname" >&2
+			printf "%s must be set for this script to work.\n\nDid you forget to source a {{ INSTALL_PREFIX }}/etc/restic/*.env.sh profile in the current shell before executing this script?\n" "$varname" >&2
 			exit 1
 		fi
 	done
@@ -97,7 +97,7 @@ B2_ARG=
 [ -z "${B2_CONNECTIONS+x}" ] || B2_ARG=(--option b2.connections="$B2_CONNECTIONS")
 
 # If you need to run some commands before performing the backup; create this file, put them there and make the file executable.
-PRE_SCRIPT="${INSTALL_PREFIX}/etc/restic/pre_backup.sh"
+PRE_SCRIPT="{{ INSTALL_PREFIX }}/etc/restic/pre_backup.sh"
 test -x "$PRE_SCRIPT" && "$PRE_SCRIPT"
 
 # Set up exclude files: global + path-specific ones

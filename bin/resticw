@@ -148,7 +148,7 @@ eval "$(docopt "$@")"
 
 # Exit on error, unbound variable, pipe error
 set -euo pipefail
-ENV_DIR=$INSTALL_PREFIX/etc/restic
+ENV_DIR="{{ INSTALL_PREFIX }}/etc/restic"
 
 ERR_NO_SUCH_PROFILE=2
 ERR_PROFILE_NO_READ_PERM=3

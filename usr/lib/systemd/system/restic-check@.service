@@ -12,4 +12,4 @@ Type=simple
 Nice=10
 # pipefail: so that redirecting stderr from the script to systemd-cat does not hide the failed command from OnFailure above.
 # `systemd-cat`: allows showing the restic output to the systemd journal
-ExecStart=/bin/bash -c 'set -o pipefail; source $INSTALL_PREFIX/etc/restic/%I.env.sh && $INSTALL_PREFIX/bin/restic_check.sh 2>&1 | systemd-cat'
+ExecStart=/bin/bash -c 'set -o pipefail; source {{ INSTALL_PREFIX }}/etc/restic/%I.env.sh && {{ INSTALL_PREFIX }}/bin/restic_check.sh 2>&1 | systemd-cat'

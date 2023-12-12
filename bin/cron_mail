@@ -5,7 +5,7 @@
 # Why? Because of FreeBSD the system cron uses sendmail, and I want to use ssmtp.
 # Make your crontab files like:
 #SHELL=/bin/sh
-#PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin:$INSTALL_PREFIX/bin
+#PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin:{{ INSTALL_PREFIX }}/bin
 #@daily       root    cron_mail freebsd-update cron
 
 mail_target=root

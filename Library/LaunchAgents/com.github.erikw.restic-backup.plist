@@ -12,12 +12,12 @@
 		<array>
 			<string>/bin/bash</string>
 			<string>-c</string>
-			<string>source $INSTALL_PREFIX/etc/restic/default.env.sh &amp;&amp; $INSTALL_PREFIX/bin/restic_backup.sh >>$HOME/$LOG_OUT 2>>$HOME/$LOG_ERR</string>
+			<string>source {{ INSTALL_PREFIX }}/etc/restic/default.env.sh &amp;&amp; {{ INSTALL_PREFIX }}/bin/restic_backup.sh >>$HOME/$LOG_OUT 2>>$HOME/$LOG_ERR</string>
 		</array>
 		<key>EnvironmentVariables</key>
 		<dict>
 			<key>PATH</key>
-			<string>$INSTALL_PREFIX/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+			<string>{{ INSTALL_PREFIX }}/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
 			<key>LOG_OUT</key>
 			<string>/Library/Logs/restic/backup_stdout.log</string>
 			<key>LOG_ERR</key>

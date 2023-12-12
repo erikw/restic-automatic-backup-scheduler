@@ -14,4 +14,4 @@ Environment="HOME=/root"
 # pipefail: so that redirecting stderr from the script to systemd-cat does not hide the failed command from OnFailure above.
 # Random sleep (in seconds): in the case of multiple backup profiles. Many restic instances started at the same time could case high load or network bandwith usage.
 # `systemd-cat` allows showing the restic output to the systemd journal
-ExecStart=/bin/bash -c 'set -o pipefail; ps cax | grep -q restic && sleep $(shuf -i 0-300 -n 1); source $INSTALL_PREFIX/etc/restic/%I.env.sh && $INSTALL_PREFIX/bin/restic_backup.sh 2>&1 | systemd-cat'
+ExecStart=/bin/bash -c 'set -o pipefail; ps cax | grep -q restic && sleep $(shuf -i 0-300 -n 1); source {{ INSTALL_PREFIX }}/etc/restic/%I.env.sh && {{ INSTALL_PREFIX }}/bin/restic_backup.sh 2>&1 | systemd-cat'

@@ -12,7 +12,7 @@
 #  $ restic --repo ... --password-file ...
 
 # shellcheck source=etc/restic/_global.env.sh
-. "$INSTALL_PREFIX/etc/restic/_global.env.sh"
+. "{{ INSTALL_PREFIX }}/etc/restic/_global.env.sh"
 
 # Envvars below will override those in _global.env.sh if present.
 
