@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 # @generated
 
-DOC="A little wrapper over restic just to handle profiles and environment loading.
+DOC="A little wrapper over restic just to handle profiles and environment loading, with small extensions.
 
 Usage:
-  resticw [options] <restic_arguments_line>...
+  resticw [--profile <name>] <restic_arguments_line>...
+  resticw [--profile <name>] --diff-latest
 
-  The <restic_arguments_line> is just the regular unwrapped restic command arguments, e.g. stats latest
+  The <restic_arguments_line> is just the regular unwrapped restic command arguments, e.g. \`stats latest\`.
 
 Options:
   -p --profile=<name>        Specify the profile to load or use default [default: default].
+  --diff-latest              Show latest snapshot changes: Runs \`restic diff\` after finding the latest 2 snapshots.
 
 Examples:
   resticw --profile profileA snapshots
   resticw stats latest  # this will use the profile: default
+  resticw -p profileB --diff-latest
+
+💡 You may need to run it with sudo to source the profile environment.
 "
 
 # The following argument parser is generated with docopt.sh from the above docstring.
@@ -86,12 +91,24 @@ local node_idx; ((testdepth++)) || true; for node_idx in "$@"; do
 if ! "node_$node_idx"; then left=("${initial_left[@]}"); ((testdepth--)) || true
 return 1; fi; done; if [[ $((--testdepth)) -eq 0 ]]; then
 left=("${initial_left[@]}"); for node_idx in "$@"; do "node_$node_idx"; done; fi
-return 0; }; optional() { local node_idx; for node_idx in "$@"; do
-"node_$node_idx"; done; return 0; }; oneormore() { local i=0
-local prev=${#left[@]}; while "node_$1"; do ((i++)) || true
+return 0; }; either() { local initial_left=("${left[@]}"); local best_match_idx
+local match_count; local node_idx; ((testdepth++)) || true
+for node_idx in "$@"; do if "node_$node_idx"; then
+if [[ -z $match_count || ${#left[@]} -lt $match_count ]]; then
+best_match_idx=$node_idx; match_count=${#left[@]}; fi; fi
+left=("${initial_left[@]}"); done; ((testdepth--)) || true
+if [[ -n $best_match_idx ]]; then "node_$best_match_idx"; return 0; fi
+left=("${initial_left[@]}"); return 1; }; optional() { local node_idx
+for node_idx in "$@"; do "node_$node_idx"; done; return 0; }; oneormore() {
+local i=0; local prev=${#left[@]}; while "node_$1"; do ((i++)) || true
 [[ $prev -eq ${#left[@]} ]] && break; prev=${#left[@]}; done
-if [[ $i -ge 1 ]]; then return 0; fi; return 1; }; value() { local i
+if [[ $i -ge 1 ]]; then return 0; fi; return 1; }; switch() { local i
 for i in "${!left[@]}"; do local l=${left[$i]}
+if [[ ${parsed_params[$l]} = "$2" ]]; then
+left=("${left[@]:0:$i}" "${left[@]:((i+1))}")
+[[ $testdepth -gt 0 ]] && return 0; if [[ $3 = true ]]; then
+eval "((var_$1++))" || true; else eval "var_$1=true"; fi; return 0; fi; done
+return 1; }; value() { local i; for i in "${!left[@]}"; do local l=${left[$i]}
 if [[ ${parsed_params[$l]} = "$2" ]]; then
 left=("${left[@]:0:$i}" "${left[@]:((i+1))}")
 [[ $testdepth -gt 0 ]] && return 0; local value
@@ -100,21 +117,25 @@ eval "var_$1+=($value)"; else eval "var_$1=$value"; fi; return 0; fi; done
 return 1; }; stdout() { printf -- "cat <<'EOM'\n%s\nEOM\n" "$1"; }; stderr() {
 printf -- "cat <<'EOM' >&2\n%s\nEOM\n" "$1"; }; error() {
 [[ -n $1 ]] && stderr "$1"; stderr "$usage"; _return 1; }; _return() {
-printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:450}
-usage=${DOC:79:53}; digest=dc31d; shorts=(-p); longs=(--profile); argcounts=(1)
-node_0(){ value __profile 0; }; node_1(){ value _restic_arguments_line_ a true
-}; node_2(){ optional 0; }; node_3(){ optional 2; }; node_4(){ oneormore 1; }
-node_5(){ required 3 4; }; node_6(){ required 5; }; cat <<<' docopt_exit() {
-[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:79:53}" >&2; exit 1
-}'; unset var___profile var__restic_arguments_line_; parse 6 "$@"
-local prefix=${DOCOPT_PREFIX:-''}; unset "${prefix}__profile" \
-"${prefix}_restic_arguments_line_"
+printf -- "exit %d\n" "$1"; exit "$1"; }; set -e; trimmed_doc=${DOC:0:751}
+usage=${DOC:102:105}; digest=a9466; shorts=(-p '')
+longs=(--profile --diff-latest); argcounts=(1 0); node_0(){ value __profile 0; }
+node_1(){ switch __diff_latest 1; }; node_2(){
+value _restic_arguments_line_ a true; }; node_3(){ optional 0; }; node_4(){
+oneormore 2; }; node_5(){ required 3 4; }; node_6(){ required 3 1; }; node_7(){
+either 5 6; }; node_8(){ required 7; }; cat <<<' docopt_exit() {
+[[ -n $1 ]] && printf "%s\n" "$1" >&2; printf "%s\n" "${DOC:102:105}" >&2
+exit 1; }'; unset var___profile var___diff_latest var__restic_arguments_line_
+parse 8 "$@"; local prefix=${DOCOPT_PREFIX:-''}; unset "${prefix}__profile" \
+"${prefix}__diff_latest" "${prefix}_restic_arguments_line_"
 eval "${prefix}"'__profile=${var___profile:-default}'
+eval "${prefix}"'__diff_latest=${var___diff_latest:-false}'
 if declare -p var__restic_arguments_line_ >/dev/null 2>&1; then
 eval "${prefix}"'_restic_arguments_line_=("${var__restic_arguments_line_[@]}")'
 else eval "${prefix}"'_restic_arguments_line_=()'; fi; local docopt_i=1
 [[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2; for ((;docopt_i>0;docopt_i--)); do
-declare -p "${prefix}__profile" "${prefix}_restic_arguments_line_"; done; }
+declare -p "${prefix}__profile" "${prefix}__diff_latest" \
+"${prefix}_restic_arguments_line_"; done; }
 # docopt parser above, complete command for generating this parser is `docopt.sh resticw`
 
 # Parse arguments - See https://github.com/andsens/docopt.sh for the magic :)
@@ -132,6 +153,16 @@ ENV_DIR=$INSTALL_PREFIX/etc/restic
 ERR_NO_SUCH_PROFILE=2
 ERR_PROFILE_NO_READ_PERM=3
 
+# Compute the latest 2 snapshots and run the diff
+latestSnapshotDiff() {
+	restic snapshots --tag "$RESTIC_BACKUP_TAG" --latest 2 --compact \
+		| grep -Ei "^[abcdef0-9]{8} " \
+		| awk '{print $1}' \
+		| tail -2 \
+		| tr '\n' ' ' \
+		| xargs restic diff
+}
+
 # shellcheck disable=SC2154
 profile_file="${ENV_DIR}/${__profile}.env.sh"
 
@@ -143,6 +174,12 @@ if [[ ! -r "$profile_file" ]]; then
 fi
 
 echo -e "‣ Using profile: ${__profile}  --  (${profile_file})\n"
+# shellcheck disable=SC1090
+source "$profile_file"
 
-# shellcheck disable=SC2154,SC1090
-source "$profile_file" && restic "${_restic_arguments_line_[@]}"
+# shellcheck disable=SC2154
+if [[ "${__diff_latest}" == true ]]; then
+	latestSnapshotDiff
+else
+	restic "${_restic_arguments_line_[@]}"
+fi
