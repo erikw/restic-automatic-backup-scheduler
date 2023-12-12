@@ -308,7 +308,7 @@ $ git clone https://github.com/erikw/restic-automatic-backup-scheduler.git && cd
 
 Make a quick search-and-replace in the source files:
 ```console
-$ find etc bin -type f -exec sed -i.bak -e 's|{{ INSTALL_PREFIX }}||g' {} \; -exec rm {}.bak \;
+$ find . -type f -exec sed -i.bak -e 's|{{ INSTALL_PREFIX }}||g' {} \; -exec rm {}.bak \;
 ```
 and you should now see that all files have been changed like e.g.
 ```diff
@@ -483,7 +483,7 @@ We want to be aware when the automatic backup fails, so we can fix it. Since my 
 Put this file in `/bin`:
 * `systemd-email`: Sends email using sendmail(1). This script also features time-out for not spamming Gmail servers and getting my account blocked.
 
-Put this files in `/etc/systemd/system/`:
+Put this file in `/etc/systemd/system/`:
 * `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file.
 
 Now edit `restic-backup@.service` and `status-email-user@.service` to call this service failure.
