@@ -486,7 +486,7 @@ Put this file in `/bin`:
 Put this file in `/etc/systemd/system/`:
 * `status-email-user@.service`: A service that can notify you via email when a systemd service fails. Edit the target email address in this file, and replace or remove `{{ INSTALL_PREFIX }}` according to your installation.
 
-Now edit `restic-backup@.service` and `status-email-user@.service` to call this service failure.
+Now edit `/usr/lib/systemd/system/restic-backup@.service` and `/usr/lib/systemd/system/restic-check@.service` to call this service failure.
 ```
 OnFailure=status-email-user@%n.service
 ```
