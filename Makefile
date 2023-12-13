@@ -1,14 +1,14 @@
 #### Notes ####################################################################
 # This build process is done in three stages (out-of-source build):
 # 1. copy source files to the local build directory.
-# 2. build dir: replace the string "$INSTALL_PREFIX" with the value of $PREFIX
+# 2. build dir: replace the string "{{ INSTALL_PREFIX }}" with the value of $PREFIX
 # 3. install files from the build directory to the target directory.
 #
 # Why this dance?
 # * To fully support that a user can install this project to a custom path e.g.
 #   $(PREFIX=/usr/local make install), we need to modify the files that refer
 #   to other files on disk. We do this by having a placeholder
-#   "$INSTALL_PREFIX"  that is substituted with the value of $PREFIX when
+#   "{{ INSTALL_PREFIX }}"  that is substituted with the value of $PREFIX when
 #   installed.
 # * We don't want to modify the files that are controlled by git, thus let's
 #   copy them to a build directory and then modify.
@@ -57,7 +57,7 @@ LAUNCHAGENT_CHECK			= com.github.erikw.restic-check
 LAUNCHAGENT_TARGET_BACKUP	= gui/$(UID)/$(LAUNCHAGENT_BACKUP)
 LAUNCHAGENT_TARGET_CHECK	= gui/$(UID)/$(LAUNCHAGENT_CHECK)
 
-# What to substitute $INSTALL_PREFIX in sources to.
+# What to substitute {{ INSTALL_PREFIX }} in sources to.
 # This can be useful to set to empty on commandline when building e.g. an AUR
 # package in a separate build directory (PREFIX).
 INSTALL_PREFIX := $(PREFIX)
@@ -192,11 +192,11 @@ install-targets-schedtask: $(BUILD_DIR_SCHEDTASK)/$(SCHEDTASK_INSTALL)
 uninstall-targets-schedtask: $(BUILD_DIR_SCHEDTASK)/$(SCHEDTASK_UNINSTALL)
 	test $(CUR_OS) != Windows || ./$<
 
-# Copies sources to build directory & replace "$INSTALL_PREFIX".
+# Copies sources to build directory & replace "{{ INSTALL_PREFIX }}".
 $(BUILD_DIR)/% : %
 	@${MKDIR_PARENTS} $@
 	cp $< $@
-	sed -i.bak -e 's|$$INSTALL_PREFIX|$(INSTALL_PREFIX)|g' $@; rm $@.bak
+	sed -i.bak -e 's|{{ INSTALL_PREFIX }}|$(INSTALL_PREFIX)|g' $@; rm $@.bak
 
 # Install destination script files.
 $(DEST_DIR_SCRIPT)/%: $(BUILD_DIR_SCRIPT)/%

@@ -6,6 +6,6 @@ Description=Send status email for %i to user
 
 [Service]
 Type=oneshot
-ExecStart=$INSTALL_PREFIX/bin/systemd-email abc@gmail.com %i
+ExecStart={{ INSTALL_PREFIX }}/bin/systemd-email abc@gmail.com %i
 User=root
 Group=systemd-journal

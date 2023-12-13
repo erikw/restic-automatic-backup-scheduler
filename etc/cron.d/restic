@@ -1,13 +1,13 @@
 SHELL=/bin/sh
-PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/:$INSTALL_PREFIX/bin/
+PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/:{{ INSTALL_PREFIX }}/bin/
 # Order of crontab fields
 # minute        hour    mday    month   wday    command
 # Reference: https://www.freebsd.org/doc/handbook/configtuning-cron.html
 # Reference: crontab(5).
 
-@midnight	root	. $INSTALL_PREFIX/etc/restic/default.env.sh && restic_backup.sh
-@monthly	root	. $INSTALL_PREFIX/etc/restic/default.env.sh && restic_check.sh
+@midnight	root	. {{ INSTALL_PREFIX }}/etc/restic/default.env.sh && restic_backup.sh
+@monthly	root	. {{ INSTALL_PREFIX }}/etc/restic/default.env.sh && restic_check.sh
 
 # Email notification version. Make sure bin/cron_mail is in the above $PATH
-#@midnight	root	. $INSTALL_PREFIX/etc/restic/default.env.sh && cron_mail restic_backup.sh
-#@monthly	root	. $INSTALL_PREFIX/etc/restic/default.env.sh && cron_mail restic_check.sh
+#@midnight	root	. {{ INSTALL_PREFIX }}/etc/restic/default.env.sh && cron_mail restic_backup.sh
+#@monthly	root	. {{ INSTALL_PREFIX }}/etc/restic/default.env.sh && cron_mail restic_check.sh
