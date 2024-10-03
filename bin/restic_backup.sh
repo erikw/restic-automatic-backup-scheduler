@@ -80,6 +80,7 @@ assert_envvars \
 
 warn_on_missing_envvars \
 	B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_CONNECTIONS \
+	AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY \
 	RESTIC_PASSWORD_FILE
 
 # Convert to arrays, as arrays should be used to build command lines. See https://github.com/koalaman/shellcheck/wiki/SC2086

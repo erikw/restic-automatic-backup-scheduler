@@ -19,6 +19,11 @@ export RESTIC_BACKUP_EXCLUDE_FILE="{{ INSTALL_PREFIX }}/etc/restic/backup_exclud
 export B2_ACCOUNT_ID="<b2-key-id>"   # *EDIT* fill with your keyID
 export B2_ACCOUNT_KEY="<b2-application-key>" # *EDIT* fill with your applicationKey
 
+# Official instructions on how to setup the restic variables for S3-compatible Storage can be found at
+# https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html#s3-compatible-storage
+export AWS_ACCESS_KEY_ID="<s3-access-key-id>"   # *EDIT* fill with your keyID
+export AWS_SECRET_ACCESS_KEY="<s3-secret-access-key>" # *EDIT* fill with your applicationKey
+
 # How many network connections to set up to B2. Default is 5.
 export B2_CONNECTIONS=10
 
