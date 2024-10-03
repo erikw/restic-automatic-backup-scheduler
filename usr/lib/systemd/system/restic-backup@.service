@@ -1,5 +1,5 @@
 [Unit]
-Description=Backup with restic to Backblaze B2
+Description=Backup with restic
 # Email on failure require special setup. See README.md
 #OnFailure=status-email-user@%n.service
 # Prevent backup on unmetered connection. Needs special setup. See README.md.

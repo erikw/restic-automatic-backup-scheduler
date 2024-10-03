@@ -1,5 +1,5 @@
 [Unit]
-Description=Check restic backup Backblaze B2 for errors
+Description=Check restic backup for errors
 # Email on failure require special setup. See README.md
 #OnFailure=status-email-user@%n.service
 Conflicts=restic-backup.service
