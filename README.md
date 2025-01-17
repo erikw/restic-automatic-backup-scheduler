@@ -14,7 +14,7 @@
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/erikw/restic-automatic-backup-scheduler?color=success)](https://github.com/erikw/restic-automatic-backup-scheduler/pulls?q=is%3Apr+is%3Aclosed)
 [![License](https://img.shields.io/badge/license-BSD--3-blue)](LICENSE)
 [![OSS Lifecycle](https://img.shields.io/osslifecycle/erikw/restic-automatic-backup-scheduler)](https://github.com/Netflix/osstracker)
-[![SLOC](https://img.shields.io/tokei/lines/github/erikw/restic-automatic-backup-scheduler?logo=codefactor&logoColor=lightgrey)](#)
+[![SLOC](https://sloc.xyz/github/erikw/restic-automatic-backup-scheduler)](#)
 [![Top programming languages used](https://img.shields.io/github/languages/top/erikw/restic-automatic-backup-scheduler)](#)
 <br>
 
