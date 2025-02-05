@@ -43,7 +43,7 @@ To use a different storage backend than B2, you should only need to tweak a few 
 
 ## Notes
 * Tip: Navigate this document easily from the Section icon in the top left corner.
-<img src="img/readme_sections.png" alt="README.md sections" width="75%" />
+<img src="img/readme_sections.png" alt="README.md sections" width="30%" />
 * ☝ **Note**: in the command listing in this document, `$` means a user shell and `#` means a root shell (or use `sudo`).
 
 
