@@ -139,6 +139,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
    ```
 1. Configure [how often](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html#//apple_ref/doc/uid/10000172i-CH1-SW1) backups should be done. If needed, edit `OnCalendar` in
    * Homebrew install: `~/Library/LaunchAgents/homebrew.mxcl.restic-automatic-backup-scheduler.plist`.
+     * Note that with Homebrew install, this file will only be available after running the `$ brew services start [...]` command in the next step. Run that command and come back here.
    * `make` install: `~/Library/LaunchAgents/com.github.erikw.restic-backup.plist`.
 1. Enable automated backup for starting with the system & make the first backup:
    * Homebrew install:
