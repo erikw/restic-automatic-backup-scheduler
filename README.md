@@ -593,13 +593,13 @@ $ tail -f /tmp/restic-automatic-backup-scheduler.log # or follow output like thi
   ```
 
 # Releasing
-To make a new release:
-1. Create a new tag:
-   ```console
-   $ vi CHANGELOG.md && git commit -am "Update CHANGELOG.md"
-   $ git tag vX.Y.Z
-   $ git push && git push --tags
-   ```
+1. Create a new version of this project by using [semver-cli](https://github.com/maykonlsf/semver-cli).
+	```shell
+	vi CHANGELOG.md
+	semver up minor
+	ver=$(semver get release)
+	git commit -am "Bump version to $ver" && git tag $ver && git push --atomic origin main $ver
+	```
 1. Update version in the AUR [PKGBUILD](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/)
 1. Update version in the Homebrew Formulas (see the repo README):
    * [restic-automatic-backup-scheduler](https://github.com/erikw/homebrew-tap/blob/main/Formula/restic-automatic-backup-scheduler.rb)

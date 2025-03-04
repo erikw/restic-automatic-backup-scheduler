@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Debug scripts by setting `TRACE=1`.
+- Add semver-cli for git tagging.
 ### Changed
 - Warn on certain unset envvars instead of error-exit.
 
