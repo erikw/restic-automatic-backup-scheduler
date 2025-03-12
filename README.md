@@ -75,7 +75,7 @@ Depending on your system, the setup will look different. Choose one of:
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" />
 
 > [!NOTE]
-> ☝ The Linux setup here will assume an installation to `/`.
+> The Linux setup here will assume an installation to `/`.
 
 Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Systemd), which features good support for running services and scheduled jobs. If your distribution is no on Systemd, check out the [cron setup](#setup-cron) instead.
 
@@ -126,7 +126,7 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" />
 
 > [!NOTE]
-> ☝ The macOS setup here will assume a Homebrew installation to the [recommended default location](https://docs.brew.sh/FAQ#why-should-i-install-homebrew-in-the-default-location). This is [`$HOMEBREW_PREFIX` (`brew --prefix`)](https://docs.brew.sh/Formula-Cookbook#variables-for-directory-locations) , which is `/usr/local` on Intel Macs and `/opt/homebrew` on [Apple Silicon](https://docs.brew.sh/FAQ#why-is-the-default-installation-prefix-opthomebrew-on-apple-silicon).
+> The macOS setup here will assume a Homebrew installation to the [recommended default location](https://docs.brew.sh/FAQ#why-should-i-install-homebrew-in-the-default-location). This is [`$HOMEBREW_PREFIX` (`brew --prefix`)](https://docs.brew.sh/Formula-Cookbook#variables-for-directory-locations) , which is `/usr/local` on Intel Macs and `/opt/homebrew` on [Apple Silicon](https://docs.brew.sh/FAQ#why-is-the-default-installation-prefix-opthomebrew-on-apple-silicon).
 
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up a LaunchAgent to be run as your normal user for starting regular backups.
 
