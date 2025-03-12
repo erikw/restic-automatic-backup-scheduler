@@ -38,7 +38,8 @@ Here follows a step-by step tutorial on how to set it up, with my sample script 
 Note, you can use any restic's supported [storage backends](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html). The setup should be similar, but you will have to use other configuration variables to match your backend of choice.
 
 ## Project Scope
-**Update:** this project is feature complete (see reasoning below). Only bug fixes will be accepted. Feel free to fork if you want to add more features; being a forking base was the initial scope of this project!
+> [!NOTE]
+> **Update:** this project is feature complete (see reasoning below). Only bug fixes will be accepted. Feel free to fork if you want to add more features; being a forking base was the initial scope of this project!
 
 The scope for this is not to be a full-fledged super solution that solves all the problems and all possible setups. The aim is to be a hackable code base for you to start sewing up the perfect backup solution that fits your requirements!
 
@@ -47,9 +48,12 @@ Nevertheless, the project should work out of the box, be minimal but still open 
 To use a different storage backend than B2, you should only need to tweak a few settings variables in the backup profile as well as some restic arguments inside `restic_backup.sh`.
 
 ## Notes
-* Tip: Navigate this document easily from the Section icon in the top left corner.
+> [!TIP]
+> Navigate this document easily from the Section icon in the top left corner.
 <img src="img/readme_sections.png" alt="README.md sections" width="30%" />
-* ☝ **Note**: in the command listing in this document, `$` means a user shell and `#` means a root shell (or use `sudo`).
+
+> [!NOTE]
+> In the command listing in this document, `$` means a user shell and `#` means a root shell (or use `sudo`).
 
 
 # Requirements
@@ -70,7 +74,8 @@ Depending on your system, the setup will look different. Choose one of:
 ## Setup Linux Systemd
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/linux.svg" />
 
-☝ **Note** The Linux setup here will assume an installation to `/`.
+> [!NOTE]
+> ☝ The Linux setup here will assume an installation to `/`.
 
 Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Systemd), which features good support for running services and scheduled jobs. If your distribution is no on Systemd, check out the [cron setup](#setup-cron) instead.
 
@@ -120,7 +125,8 @@ Many Linux distributions nowadays use [Systemd](https://en.wikipedia.org/wiki/Sy
 ## Setup macOS LaunchAgent
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/apple.svg" />
 
-☝ **Note** The macOS setup here will assume a Homebrew installation to the [recommended default location](https://docs.brew.sh/FAQ#why-should-i-install-homebrew-in-the-default-location). This is [`$HOMEBREW_PREFIX` (`brew --prefix`)](https://docs.brew.sh/Formula-Cookbook#variables-for-directory-locations) , which is `/usr/local` on Intel Macs and `/opt/homebrew` on [Apple Silicon](https://docs.brew.sh/FAQ#why-is-the-default-installation-prefix-opthomebrew-on-apple-silicon).
+> [!NOTE]
+> ☝ The macOS setup here will assume a Homebrew installation to the [recommended default location](https://docs.brew.sh/FAQ#why-should-i-install-homebrew-in-the-default-location). This is [`$HOMEBREW_PREFIX` (`brew --prefix`)](https://docs.brew.sh/Formula-Cookbook#variables-for-directory-locations) , which is `/usr/local` on Intel Macs and `/opt/homebrew` on [Apple Silicon](https://docs.brew.sh/FAQ#why-is-the-default-installation-prefix-opthomebrew-on-apple-silicon).
 
 [Launchd](https://www.launchd.info/) is the modern built-in service scheduler in macOS. It has support for running services as root (Daemon) or as a normal user (Agent). Here we set up a LaunchAgent to be run as your normal user for starting regular backups.
 
@@ -267,7 +273,8 @@ With `taskschd.msc` you can easily start, stop, delete and configure the schedul
 ## Setup Cron
 <img height="64" width="64" src="https://unpkg.com/simple-icons@v6/icons/clockify.svg" />
 
-☝ **Note** There are many different cron [implementations](https://wiki.archlinux.org/title/Cron) out there and they all work slightly different.
+> [!NOTE]
+> There are many different cron [implementations](https://wiki.archlinux.org/title/Cron) out there and they all work slightly different.
 
 Any system that has a cron-like system can easily setup restic backups as well. However if you system supports any of the previous setups, those are recommended over cron as they provide more features and reliability for your backups.
 
@@ -523,8 +530,10 @@ For a laptop, it can make sense to not do heavy backups when your on a metered c
 	```console
 	# systemctl daemon-reload
 	```
+> [!TIP]
+> All steps but the first can be done in one go if you use the Makefile. Set `$PREFIX` as needed or leave empty for install to `/`.
 
-☝ **Tip**: All steps but the first can be done in one go if you use the Makefile. Set `$PREFIX` as needed or leave empty for install to `/`.
+
 ```bash
 sudo bash -c 'export PREFIX=
  make build/usr/lib/systemd/system/nm-unmetered-connection.service
