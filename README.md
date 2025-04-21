@@ -4,7 +4,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/erikw/restic-automatic-backup-scheduler?style=social)](#)
 [![GitHub Forks](https://img.shields.io/github/forks/erikw/restic-automatic-backup-scheduler?style=social)](#)
 <br>
-[![Lint Code Base](https://github.com/erikw/restic-automatic-backup-scheduler/actions/workflows/linter.yml/badge.svg)](https://github.com/erikw/restic-automatic-backup-scheduler/actions/workflows/linter.yml)
+[![Lint](https://github.com/erikw/restic-automatic-backup-scheduler/actions/workflows/linter.yml/badge.svg)](https://github.com/erikw/restic-automatic-backup-scheduler/actions/workflows/linter.yml)
 [![Latest tag](https://img.shields.io/github/v/tag/erikw/restic-automatic-backup-scheduler)](https://github.com/erikw/restic-automatic-backup-scheduler/tags)
 [![AUR version](https://img.shields.io/aur/version/restic-automatic-backup-scheduler)](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/)
 [![AUR maintainer](https://img.shields.io/aur/maintainer/restic-automatic-backup-scheduler?label=AUR%20maintainer)](https://aur.archlinux.org/packages/restic-automatic-backup-scheduler/)
