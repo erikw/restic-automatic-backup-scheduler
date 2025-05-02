@@ -1,8 +1,7 @@
 {
 	"features": {
 		"ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
-			"version": "latest",
-			"packages": "shellcheck"
+			"packages": ["shellcheck"]
 		}
 	},
 	"postCreateCommand": "bash scripts/devcontainer_postCreateCommand.sh",
