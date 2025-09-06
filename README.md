@@ -261,7 +261,7 @@ I describe here one of may ways you can get restic and this backup script workin
    1. Open the app "Task Scheduler" (`taskschd.msc`)
    1. Go to the local "Task Scheduler Library"
    1. Right click on one of the newly installed tasks e.g. `restic_backup` and click "run".
-      - If the tasks are not there, maybe you opended it up before `make install-schedtask`: just close and start it again to refresh.
+      - If the tasks are not there, maybe you opened it up before `make install-schedtask`: just close and start it again to refresh.
    1. Now a git-bash window should open running `restic_backup.sh`, and the next time the configured schedule hits!
 1. Consider more [optional features](#optional-features).
 
@@ -355,7 +355,7 @@ Put these files in `/etc/restic/`:
    $ source /etc/restic/default.env.sh
    $ restic snapshots    # You don't have to supply all parameters like --repo, as they are now in your environment!
    ````
-* `pw.txt`: This file should contain the restic password (single line) used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't re-use your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
+* `pw.txt`: This file should contain the restic password (single line) used to encrypt the repository. This is a new password what soon will be used when initializing the new repository. It should be unique to this restic backup repository and is needed for restoring from it. Don't reuse your B2 login password, this should be different. For example you can generate a 128 character password (must all be on one line) with:
    ```console
    $ openssl rand -base64 128 | tr -d '\n' > /etc/restic/pw.txt
    ```
@@ -375,7 +375,7 @@ Put this file in `/bin`:
 
 Restic support exclude files. They list file pattern paths to exclude from you backups, files that just occupy storage space, backup-time, network and money. `restic_backup.sh` allows for a few different exclude files.
 * `/etc/restic/backup_exclude.txt` - global exclude list. You can use only this one if your setup is easy. This is set in `_global.env.sh`. If you need a different file for another profile, you can override the envvar `RESTIC_BACKUP_EXCLUDE_FILE` in this profile.
-* `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$RESTIC_BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they shoud exclude!
+* `.backup_exclude.txt` per backup path. If you have e.g. an USB disk mounted at /mnt/media and this path is included in the `$RESTIC_BACKUP_PATHS`, you can place a file `/mnt/media/.backup_exclude.txt` and it will automatically picked up. The nice thing about this is that the backup paths are self-contained in terms of what they should exclude!
 
 #### 5. Make first backup
 Now see if the backup itself works, by running as root
@@ -573,7 +573,7 @@ $ sudo make uninstall
 # Debugging
 The best way to debug what's going on is to run the `restic_backup.sh` script with bash's trace function. You can activate it by running the script with `bash -x`:
 
-```consle
+```console
 $ source /etc/restic/default.env.sh
 $ bash -x /bin/restic_backup.sh
 ```

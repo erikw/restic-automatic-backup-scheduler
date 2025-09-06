@@ -112,7 +112,7 @@ for backup_path in "${backup_paths[@]}"; do
 	fi
 done
 
-# --one-file-system is not supportd on Windows (=msys).
+# --one-file-system is not supported on Windows (=msys).
 FS_ARG=
 test "$OSTYPE" = msys || FS_ARG=--one-file-system
 
@@ -141,7 +141,7 @@ wait $!
 
 # Dereference and delete/prune old backups.
 # See restic-forget(1) or http://restic.readthedocs.io/en/latest/060_forget.html
-# --group-by only the tag and path, and not by hostname. This is because I create a B2 Bucket per host, and if this hostname accidentially change some time, there would now be multiple backup sets.
+# --group-by only the tag and path, and not by hostname. This is because I create a B2 Bucket per host, and if this hostname accidentally change some time, there would now be multiple backup sets.
 restic forget \
 	--verbose="$RESTIC_VERBOSITY_LEVEL" \
 	--tag "$RESTIC_BACKUP_TAG" \

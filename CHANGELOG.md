@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for pre backup script at /etc/restic/pre_backup.sh [107](https://github.com/erikw/restic-automatic-backup-scheduler/pull/107)
 
 ### Fixed
-- Full path to `/bin/bash` in sytemd services. [#96](https://github.com/erikw/restic-automatic-backup-scheduler/issues/96)
+- Full path to `/bin/bash` in systemd services. [#96](https://github.com/erikw/restic-automatic-backup-scheduler/issues/96)
 
 ## [7.3.4] - 2022-04-29
 ### Fixed
@@ -100,11 +100,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    # systemctl enable restic-backup@<profile>.timer
    ```
 - **BREAKING CHANGE** moved script installation with makefile from `/usr/local/sbin` to `/bin` to have a simpler interface to work with `$PREFIX`.
-- **BREAKING CHANGE** renamed `etc/restic/*.env` files to `etc/restic/*.env.sh` to clearly communicate that it's a shell script that will be executed (source), and also hint at code editors what file this is to set corect syntax highligting etc. This also enables the shellcheck linter to work more easily on these files as well.
+- **BREAKING CHANGE** renamed `etc/restic/*.env` files to `etc/restic/*.env.sh` to clearly communicate that it's a shell script that will be executed (source), and also hint at code editors what file this is to set correct syntax highlighting etc. This also enables the shellcheck linter to work more easily on these files as well.
 - Renamed top level make install targets. The old `$ make install` is now `$ make install-systemd`
 
 ### Fixed
-- Installation with custom `PREFIX` now works properly with Make: `$ PREFIX=/usr/local make install` whill now install everything at the expected location. With this, it's easy to use this script as non-root user on e.g. an macOS system.
+- Installation with custom `PREFIX` now works properly with Make: `$ PREFIX=/usr/local make install` will now install everything at the expected location. With this, it's easy to use this script as non-root user on e.g. an macOS system.
 
 ## [4.0.0] - 2022-02-01
 ### Fixed
@@ -144,7 +144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `restic_backup.sh` now finds `.backup_exclude` files on each backup path as intended.
-- Install executeables to `$PREFIX/sbin` instead of `$PREFIX/user/local/sbin`, so that `$ PREFIX=/usr/local make install` does what is expected.
+- Install executables to `$PREFIX/sbin` instead of `$PREFIX/user/local/sbin`, so that `$ PREFIX=/usr/local make install` does what is expected.
 
 ## [1.0.1] - 2021-12-03
 ### Fixed
