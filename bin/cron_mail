@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vi: ft=sh
 #
-# To be called by a cron job as a wrapper that sends stdour and stderr via the mail program.
+# To be called by a cron job as a wrapper that sends stdout and stderr via the mail program.
 # Why? Because of FreeBSD the system cron uses sendmail, and I want to use ssmtp.
 # Make your crontab files like:
 #SHELL=/bin/sh
