@@ -171,7 +171,8 @@ if [[ -n "$RESTIC_BACKUP_STATS_DIR" || -n "$RESTIC_BACKUP_NOTIFICATION_FILE" ]];
 		| tail -2 \
 		| tr '\n' ' ')
 
-	snapshot_count=$(echo "$latest_snapshots" | wc -l)
+	# IDs are space-separated (tr flattened the list), so count words, not lines. BSD wc pads the count; xargs trims.
+	snapshot_count=$(echo "$latest_snapshots" | wc -w | xargs)
 	if [[ $snapshot_count -lt 2 ]]; then
 		echo "Warning: $snapshot_count snapshot(s) found. Skipping diff stats (need at least 2 snapshots)."
 	else
